@@ -1,0 +1,45 @@
+<!-- ============================================================
+     $RMHT legal disclaimer popup — paste this block just before
+     the closing </body> tag on every page of the RMHT site.
+     Update the href below if your legal page has a different name.
+     ============================================================ -->
+<div id="rmht-legal-banner" style="
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 9999;
+  background: #0d140d; border-top: 1px solid #2a3a2a;
+  color: #e8e8e0; font-family: 'Segoe UI', Arial, sans-serif;
+  padding: 16px 20px; display: none;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.4);
+">
+  <div style="max-width: 980px; margin: 0 auto; display: flex; flex-wrap: wrap;
+              align-items: center; justify-content: space-between; gap: 16px;">
+    <p style="margin: 0; font-size: 14px; flex: 1 1 420px;">
+      $RMHT is an experimental digital asset. Nothing here is financial advice, and no
+      returns or value are guaranteed. By using this site you accept our
+      <a href="legal.html" style="color:#7fbf6a;">Legal Notice &amp; Disclaimer</a>.
+    </p>
+    <button id="rmht-legal-accept" style="
+      background: #7fbf6a; color: #0d140d; border: none; border-radius: 6px;
+      padding: 10px 20px; font-weight: 600; cursor: pointer; flex: 0 0 auto;
+    ">Got it</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var KEY = 'rmht_legal_ack_v1';
+  var banner = document.getElementById('rmht-legal-banner');
+  var btn = document.getElementById('rmht-legal-accept');
+  try {
+    if (!localStorage.getItem(KEY)) {
+      banner.style.display = 'block';
+    }
+  } catch (e) {
+    // localStorage unavailable (e.g. private mode) — show banner anyway
+    banner.style.display = 'block';
+  }
+  btn.addEventListener('click', function () {
+    banner.style.display = 'none';
+    try { localStorage.setItem(KEY, '1'); } catch (e) {}
+  });
+})();
+</script>
