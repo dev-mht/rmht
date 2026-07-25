@@ -1,0 +1,2210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Robinhood Milestone HODL Token — $RMHT | Proof-of-Performance on Robinhood Chain</title>
+  <meta name="description" content="$RMHT is the Proof-of-Performance token on Robinhood Chain. 50% supply locked in a Smart-Vault, auto-released by Chainlink at every $500K Market Cap milestone, 100% to holders. Buy, hold, earn." />
+  <meta name="keywords" content="RMHT, Robinhood Milestone HODL Token, Robinhood Chain token, DeFi, Smart-Vault, Chainlink, Uniswap v3, crypto rewards" />
+  <meta property="og:title" content="Robinhood Milestone HODL Token — $RMHT" />
+  <meta property="og:description" content="Proof-of-Performance on Robinhood Chain. Every $500K MCap → 1.5% vault auto-released to HODLers." />
+  <meta property="og:url" content="https://rmht.apexpad.io" /><!-- ⚠️ à confirmer : URL finale du sous-domaine -->
+  <link rel="canonical" href="https://rmht.apexpad.io/" /><!-- ⚠️ à confirmer -->
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-55GLFJLMM8"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-55GLFJLMM8');
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+
+  <style>
+    :root {
+      --bg:       #07090e;
+      --bg2:      #0c0f18;
+      --bg3:      #111520;
+      --border:   rgba(245,200,66,0.12);
+      --gold:     #f5c842;
+      --gold2:    #ffde7a;
+      --gold3:    #c8971a;
+      --orange:   #e8501a;
+      --text:     #e8ecf4;
+      --muted:    #9aa6ba;
+      --success:  #00e096;
+      --mono:     'Space Mono', monospace;
+      --display:  'Bebas Neue', sans-serif;
+      --body:     'Syne', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background:
+        linear-gradient(rgba(7,9,14,0.90), rgba(7,9,14,0.94)),
+        url('fond-bg.jpg') center top / cover no-repeat fixed;
+      color: var(--text);
+      font-family: var(--body);
+      overflow-x: hidden;
+      cursor: default;
+    }
+    @media (max-width: 900px) {
+      /* background-attachment: fixed casse sur mobile Safari/Chrome — on repasse en scroll */
+      body { background-attachment: scroll; }
+    }
+
+    /* ── GRAIN OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 1000; opacity: 0.2;
+    }
+
+    /* ── TOP TRUST BAR ── */
+    .trust-bar {
+      background: linear-gradient(90deg, #0c0f18, #111520, #0c0f18);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 24px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 24px; flex-wrap: wrap;
+      font-family: var(--mono);
+      font-size: 11px; letter-spacing: 0.06em;
+      position: relative; z-index: 100;
+    }
+    .trust-item { display: flex; align-items: center; gap: 6px; }
+    .trust-item .badge {
+      padding: 2px 8px; border-radius: 4px;
+      font-weight: 700; font-size: 10px;
+    }
+    .badge-gold { background: var(--gold); color: #07090e; }
+    .badge-green { background: #00e096; color: #07090e; }
+    .badge-orange { background: var(--orange); color: #fff; }
+    .trust-item a { color: var(--gold); text-decoration: none; }
+    .trust-divider { color: var(--muted); }
+
+    /* ── NAVBAR ── */
+    nav.main-nav {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(7,9,14,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+      font-family: var(--display);
+      font-size: 22px; letter-spacing: 0.04em;
+      color: var(--text);
+    }
+    .nav-logo-gem {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--gold), var(--gold3));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      box-shadow: 0 0 16px rgba(245,200,66,0.3);
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-center {
+      font-family: var(--mono); font-size: 21px;
+      letter-spacing: 0.1em; color: var(--muted);
+      text-transform: uppercase;
+    }
+    .nav-center strong { color: var(--gold); }
+    .nav-right { display: flex; align-items: center; gap: 8px; }
+    .nav-btn {
+      padding: 8px 18px; border-radius: 8px;
+      font-family: var(--body); font-size: 13px; font-weight: 700;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .nav-btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+    .nav-btn-primary {
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color: #07090e;
+      box-shadow: 0 4px 16px rgba(245,200,66,0.25);
+    }
+    .nav-btn-primary:hover { box-shadow: 0 6px 24px rgba(245,200,66,0.4); transform: translateY(-1px); }
+
+    /* ── ANCHOR NAV ── */
+    .anchor-nav {
+      background: var(--bg);
+      border-bottom: 1px solid rgba(245,200,66,0.08);
+      padding: 8px 24px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; flex-wrap: wrap;
+      position: relative; z-index: 98;
+    }
+    .an {
+      padding: 5px 16px; border-radius: 20px;
+      font-size: 12px; font-weight: 700;
+      text-decoration: none; color: var(--muted);
+      border: 1px solid rgba(245,200,66,0.15);
+      transition: all 0.2s; white-space: nowrap;
+      letter-spacing: 0.03em;
+    }
+    .an:hover { color: var(--gold); border-color: rgba(245,200,66,0.4); background: rgba(245,200,66,0.06); transform: translateY(-1px); }
+
+    /* ── QUICK LINKS BAR ── */
+    .quick-links {
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 24px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; flex-wrap: wrap;
+      position: relative; z-index: 99;
+    }
+    .ql {
+      padding: 6px 14px; border-radius: 6px;
+      font-size: 12px; font-weight: 700;
+      text-decoration: none; color: var(--muted);
+      border: 1px solid transparent;
+      transition: all 0.2s; white-space: nowrap;
+      letter-spacing: 0.02em;
+    }
+    .ql:hover { color: var(--gold); border-color: var(--border); background: var(--bg3); }
+    .ql.ql-highlight { color: var(--gold); border-color: rgba(245,200,66,0.2); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 92vh;
+      display: grid;
+      grid-template-columns: 1fr 520px 1fr;
+      grid-template-rows: auto 1fr;
+      align-items: center;
+      overflow: hidden;
+      padding: 60px 40px;
+    }
+
+    /* En-tête plein largeur : titre + ticker + sous-titre */
+    .hero-head {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      text-align: center;
+      padding-bottom: 24px;
+    }
+
+    /* Titre au-dessus, pleine largeur */
+    .hero-title-top {
+      text-align: center;
+      font-family: var(--display);
+      font-size: clamp(3rem, 7vw, 6.5rem);
+      line-height: 1;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      white-space: nowrap;
+      animation: fadeUp 0.8s ease 0.1s both;
+    }
+    .hero-title-top .gold { color: var(--gold); }
+    .hero-title-top .dim  { color: var(--muted); font-size: 0.6em; letter-spacing: 0.08em; }
+
+    .mht-ticker {
+      text-align: center;
+      font-size: 6rem;
+      letter-spacing: 0.1em;
+      color: var(--dim-color, #f87c00);
+      margin-top: 0.4rem;
+      animation: fadePulse 9s ease-in-out infinite;
+    }
+
+    /* Sous-titre du hero : plus grand et plus clair, sur toute la largeur */
+    .hero-head .hero-sub {
+      max-width: 720px;
+      margin: 16px auto 0;
+      white-space: normal;
+      font-size: 19px;
+      color: #d7deea;
+      line-height: 1.6;
+    }
+    .hero-head .hero-sub strong { color: var(--text); }
+
+    /* Radial glow */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 50% 50%, rgba(245,200,66,0.05) 0%, transparent 70%),
+        radial-gradient(ellipse 30% 40% at 15% 60%, rgba(232,80,26,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse 30% 40% at 85% 40%, rgba(0,229,150,0.03) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Gold horizontal line */
+    .hero-line {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0.3;
+    }
+
+    /* Video columns */
+    .hero-video-left,
+    .hero-video-right {
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      grid-row: 2;
+    }
+    .hero-video-left { justify-content: flex-end; padding-right: 28px; }
+    .hero-video-right { justify-content: flex-start; padding-left: 48px; }
+
+    .video-wrap {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .video-wrap::before {
+      content: '';
+      position: absolute; inset: -1px;
+      border-radius: 21px;
+      background: linear-gradient(135deg, rgba(245,200,66,0.4), transparent 50%, rgba(245,200,66,0.15));
+      z-index: 1;
+      pointer-events: none;
+    }
+    .video-wrap video {
+      display: block;
+      border-radius: 20px;
+      position: relative; z-index: 0;
+    }
+    /* Logo de gauche : même taille que la vidéo de droite */
+    .hero-logo-img { width: 220px; height: 220px; object-fit: contain; }
+    .hero-video-right .video-wrap video,
+    .hero-video-right .video-wrap img { width: 220px; height: 220px; object-fit: contain; }
+
+    /* Video glow */
+    .video-glow {
+      position: absolute;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(245,200,66,0.12) 0%, transparent 70%);
+      pointer-events: none; z-index: -1;
+    }
+    /* Center content */
+    .hero-center {
+      text-align: center;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 28px;
+      position: relative; z-index: 5;
+      grid-row: 2;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px;
+      border: 1px solid rgba(245,200,66,0.3);
+      border-radius: 100px;
+      background: rgba(245,200,66,0.05);
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gold);
+      animation: fadeDown 0.8s ease both;
+    }
+    .hero-eyebrow-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold);
+      animation: blink 2s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.2} }
+    @keyframes fadePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.65; } }
+
+    .hero-title {
+      font-family: var(--display);
+      font-size: clamp(1.8rem, 4.2vw, 3.8rem);
+      line-height: 1;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      white-space: nowrap;
+      animation: fadeUp 0.8s ease 0.1s both;
+    }
+    .hero-title .gold { color: var(--gold); }
+    .hero-title .dim { color: var(--muted); font-size: 0.6em; letter-spacing: 0.08em; }
+
+    .hero-sub {
+      font-size: 15px; color: var(--muted);
+      line-height: 1.7; max-width: 380px;
+      animation: fadeUp 0.8s ease 0.2s both;
+    }
+    .hero-sub strong { color: var(--text); }
+
+    /* MCap progress */
+    .hero-mcap {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 24px;
+      animation: fadeUp 0.8s ease 0.3s both;
+    }
+    .mcap-label {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 8px;
+      display: flex; justify-content: space-between;
+    }
+    .mcap-value { color: var(--gold); }
+    /* ── Barre de progression "ancienne version" : verte, rayée, animée, texte au centre ── */
+    .progress-track {
+      height: 30px;
+      background: #0f172a;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 50px;
+      overflow: hidden;
+      display: flex;
+      margin: 6px 0 10px;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      overflow: hidden;
+      background-color: #16a34a;
+      border-radius: 50px;
+      transition: width 1s ease-in-out;
+      box-shadow: 0 0 14px rgba(22,163,74,0.55);
+    }
+    .progress-fill-striped {
+      background-image: linear-gradient(45deg,
+        rgba(255,255,255,.15) 25%, transparent 25%,
+        transparent 50%, rgba(255,255,255,.15) 50%,
+        rgba(255,255,255,.15) 75%, transparent 75%, transparent);
+      background-size: 1rem 1rem;
+    }
+    .progress-fill-animated {
+      animation: progress-stripes 1s linear infinite;
+    }
+    @keyframes progress-stripes {
+      from { background-position: 1rem 0; }
+      to   { background-position: 0 0; }
+    }
+    .mcap-sub {
+      font-family: var(--mono); font-size: 10px;
+      color: var(--muted); text-align: right;
+    }
+    .mcap-sub span { color: var(--success); }
+
+    .hero-ctas {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp 0.8s ease 0.4s both;
+    }
+    .cta-main {
+      padding: 14px 28px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      color: #07090e; font-weight: 800; font-size: 14px;
+      text-decoration: none; letter-spacing: 0.02em;
+      box-shadow: 0 8px 28px rgba(245,200,66,0.3);
+      transition: all 0.2s;
+    }
+    .cta-main:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(245,200,66,0.45); }
+    .cta-secondary {
+      padding: 14px 28px; border-radius: 12px;
+      background: transparent;
+      border: 1px solid rgba(245,200,66,0.25);
+      color: var(--gold); font-weight: 700; font-size: 14px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .cta-secondary:hover { background: rgba(245,200,66,0.06); border-color: var(--gold); }
+
+    /* Key stats */
+    .hero-stats {
+      display: flex; gap: 24px;
+      animation: fadeUp 0.8s ease 0.5s both;
+    }
+    .stat { text-align: center; }
+    .stat-val {
+      font-family: var(--mono); font-size: 18px; font-weight: 700;
+      color: var(--gold);
+    }
+    .stat-label {
+      font-size: 10px; color: var(--muted);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .stat-div { width: 1px; background: var(--border); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SECTIONS COMMON ── */
+    section { padding: 100px 40px; position: relative; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 20px;
+    }
+    .section-tag::before {
+      content: '';
+      width: 24px; height: 1px;
+      background: var(--gold);
+    }
+    .section-title {
+      font-family: var(--display);
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      letter-spacing: 0.02em;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 15px; color: var(--muted);
+      line-height: 1.7; max-width: 520px;
+      margin-bottom: 56px;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .how-card {
+      background: var(--bg2);
+      padding: 36px 28px;
+      position: relative;
+      transition: background 0.2s;
+    }
+    .how-card:hover { background: var(--bg3); }
+    .how-num {
+      font-family: var(--display);
+      font-size: 5rem; line-height: 1;
+      color: rgba(245,200,66,0.07);
+      position: absolute; top: 16px; right: 20px;
+      pointer-events: none;
+    }
+    .how-icon {
+      width: 48px; height: 48px;
+      background: linear-gradient(135deg, rgba(245,200,66,0.15), rgba(245,200,66,0.05));
+      border: 1px solid rgba(245,200,66,0.2);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; margin-bottom: 20px;
+    }
+    .how-step {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.1em; color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .how-title {
+      font-family: var(--body); font-size: 17px; font-weight: 800;
+      margin-bottom: 12px; color: var(--text);
+    }
+    .how-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── TOKENOMICS ── */
+    .tokenomics-section { background: var(--bg2); }
+    .tokenomics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px; align-items: start;
+    }
+
+    /* Donut chart */
+    .donut-wrap {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 28px;
+    }
+    .donut-container {
+      position: relative; width: 280px; height: 280px;
+    }
+    .donut-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .donut-center {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 4px;
+    }
+    .donut-center-img {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(245,200,66,0.3);
+      box-shadow: 0 0 20px rgba(245,200,66,0.2);
+    }
+    .donut-legend {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; width: 100%;
+    }
+    .legend-item {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .legend-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .legend-label { font-size: 13px; color: var(--muted); }
+    .legend-pct { font-family: var(--mono); font-size: 12px; color: var(--text); font-weight: 700; }
+
+    /* Tax info */
+    .tax-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; margin-top: 24px;
+    }
+    .tax-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+    .tax-type {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 4px;
+    }
+    .tax-pct {
+      font-family: var(--display); font-size: 2.5rem;
+      color: var(--gold); line-height: 1;
+    }
+    .tax-breakdown {
+      font-size: 11px; color: var(--muted);
+      line-height: 1.7; margin-top: 8px;
+    }
+
+    /* Right side stats */
+    .tokenomics-right { display: flex; flex-direction: column; gap: 16px; }
+    .tstat-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      transition: border-color 0.2s;
+    }
+    .tstat-card:hover { border-color: rgba(245,200,66,0.25); }
+    .tstat-label { font-size: 13px; color: var(--muted); }
+    .tstat-val {
+      font-family: var(--mono); font-size: 15px;
+      font-weight: 700; color: var(--gold);
+    }
+    .tstat-val.green { color: var(--success); }
+
+    /* LP Tranches */
+    .tranches-title {
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 12px;
+    }
+    .tranche-row {
+      display: flex; align-items: center;
+      gap: 12px; padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .tranche-row:last-child { border-bottom: none; }
+    .tranche-lock { color: var(--gold); font-size: 14px; }
+    .tranche-info { flex: 1; }
+    .tranche-name { font-size: 13px; font-weight: 700; color: var(--text); }
+    .tranche-mcap { font-size: 11px; color: var(--muted); }
+    .tranche-amount { font-family: var(--mono); font-size: 12px; color: var(--gold); }
+
+    /* ── INTERACTIVE TOOLS ── */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+    }
+
+    .tool-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      position: relative; overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .tool-card:hover { border-color: rgba(245,200,66,0.25); transform: translateY(-2px); }
+    .tool-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .tool-card:hover::before { opacity: 1; }
+    .tool-title {
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .tool-live {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 6px var(--success);
+      animation: blink 2s infinite;
+    }
+
+    /* Buy Simulator */
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 6px;
+    }
+    .field input {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-family: var(--mono); font-size: 14px;
+      color: var(--text); outline: none;
+      transition: border-color 0.2s;
+    }
+    .field input:focus { border-color: rgba(245,200,66,0.4); }
+    .field input::placeholder { color: var(--muted); }
+    .sim-result {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 16px;
+      font-family: var(--mono); font-size: 13px;
+      color: var(--muted); min-height: 44px;
+      display: flex; align-items: center;
+    }
+    .sim-result strong { color: var(--gold); }
+
+    /* Wallet panel */
+    .wallet-status {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px;
+      text-align: center; margin-bottom: 16px;
+    }
+    .wallet-addr { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    .wallet-bal { font-family: var(--mono); font-size: 22px; font-weight: 700; color: var(--gold); }
+    .wallet-usd { font-size: 12px; color: var(--muted); }
+    .connect-btn {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, var(--gold), var(--gold2));
+      border: none; border-radius: 12px;
+      font-family: var(--body); font-size: 14px; font-weight: 800;
+      color: #07090e; cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 16px rgba(245,200,66,0.25);
+    }
+    .connect-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(245,200,66,0.4); }
+
+    /* Rewards info */
+    .reward-info {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .reward-info-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .reward-info-val { font-family: var(--mono); font-size: 16px; color: var(--gold); font-weight: 700; margin-top: 4px; }
+    .reward-info-val.pending { color: #888; font-size: 13px; }
+
+    /* ── ROADMAP ── */
+    .roadmap-section { background: var(--bg2); }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      position: relative;
+    }
+    .roadmap-grid::before {
+      content: '';
+      position: absolute;
+      left: 50%; top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(180deg, transparent, var(--gold), transparent);
+      opacity: 0.2;
+    }
+
+    .phase-card {
+      padding: 36px; position: relative;
+    }
+    .phase-card:nth-child(odd) { padding-right: 60px; }
+    .phase-card:nth-child(even) { padding-left: 60px; }
+
+    .phase-dot {
+      position: absolute;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 12px rgba(245,200,66,0.5);
+      top: 44px;
+    }
+    .phase-card:nth-child(odd) .phase-dot { right: -6px; }
+    .phase-card:nth-child(even) .phase-dot { left: -6px; }
+    .phase-dot.done { background: var(--success); box-shadow: 0 0 12px rgba(0,224,150,0.5); }
+    .phase-dot.active { background: var(--gold); animation: pulseDot 2s infinite; }
+    .phase-dot.future { background: var(--muted); box-shadow: none; }
+
+    @keyframes pulseDot {
+      0%,100%{box-shadow: 0 0 12px rgba(245,200,66,0.5)}
+      50%{box-shadow: 0 0 24px rgba(245,200,66,0.8), 0 0 40px rgba(245,200,66,0.3)}
+    }
+
+    .phase-label {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 8px;
+    }
+    .phase-title {
+      font-family: var(--display); font-size: 1.8rem;
+      color: var(--text); margin-bottom: 16px;
+    }
+    .phase-items { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .phase-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 13px; color: var(--muted); line-height: 1.5;
+    }
+    .phase-item .icon { flex-shrink: 0; margin-top: 1px; }
+    .phase-item.done { color: var(--text); }
+    .phase-item.done .icon { color: var(--success); }
+    .phase-item.pending .icon { color: var(--gold); }
+    .phase-item.future .icon { color: var(--muted); }
+
+    /* ── DOCUMENT CENTER ── */
+    .docs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .doc-card {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 32px;
+      text-decoration: none; color: var(--text);
+      transition: all 0.2s; display: block;
+      position: relative; overflow: hidden;
+    }
+    .doc-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .doc-card:hover { border-color: rgba(245,200,66,0.25); transform: translateY(-3px); }
+    .doc-card:hover::before { opacity: 1; }
+    .doc-icon { font-size: 2.5rem; margin-bottom: 16px; display: block; }
+    .doc-title {
+      font-family: var(--display); font-size: 1.6rem;
+      margin-bottom: 10px; color: var(--text);
+    }
+    .doc-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .doc-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 20px; font-size: 13px; font-weight: 700;
+      color: var(--gold);
+    }
+
+    /* Exec summary */
+    .exec-box {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px;
+    }
+    .exec-title {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 20px;
+    }
+    .exec-items { display: flex; flex-direction: column; gap: 12px; }
+    .exec-item {
+      display: flex; gap: 12px; align-items: flex-start;
+      font-size: 13px; color: var(--muted); line-height: 1.5;
+    }
+    .exec-item i { color: var(--success); flex-shrink: 0; margin-top: 2px; }
+    .exec-item strong { color: var(--text); }
+
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; gap: 1px; }
+    .faq-item {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .faq-item:hover { border-color: rgba(245,200,66,0.2); }
+    .faq-q {
+      padding: 22px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; gap: 16px;
+      font-size: 15px; font-weight: 700; color: var(--text);
+      list-style: none;
+    }
+    .faq-q::-webkit-details-marker { display: none; }
+    .faq-arrow {
+      width: 28px; height: 28px; flex-shrink: 0;
+      border: 1px solid var(--border); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gold); font-size: 12px;
+      transition: transform 0.3s, background 0.2s;
+    }
+    details[open] .faq-arrow { transform: rotate(45deg); background: rgba(245,200,66,0.1); }
+    .faq-a {
+      padding: 0 28px 22px;
+      font-size: 14px; color: var(--muted); line-height: 1.7;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 48px 40px 32px;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+    }
+    .footer-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 32px; flex-wrap: wrap; gap: 24px;
+    }
+    .footer-logo {
+      font-family: var(--display); font-size: 28px;
+      color: var(--text); letter-spacing: 0.04em;
+    }
+    .footer-logo span { color: var(--gold); }
+    .footer-socials { display: flex; gap: 12px; }
+    .social-btn {
+      width: 40px; height: 40px;
+      border: 1px solid var(--border); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); font-size: 16px; text-decoration: none;
+      transition: all 0.2s;
+    }
+    .social-btn:hover { color: var(--gold); border-color: rgba(245,200,66,0.3); background: rgba(245,200,66,0.05); }
+    .footer-bottom {
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 12px; color: var(--muted); flex-wrap: wrap; gap: 12px;
+    }
+    .footer-contract {
+      font-family: var(--mono); font-size: 11px;
+      color: var(--muted);
+    }
+    .footer-contract a { color: var(--gold); text-decoration: none; }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; grid-template-rows: auto auto auto; padding: 40px 20px; min-height: auto; gap: 40px; }
+      .hero-video-left, .hero-video-right { display: none; }
+      .hero-title-top { white-space: normal; }
+      .how-grid { grid-template-columns: 1fr 1fr; }
+      .tokenomics-grid, .tools-grid, .docs-grid { grid-template-columns: 1fr; }
+      .roadmap-grid { grid-template-columns: 1fr; }
+      .roadmap-grid::before { display: none; }
+      .phase-card:nth-child(odd), .phase-card:nth-child(even) { padding: 24px; }
+      .phase-dot { display: none; }
+      section { padding: 60px 20px; }
+    }
+    @media (max-width: 600px) {
+      .how-grid { grid-template-columns: 1fr; }
+      .trust-bar { display: none; }
+      .quick-links { gap: 4px; }
+      .ql { font-size: 10px; padding: 5px 10px; }
+    }
+
+        /* ═══════════════════════════════════════════════
+           WALLET MODAL
+        ═══════════════════════════════════════════════ */
+        .wallet-modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+            z-index: 9999; align-items: center; justify-content: center;
+        }
+        .wallet-modal-overlay.active { display: flex; }
+        .wallet-modal {
+            background: #1e293b; border: 1px solid rgba(59,130,246,0.3);
+            border-radius: 24px; padding: 32px; width: 100%; max-width: 420px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 40px rgba(59,130,246,0.1);
+            animation: modalSlideIn 0.25s ease;
+        }
+        @keyframes modalSlideIn {
+            from { opacity:0; transform: translateY(20px) scale(0.97); }
+            to   { opacity:1; transform: translateY(0) scale(1); }
+        }
+        .wallet-modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+        .wallet-modal-title { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; font-weight:700; color:#fff; letter-spacing:2px; }
+        .wallet-modal-close { background:rgba(255,255,255,0.08); border:none; color:#94a3b8; width:32px; height:32px; border-radius:50%; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s; }
+        .wallet-modal-close:hover { background:rgba(255,255,255,0.15); color:#fff; }
+        .wallet-modal-subtitle { font-size:0.8rem; color:#64748b; margin-bottom:24px; }
+        .wallet-option { display:flex; align-items:center; gap:16px; padding:16px 20px; border-radius:16px; border:1px solid rgba(255,255,255,0.07); background:rgba(255,255,255,0.03); cursor:pointer; transition:all 0.2s; margin-bottom:10px; width:100%; text-align:left; color:white; }
+        .wallet-option:hover { background:rgba(245,200,66,0.08); border-color:rgba(245,200,66,0.3); transform:translateX(4px); }
+        .wallet-option-icon { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+        .wallet-option-icon img { width:40px; height:40px; border-radius:10px; object-fit:contain; }
+        .wallet-option-info { flex:1; }
+        .wallet-option-name { font-weight:700; font-size:0.95rem; color:#fff; display:block; }
+        .wallet-option-desc { font-size:0.75rem; color:#64748b; }
+        .wallet-option-badge { font-size:0.65rem; padding:3px 8px; border-radius:20px; font-weight:600; letter-spacing:0.5px; }
+        .badge-detected { background:rgba(34,197,94,0.15); color:#22c55e; border:1px solid rgba(34,197,94,0.3); }
+        .badge-qr { background:rgba(139,92,246,0.15); color:#a78bfa; border:1px solid rgba(139,92,246,0.3); }
+        .badge-popular { background:rgba(245,200,66,0.15); color:#f5c842; border:1px solid rgba(245,200,66,0.3); }
+        .wallet-divider { text-align:center; color:#334155; font-size:0.75rem; margin:16px 0; position:relative; }
+        .wallet-divider::before, .wallet-divider::after { content:''; position:absolute; top:50%; width:42%; height:1px; background:rgba(255,255,255,0.07); }
+        .wallet-divider::before { left:0; } .wallet-divider::after { right:0; }
+        .qr-panel { display:none; text-align:center; padding:10px 0; }
+        .qr-panel.active { display:block; }
+        .qr-placeholder { width:200px; height:200px; margin:0 auto 16px; background:white; border-radius:12px; display:flex; align-items:center; justify-content:center; padding:10px; }
+        .qr-back { background:none; border:none; color:#64748b; font-size:0.8rem; cursor:pointer; margin-top:8px; }
+        .qr-back:hover { color:#fff; }
+        .wallet-loading { display:none; text-align:center; padding:30px 0; }
+        .wallet-loading.active { display:block; }
+        .spinner-ring { width:50px; height:50px; border:3px solid rgba(245,200,66,0.2); border-top-color:#f5c842; border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 16px; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        /* ── Music Player ── */
+        #musicPlayer { position:fixed; bottom:25px; right:25px; z-index:9999; display:flex; flex-direction:column; align-items:flex-end; gap:10px; }
+        #musicToggle { width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,#f5c842,#c8971a); border:none; color:#07090e; font-size:1.3rem; cursor:pointer; box-shadow:0 4px 20px rgba(245,200,66,0.4); transition:all 0.3s; display:flex; align-items:center; justify-content:center; }
+        #musicToggle:hover { transform:scale(1.1); }
+        #musicToggle.playing { animation:pulse-music 2s infinite; }
+        @keyframes pulse-music { 0%,100%{box-shadow:0 4px 20px rgba(245,200,66,0.4);}50%{box-shadow:0 4px 30px rgba(245,200,66,0.8);} }
+        #musicWidget { display:none; border-radius:16px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,0.5); border:1px solid rgba(245,200,66,0.2); background:#1a1a2e; min-width:280px; }
+        #musicWidget.open { display:block; }
+        #musicLabel { background:linear-gradient(135deg,#1a1a2e,#0f0f1a); color:#f5c842; font-size:11px; font-weight:700; letter-spacing:0.08em; padding:10px 14px; border-bottom:1px solid rgba(245,200,66,0.15); font-family:'Space Mono',monospace; }
+        #musicLabel { background:linear-gradient(45deg,#1e293b,#0f172a); padding:6px 12px; font-size:0.7rem; color:#94a3b8; text-align:center; border-bottom:1px solid rgba(255,255,255,0.05); font-family:'Space Mono',monospace; letter-spacing:1px; }
+
+        /* Cooldown badges */
+        .info-badge { display:inline-block; font-size:0.72rem; padding:4px 10px; border-radius:20px; margin-top:6px; }
+        .badge-cooldown { background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.3); }
+        .badge-ready { background:rgba(34,197,94,0.12); color:#4ade80; border:1px solid rgba(34,197,94,0.3); }
+
+  </style>
+  <link rel="stylesheet" href="css/legal.css">
+</head>
+<body>
+
+  <!-- TRUST BAR -->
+  <div class="trust-bar">
+    <div class="trust-item">
+      <span>SOLIDITYSCAN</span>
+      <span class="badge badge-gold">93.13/100</span>
+    </div>
+    <span class="trust-divider">|</span>
+    <div class="trust-item">
+      <span class="badge badge-green">✓ KYC VERIFIED</span>
+    </div>
+    <span class="trust-divider">|</span>
+    <div class="trust-item">
+      <span class="badge badge-green">✓ renounceOwnership()</span>
+    </div>
+    <span class="trust-divider">|</span>
+    <div class="trust-item">
+      <span>CONTRACT:</span>
+      <a href="https://robinhoodchain.blockscout.com/token/0x0000000000000000000000000000000000dEaD" target="_blank">⚠️ ADRESSE À VENIR</a>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="main-nav">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-gem"><img src="piece_rmht.png" alt="RMHT" style="width:26px;height:26px;border-radius:6px;object-fit:contain;"></div>
+      RMHT · <span>ROBINHOOD MILESTONE HODL</span>
+    </a>
+    <div class="nav-center">
+      🔥 <strong>TRUST THE PROCESS</strong> &nbsp;🤝&nbsp; EARN THE GROWTH 🔥
+    </div>
+    <div class="nav-right">
+      <a href="https://app.uniswap.org/swap?outputCurrency=0x0000000000000000000000000000000000dEaD&chain=robinhood" target="_blank" class="nav-btn nav-btn-ghost">🏹 Buy $RMHT</a>
+      <button class="nav-btn nav-btn-primary" id="connectWalletBtn">⚡ Connect Wallet</button>
+    </div>
+  </nav>
+
+  <!-- ANCHOR NAV -->
+  <div class="anchor-nav">
+    <a href="#tools" class="an">📊 Dashboard</a>
+    <a href="#tokenomics" class="an">🪙 Tokenomics</a>
+    <a href="#how" class="an">⚙️ How It Works</a>
+    <a href="#roadmap" class="an">🗺️ Roadmap</a>
+  </div>
+
+  <!-- QUICK LINKS -->
+  <div class="quick-links">
+    <a href="https://app.uniswap.org/swap?outputCurrency=0x0000000000000000000000000000000000dEaD&chain=robinhood" target="_blank" class="ql ql-highlight">🦄 BUY ON UNISWAP</a>
+    <!-- ⚠️ Dexscreener/Coinbrain/Bubblemaps pointaient vers l'adresse BSC de $MHT — retirés en attendant l'adresse RMHT réelle sur Robinhood Chain -->
+    <a href="#" class="ql" style="opacity:0.5;pointer-events:none;">📊 DEXSCREENER (⚠️ post-launch)</a>
+    <a href="#" class="ql" style="opacity:0.5;pointer-events:none;">🧠 COINBRAIN (⚠️ post-launch)</a>
+    <a href="#" class="ql" style="opacity:0.5;pointer-events:none;">🫧 BUBBLEMAPS (⚠️ post-launch)</a>
+    <a href="#" class="ql" style="opacity:0.5;pointer-events:none;">🛡️ SECURITY SCAN (⚠️ lien public à ajouter)</a>
+    <!-- ⚠️ Les liens pages/* ci-dessous pointent vers le dossier du site $MHT — à confirmer :
+         RMHT partage-t-il ce dossier "pages/" ou a-t-il besoin de ses propres pages dédiées ? -->
+    <a href="pages/how-it-works-en.html" class="ql">🇬🇧 HOW IT WORKS</a>
+    <a href="pages/how-it-works-fr.html" class="ql">🇫🇷 COMMENT ÇA MARCHE</a>
+    <a href="pages/roadmap.html" class="ql">🗺️ ROADMAP</a>
+    <a href="pages/mht_architecture.html" class="ql">🏗️ ARCHITECTURE</a>
+    <a href="pages/why-hold-mht.html" class="ql">📊 WHY HOLD</a>
+    <a href="pages/contact.html" class="ql">📩 CONTACT</a>
+    <!-- ⚠️ Pas encore de whitepaper $RMHT dédié — ne pas relier les PDF $MHT ici -->
+    <span class="ql" style="opacity:0.5;">📄 WHITEPAPER EN (soon)</span>
+    <span class="ql" style="opacity:0.5;">📄 WHITEPAPER FR (soon)</span>
+    <a href="https://t.me/Community_Milestone_hodl" target="_blank" class="ql">💬 TELEGRAM</a>
+  </div>
+
+  <!-- LPP -->
+  <div class="quick-links">
+    <a href="pages/liquidity-pioneer-en.html" class="ql ql-highlight">🥇 LIQUIDITY PIONEER PROGRAM</a>
+  </div>
+  
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-line"></div>
+
+    <!-- En-tête pleine largeur : titre + ticker + sous-titre -->
+    <div class="hero-head">
+      <h1 class="hero-title-top">🔥ROBINHOOD MILESTONE <span class="gold">HODL</span> TOKEN🔥</h1>
+      <div class="mht-ticker">$RMHT</div>
+      <p class="hero-sub">
+        The first token where <strong>Market Cap growth = automatic rewards</strong>.<br>
+        Every +$500K MCap → Chainlink triggers 1.5% vault release to HODLers. Forever.
+      </p>
+    </div>
+
+    <div class="hero-video-left">
+      <div style="position:relative">
+        <div class="video-glow"></div>
+        <img class="hero-logo-img" src="piece_rmht.png" alt="RMHT Logo">
+      </div>
+    </div>
+
+    <div class="hero-center">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-dot"></div>
+        ROBINHOOD Chain · Proof-of-Performance Token
+      </div>
+
+      <div class="hero-mcap" id="heroMcap">
+        <div class="mcap-label">
+          <span>MILESTONE #1 PROGRESSION</span>
+          <span class="mcap-value" id="mcapDisplay">—</span>
+        </div>
+        <div class="progress-track">
+          <div id="milestoneBar" class="progress-fill progress-fill-striped progress-fill-animated">$0 / $500,000</div>
+        </div>
+        <div class="mcap-sub">Target: $500,000 MCap &nbsp;·&nbsp; <span>Next Vault Release 🔥</span></div>
+      </div>
+
+      <div class="hero-ctas">
+        <a href="https://app.uniswap.org/swap?outputCurrency=0x0000000000000000000000000000000000dEaD&chain=robinhood" target="_blank" class="cta-main">🏹 Buy $RMHT Now</a>
+        <a href="pages/how-it-works-en.html" class="cta-secondary">How it works →</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-val" id="statMcap">—</div>
+          <div class="stat-label">Market Cap</div>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <div class="stat-val" id="statHolders">—</div>
+          <div class="stat-label">Holders</div>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <div class="stat-val">93.13</div>
+          <div class="stat-label">Security Scan</div>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <div class="stat-val">0%</div>
+          <div class="stat-label">Owner</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-video-right">
+      <div style="position:relative">
+        <div class="video-glow"></div>
+        <div class="video-wrap">
+          <img src="piece_rmht.png" alt="RMHT Coin" style="width:220px;height:220px;object-fit:contain;display:block;border-radius:20px;">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOKENOMICS -->
+  <section id="tokenomics" class="tokenomics-section">
+    <div class="section-inner">
+      <div class="section-tag reveal">On-Chain</div>
+      <h2 class="section-title reveal">TOKENOMICS</h2>
+      <p class="section-sub reveal">Designed to reward patience. Every variable is immutable.</p>
+
+      <div class="tokenomics-grid reveal">
+        <div class="donut-wrap">
+          <div class="donut-container">
+            <svg class="donut-svg" viewBox="0 0 100 100">
+              <!-- ⚠️ Pourcentages airdrop/marché à ajuster une fois le snapshot final figé (6,5% vs 6,57% vs 6,6%) -->
+              <!-- Smart-Vault 50% -->
+              <circle cx="50" cy="50" r="38" fill="none" stroke="#f5c842" stroke-width="12"
+                stroke-dasharray="119.4 238.8" stroke-dashoffset="0" opacity="0.9"/>
+              <!-- Airdrop ~6.5% -->
+              <circle cx="50" cy="50" r="38" fill="none" stroke="#00e096" stroke-width="12"
+                stroke-dasharray="15.52 223.24" stroke-dashoffset="-119.4"/>
+              <!-- Marché ~43.5% -->
+              <circle cx="50" cy="50" r="38" fill="none" stroke="#5a6478" stroke-width="12"
+                stroke-dasharray="103.86 134.9" stroke-dashoffset="-134.92" opacity="0.7"/>
+            </svg>
+            <div class="donut-center">
+              <img src="piece_rmht.png" alt="RMHT" style="width:168px;height:168px;object-fit:contain;border-radius:50%;border:2px solid rgba(245,200,66,0.35);box-shadow:0 0 28px rgba(245,200,66,0.25);background:#0c0f18;">
+            </div>
+          </div>
+          <div class="donut-legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#f5c842"></div>
+              <div>
+                <div class="legend-label">Smart-Vault</div>
+                <div class="legend-pct">50%</div>
+              </div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#00e096"></div>
+              <div>
+                <div class="legend-label">Airdrop $MHT-BSC holders</div>
+                <div class="legend-pct">~6.5%</div>
+              </div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#5a6478"></div>
+              <div>
+                <div class="legend-label">Marché (LP)</div>
+                <div class="legend-pct">~43.5%</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tax-grid" style="width:100%">
+            <div class="tax-card" style="grid-column: 1 / -1;">
+              <div class="tax-type">Buy / Sell Tax</div>
+              <div class="tax-pct">0%</div>
+              <div class="tax-breakdown">No token tax — LP fees captured via a dedicated, non-withdrawable custodian contract on the Uniswap v3 position</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tokenomics-right">
+          <div class="tstat-card">
+            <span class="tstat-label">Total Supply</span>
+            <span class="tstat-val">1,000,000,000 RMHT</span>
+          </div>
+          <div class="tstat-card">
+            <span class="tstat-label">Smart-Vault Balance</span>
+            <span class="tstat-val" id="vaultBal"><span id="vault-balance-tok">— RMHT</span></span>
+          </div>
+          <div class="tstat-card">
+            <span class="tstat-label">Eligible Supply (Rewards)</span>
+            <span class="tstat-val green" id="eligibleSupply"><span id="eligible-supply">— RMHT</span></span>
+          </div>
+          <div class="tstat-card">
+            <span class="tstat-label">Owner Holdings</span>
+            <span class="tstat-val green">0.00% — RENOUNCED ✓</span>
+          </div>
+          <div class="tstat-card">
+            <span class="tstat-label">Security Scan</span>
+            <span class="tstat-val">SolidityScan 93.13/100</span>
+          </div>
+
+          <div style="margin-top:8px">
+            <div class="tranches-title">LP CUSTODIAN — FEES FOR HOLDERS</div>
+            <div class="tranche-row">
+              <span class="tranche-lock">🔒</span>
+              <div class="tranche-info">
+                <div class="tranche-name">Position LP</div>
+                <div class="tranche-mcap">Single-sided, verrouillée à vie</div>
+              </div>
+              <span class="tranche-amount">Non-retirable</span>
+            </div>
+            <div class="tranche-row">
+              <span class="tranche-lock">🔓</span>
+              <div class="tranche-info">
+                <div class="tranche-name">Fees de trading</div>
+                <div class="tranche-mcap">1% par swap, collect() permissionless</div>
+              </div>
+              <span class="tranche-amount">⚠️ destinataire à préciser</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE TOOLS -->
+  <section id="tools">
+    <div class="section-inner">
+      <div class="section-tag reveal">Live Data</div>
+      <h2 class="section-title reveal">YOUR DASHBOARD</h2>
+      <p class="section-sub reveal">Connect your wallet to track rewards. Simulate your investment. All live.</p>
+
+      <div class="tools-grid reveal">
+        <!-- Buy Simulator -->
+     <div class="tool-card">
+          <div class="tool-title">
+            <div class="tool-live"></div>
+            BUY SIMULATOR
+          </div>
+          <div class="field">
+            <label>Amount to invest ($)</label>
+            <input type="number" id="buyUSD" placeholder="e.g. 200" oninput="calcBuy()" />
+          </div>
+          <div class="field">
+            <label>Current Price ($) <span style="color:var(--success);font-size:10px">● LIVE</span></label>
+            <input type="number" id="buyCurrentPrice" step="0.000001" min="0" oninput="this.dataset.userModified='1'; calcBuy()" placeholder="Loading..." />
+          </div>
+          <div class="field">
+            <label>Target Price ($) <span style="color:var(--muted);font-size:10px">optional</span></label>
+            <input type="number" id="buyTargetPrice" placeholder="e.g. 0.001" step="0.00001" min="0" oninput="calcBuy()" />
+          </div>
+
+          <div id="buyResult" style="display:none; background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:16px; font-family:var(--mono); font-size:12px; color:var(--muted);">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+              <span>🏹 RMHT received (no tax)</span>
+              <span id="buyMHT" style="color:var(--gold); font-weight:700;">—</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+              <span>📊 Your share of supply</span>
+              <span id="buyShare" style="color:var(--text); font-weight:700;">—</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px; padding-top:10px; border-top:1px solid rgba(245,200,66,0.1);">
+              <span>🎁 Next milestone reward</span>
+              <span id="buyReward" style="color:var(--gold2); font-weight:700;">—</span>
+            </div>
+            <div id="buyTargetRow" style="display:flex; justify-content:space-between; margin-bottom:10px; display:none;">
+              <span>💰 Bag value at target</span>
+              <span id="buyBagValue" style="color:var(--success); font-weight:700;">—</span>
+            </div>
+            <div id="buyROIRow" style="display:flex; justify-content:space-between; display:none;">
+              <span>🚀 ROI</span>
+              <span id="buyROI" style="color:var(--gold); font-weight:700;">—</span>
+            </div>
+          </div>
+          <div id="buyPlaceholder" class="sim-result" style="justify-content:center;">Enter an amount to simulate 🚀</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-title">🎁 REWARD CALCULATOR</div>
+          <div class="field">
+            <label>Your RMHT Holdings</label>
+            <input type="number" id="calcMHT" placeholder="e.g. 1000000" min="0" oninput="calcReward()" />
+          </div>
+
+          <div style="margin-bottom:16px; background:var(--bg3); border:1px solid rgba(0,224,150,0.2); border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; font-family:var(--mono); font-size:12px;">
+             <span style="color:var(--muted); text-transform:uppercase; letter-spacing:0.06em;">💵 Current value</span>
+             <span id="calcCurrentValue" style="color:var(--success); font-weight:700;">—</span>
+          </div>
+
+          <div class="field">
+            <label>Milestone Target</label>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+              <button onclick="changeMilestone(-1)" style="width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--gold);cursor:pointer;font-size:16px;transition:0.2s;">−</button>
+              <div style="flex:1;text-align:center;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:8px;font-family:var(--mono);">
+                <div id="milestoneLabel" style="font-size:12px;color:var(--gold);font-weight:700;">Milestone #1</div>
+                <div id="milestoneMcap" style="font-size:10px;color:var(--muted);margin-top:2px;">$500,000 MCap</div>
+              </div>
+              <button onclick="changeMilestone(1)" style="width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);color:var(--gold);cursor:pointer;font-size:16px;transition:0.2s;">+</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Eligible Supply <span style="cursor:help;" title="Auto-filled from on-chain data">ⓘ</span></label>
+            <input type="number" id="calcCirc" min="1" style="color:var(--success); outline:none;" oninput="calcReward()" />
+          </div>
+
+          <div id="calcResult" style="display:none; background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:16px; font-family:var(--mono); font-size:12px; color:var(--muted);">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+              <span>📊 Your share of supply</span>
+              <span id="calcShare" style="color:var(--text); font-weight:700;">—</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+              <span>🎁 Reward (this milestone)</span>
+              <span id="calcMHTReward" style="color:var(--gold); font-weight:700;">—</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+              <span>🎁 Total rewards (1→N)</span>
+              <span id="calcMHTCumul" style="color:var(--gold2); font-weight:700;">—</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px; padding-top:10px; border-top:1px solid rgba(245,200,66,0.1);">
+              <span>💵 Reward value in USD</span>
+              <span id="calcUSDReward" style="color:var(--success); font-weight:700;">—</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:14px; padding:12px; background:rgba(245,200,66,0.1); border:1px solid rgba(245,200,66,0.3); border-radius:8px;">
+              <span style="color:var(--gold); font-weight:700;">💼 Total bag value</span>
+              <span id="calcTotalValue" style="color:var(--gold); font-weight:700; font-size:14px;">—</span>
+            </div>
+            <div style="margin-top:10px;text-align:center;">
+               <span id="calcTotalMHT" style="font-size:10px;color:var(--muted);">— RMHT total</span>
+            </div>
+          </div>
+          <div id="calcPlaceholder" class="sim-result" style="justify-content:center;">Enter your holdings to calculate 🚀</div>
+        </div>
+  
+        <!-- Wallet -->
+        <div class="tool-card">
+          <div class="tool-title">💼 YOUR ACCOUNT</div>
+          <div class="wallet-status">
+            <div class="wallet-addr" id="walletAddr">Not Connected</div>
+            <div class="wallet-bal" id="walletBal"><span id="mht-balance">0.00 RMHT</span></div>
+            <div class="wallet-usd" id="walletUsd">$0.00</div>
+          </div>
+          <button class="connect-btn" id="connectBtn" onclick="openModal ? openModal() : null">⚡ Connect Wallet</button>
+          <button id="claimBtn" class="connect-btn" style="margin-top:10px;background:linear-gradient(135deg,#f59e0b,#ef4444);display:none" disabled>
+            <i class="bi bi-gift me-2"></i>No Rewards Yet
+          </button>
+          <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+            <div class="reward-info">
+              <div class="reward-info-label">Current Market Cap</div>
+              <div class="reward-info-val" id="mcapInfo"><span id="market-cap">Loading...</span></div>
+            </div>
+            <div class="reward-info">
+              <div class="reward-info-label">Smart-Vault Balance</div>
+              <div class="reward-info-val pending" id="vaultInfo"><span id="vault-balance">— RMHT</span></div>
+            </div>
+            <div class="reward-info">
+              <div class="reward-info-label">Next Milestone</div>
+              <div class="reward-info-val">$500,000 MCap 🔥</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="section-inner">
+      <div class="section-tag reveal">Mechanism</div>
+      <h2 class="section-title reveal">HOW IT WORKS</h2>
+      <p class="section-sub reveal">Four steps. Zero human intervention. All on-chain.</p>
+
+      <div class="how-grid reveal">
+        <div class="how-card">
+          <div class="how-num">1</div>
+          <div class="how-icon">💎</div>
+          <div class="how-step">STEP 01</div>
+          <div class="how-title">Buy & Hold $RMHT</div>
+          <div class="how-desc">Purchase RMHT on Uniswap and hold in your wallet. Connect above to track your rewards in real-time.</div>
+        </div>
+        <div class="how-card">
+          <div class="how-num">2</div>
+          <div class="how-icon">📈</div>
+          <div class="how-step">STEP 02</div>
+          <div class="how-title">Market Cap Grows</div>
+          <div class="how-desc">Every +$500,000 in Market Cap triggers the Smart-Vault. 100% of every release goes to holders. Time concentrates value.</div>
+        </div>
+        <div class="how-card">
+          <div class="how-num">3</div>
+          <div class="how-icon">⚡</div>
+          <div class="how-step">STEP 03</div>
+          <div class="how-title">Chainlink Executes</div>
+          <div class="how-desc">1.5% of vault auto-released every $500K MCap, 100% to holders — tamper-proof, zero human action. The math runs itself.</div>
+        </div>
+        <div class="how-card">
+          <div class="how-num">4</div>
+          <div class="how-icon">🎁</div>
+          <div class="how-step">STEP 04</div>
+          <div class="how-title">Auto-Split & Rewards</div>
+          <div class="how-desc">100% to eligible holders pro-rata — no marketing split. Claim anytime. Forever.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section id="roadmap" class="roadmap-section">
+    <div class="section-inner">
+      <div class="section-tag reveal">Timeline</div>
+      <h2 class="section-title reveal">STRATEGIC ROADMAP</h2>
+      <p class="section-sub reveal">From genesis to global DeFi infrastructure.</p>
+
+      <div class="roadmap-grid reveal">
+        <div class="phase-card">
+          <div class="phase-dot done"></div>
+          <div class="phase-label">PHASE 1 ✅</div>
+          <div class="phase-title">Testnet & Security</div>
+          <ul class="phase-items">
+            <li class="phase-item done"><span class="icon">✅</span> RMHTLiquidityCustodian + NonfungiblePositionManager deployed on Robinhood Chain Testnet</li>
+            <li class="phase-item done"><span class="icon">✅</span> Foundry test suite — 56/56 passing (unit, fuzzing, invariants)</li>
+            <li class="phase-item done"><span class="icon">✅</span> SolidityScan security scan — 93.13/100</li>
+            <li class="phase-item done"><span class="icon">✅</span> No owner freeze/blacklist function — removed by design</li>
+          </ul>
+        </div>
+
+        <div class="phase-card">
+          <div class="phase-dot active"></div>
+          <div class="phase-label">PHASE 2 🔥 IN PROGRESS</div>
+          <div class="phase-title">Mainnet Deployment</div>
+          <ul class="phase-items">
+            <li class="phase-item pending"><span class="icon">🔥</span> $MHT-BSC holder snapshot refresh (after final redistribution)</li>
+            <li class="phase-item pending"><span class="icon">🔥</span> RMHT token + Uniswap v3 pool + Custodian — manual mainnet deploy</li>
+            <li class="phase-item pending"><span class="icon">🔥</span> Public contract + test suite publication for transparency</li>
+            <li class="phase-item pending"><span class="icon">🔥</span> Contract address & audit report — ⚠️ à publier une fois le déploiement finalisé</li>
+          </ul>
+        </div>
+
+        <div class="phase-card">
+          <div class="phase-dot future"></div>
+          <div class="phase-label">PHASE 3</div>
+          <div class="phase-title">Launch & First Milestone</div>
+          <ul class="phase-items">
+            <li class="phase-item future"><span class="icon">◦</span> 1-for-1 airdrop to $MHT-BSC holders (~6.5% supply)</li>
+            <li class="phase-item future"><span class="icon">◦</span> Public dashboard live — MCap, Vault, Claim</li>
+            <li class="phase-item future"><span class="icon">◦</span> First Smart-Vault milestone at $500K MCap</li>
+            <li class="phase-item future"><span class="icon">◦</span> CoinGecko / CMC listing — ⚠️ à initier post-lancement</li>
+          </ul>
+        </div>
+
+        <div class="phase-card">
+          <div class="phase-dot future"></div>
+          <div class="phase-label">PHASE 4</div>
+          <div class="phase-title">Growth</div>
+          <ul class="phase-items">
+            <li class="phase-item future"><span class="icon">◦</span> Recurring Milestone Reward Distribution — every +$500K MCap</li>
+            <li class="phase-item future"><span class="icon">◦</span> Community & visibility growth on Robinhood Chain</li>
+            <li class="phase-item future"><span class="icon">◦</span> Further exchange visibility — ⚠️ objectifs à définir</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOCUMENT CENTER -->
+  <section id="docs">
+    <div class="section-inner">
+      <div class="section-tag reveal">Research</div>
+      <h2 class="section-title reveal">DOCUMENT CENTER</h2>
+      <p class="section-sub reveal">Deep-dive into the mechanics. The math is all there.</p>
+
+      <div class="docs-grid reveal">
+        <div>
+          <!-- ⚠️ Pas encore de whitepaper dédié $RMHT — ne PAS relier les PDF $MHT ici, ils décrivent un autre contrat/tokenomics -->
+          <div class="doc-card" style="margin-bottom:16px;opacity:0.6;cursor:default;pointer-events:none;">
+            <span class="doc-icon">🇫🇷</span>
+            <div class="doc-title">WHITEPAPER FR</div>
+            <div class="doc-desc">Bientôt disponible — la mécanique complète du Smart-Vault RMHT, adaptée de $MHT pour Robinhood Chain.</div>
+            <div class="doc-cta">Coming soon</div>
+          </div>
+          <div class="doc-card" style="opacity:0.6;cursor:default;pointer-events:none;">
+            <span class="doc-icon">🇬🇧</span>
+            <div class="doc-title">WHITEPAPER EN</div>
+            <div class="doc-desc">Coming soon — full Smart-Vault mechanics for $RMHT on Robinhood Chain.</div>
+            <div class="doc-cta">Coming soon</div>
+          </div>
+        </div>
+
+        <div class="exec-box">
+          <div class="exec-title">Executive Summary</div>
+          <div class="exec-items">
+            <div class="exec-item">
+              <i class="bi bi-check-circle-fill"></i>
+              <span><strong>50% Supply</strong> locked in Smart-Vault — asymptotic 1.5% release per $500K MCap milestone, 100% to holders.</span>
+            </div>
+            <div class="exec-item">
+              <i class="bi bi-check-circle-fill"></i>
+              <span><strong>Chainlink</strong> MCap on (TOTAL_SUPPLY − burned) × price — tamper-proof.</span>
+            </div>
+            <div class="exec-item">
+              <i class="bi bi-check-circle-fill"></i>
+              <span><strong>100% to holders</strong> — per milestone, no marketing split.</span>
+            </div>
+            <div class="exec-item">
+              <i class="bi bi-check-circle-fill"></i>
+              <span><strong>Single-sided Uniswap v3 LP position</strong>, permanently locked via a dedicated non-withdrawable custodian contract — no add/remove liquidity function, no selfdestruct.</span>
+            </div>
+            <div class="exec-item">
+              <i class="bi bi-check-circle-fill"></i>
+              <span><strong>No owner freeze/blacklist function</strong> on holder tokens — removed by design.</span>
+            </div>
+            <div class="exec-item">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>⚠️ <em>Ownership renouncement at launch — à confirmer avant mise en prod.</em></span>
+            </div>
+          </div>
+          <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+            <!-- ⚠️ Pas de badge SolidProof pour RMHT (celui-ci appartenait à $MHT-BSC) — lien à ajouter dès que le rapport SolidityScan public est disponible -->
+            <a href="#" style="display:inline-flex;align-items:center;gap:10px;padding:12px 20px;border:1px solid rgba(245,200,66,0.3);border-radius:10px;text-decoration:none;color:var(--gold);font-size:13px;font-weight:700;transition:all 0.2s" onmouseover="this.style.background='rgba(245,200,66,0.06)'" onmouseout="this.style.background='transparent'">
+              🛡️ SolidityScan <strong>93.13/100</strong> · Foundry 56/56 tests <i class="bi bi-box-arrow-up-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" style="background:var(--bg2)">
+    <div class="section-inner">
+      <div class="section-tag reveal">Knowledge Base</div>
+      <h2 class="section-title reveal">FREQUENTLY ASKED<br>QUESTIONS</h2>
+
+      <div class="faq-list reveal" style="max-width:760px">
+        <details class="faq-item">
+          <summary class="faq-q">How does the $500K Milestone system work? <span class="faq-arrow"><i class="bi bi-plus"></i></span></summary>
+          <div class="faq-a">Every time the Market Cap grows by $500,000, Chainlink Automation automatically triggers a release of 1.5% of the remaining vault. 100% goes to eligible holders pro-rata — no marketing split, no auto-liquidity split. Zero human action required — ever.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">What happens if the Market Cap drops after a payout? <span class="faq-arrow"><i class="bi bi-plus"></i></span></summary>
+          <div class="faq-a">Once a Milestone is reached and the reward distributed, that level is permanently validated. A price drop does not cancel or reverse the reward. The next trigger requires a new +$500K MCap from the last validated milestone.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Is the Milestone Vault secure? <span class="faq-arrow"><i class="bi bi-plus"></i></span></summary>
+          <div class="faq-a">Yes. The Vault is governed entirely by the Smart Contract, scanned by SolidityScan (93.13/100) — <a href="#" style="color:var(--gold)">⚠️ lien vers le rapport public à ajouter une fois publié</a>. Releases are restricted to the Chainlink Automation trigger only. The founder has renounced ownership — there is no admin key, no backdoor, no override possible.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">How do I receive my rewards? <span class="faq-arrow"><i class="bi bi-plus"></i></span></summary>
+          <div class="faq-a">Rewards accrue pro-rata based on your RMHT balance, tracked continuously since the last claim. Only eligible supply counts (excludes vault, burn address, and the Uniswap pool). Use the Claim button above to collect — RMHT uses a claim model, not an automatic push to your wallet.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">How is the vault release split? <span class="faq-arrow"><i class="bi bi-plus"></i></span></summary>
+          <div class="faq-a">Each release is split automatically by the contract: 100% goes directly to eligible holders pro-rata. There is no marketing split, unlike $MHT on BSC — this is one of the improvements built into $RMHT.</div>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Is there a Buy/Sell tax on $RMHT? <span class="faq-arrow"><i class="bi bi-plus"></i></span></summary>
+          <div class="faq-a">No. Unlike $MHT on BSC, $RMHT has 0% buy/sell tax. Liquidity fees are captured separately, on the Uniswap v3 position itself, through a dedicated non-withdrawable custodian contract — not through a token tax.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-logo">ROBINHOOD MILESTONE <span>HODL</span> TOKEN</div>
+        <div class="footer-socials">
+          <a href="https://t.me/Community_Milestone_hodl" target="_blank" class="social-btn"><i class="bi bi-telegram"></i></a>
+          <a href="https://x.com/milestone_hodl" target="_blank" class="social-btn"><i class="bi bi-twitter-x"></i></a>
+          <a href="https://www.youtube.com/channel/UCI9cYGu9x87ZpmbzeJHurpg" target="_blank" class="social-btn"><i class="bi bi-youtube"></i></a>
+          <a href="https://www.tiktok.com/@dev_apexpad" target="_blank" class="social-btn"><i class="bi bi-tiktok"></i></a>
+          <a href="https://apexpad.io" target="_blank" class="social-btn">🚀</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Robinhood Milestone HODL Token ($RMHT). All rights reserved.</span>
+        <span class="footer-contract">
+          <a href="https://robinhoodchain.blockscout.com/token/0x0000000000000000000000000000000000dEaD" target="_blank">⚠️-ADRESSE-RMHT-A-VENIR-⚠️</a>
+        </span>
+        <a href="pages/contact.html" style="color:var(--muted);text-decoration:none;font-size:12px">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- APP.JS (gardé intact) -->
+  <script>
+  // ── CHARGEMENT PUBLIC MCap + Holders (sans wallet) ──────────────────────────
+  (async function loadPublicStats() {
+    const CONTRACT = "0x0000000000000000000000000000000000dEaD"; // ⚠️ PLACEHOLDER — remplacer par l'adresse RMHT mainnet réelle
+    const RPC      = "https://rpc.chain.robinhood.com"; // ⚠️ à vérifier/actualiser sur docs.robinhood.com/chain avant mise en prod — Robinhood Chain, PAS BSC
+    const ABI_MIN  = [
+      "function getMarketCap() view returns (uint256)",
+      "function nextMilestoneUSD() view returns (uint256)",
+      "function vaultBalance() view returns (uint256)",
+      "function getRMHTPriceInETH() view returns (uint256)",
+    ];
+
+    // getRMHTPriceInETH() renvoie un prix en ETH (wei), pas en USD directement —
+    // on récupère le taux ETH/USD via CoinGecko pour convertir.
+    async function getETHPriceUSD() {
+      try {
+        const res  = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd");
+        const json = await res.json();
+        return json?.ethereum?.usd || null;
+      } catch(e) { console.warn("ETH/USD price fetch failed:", e); return null; }
+    }
+
+    try {
+      const provider = new ethers.JsonRpcProvider(RPC);
+      const contract = new ethers.Contract(CONTRACT, ABI_MIN, provider);
+
+      // Chaque lecture est indépendante : si une fonction reverte sur le contrat,
+      // les autres s'affichent quand même (avant, un seul revert cassait tout le hero).
+      const safeCall = async (fn) => { try { return await fn(); } catch(e){ console.warn('call failed:', e); return null; } };
+      const [mcapRaw, nextRaw, priceEthRaw, vaultRaw, ethUsd] = await Promise.all([
+        safeCall(() => contract.getMarketCap()),
+        safeCall(() => contract.nextMilestoneUSD()),
+        safeCall(() => contract.getRMHTPriceInETH()),
+        safeCall(() => contract.vaultBalance()),
+        getETHPriceUSD(),
+      ]);
+
+      const mcap     = mcapRaw     != null ? parseFloat(ethers.formatUnits(mcapRaw, 18))     : NaN;
+      const next     = nextRaw     != null ? parseFloat(ethers.formatUnits(nextRaw, 18))     : NaN;
+      const priceEth = priceEthRaw != null ? parseFloat(ethers.formatUnits(priceEthRaw, 18)) : NaN;
+      const price    = (Number.isFinite(priceEth) && ethUsd) ? priceEth * ethUsd : NaN;
+      const vault    = vaultRaw    != null ? parseFloat(ethers.formatUnits(vaultRaw, 18))    : NaN;
+      // Expose pour le simulateur, le calcul walletUsd et le réconciliateur
+      window._mhtPrice = price;
+      window._mhtMcap  = mcap;
+      window._mhtNextMilestone = next;
+      const STEP = 500_000; // pas de milestone RMHT = $500K (pas $1M comme MHT)
+      const prev = next - STEP;
+      const pct  = mcap <= prev ? 0 : mcap >= next ? 100 : Math.round(((mcap - prev) / STEP) * 100);
+
+      // NOTE : on n'écrit PLUS le Market Cap depuis loadPublicStats.
+      // getMarketCap() renvoie ici une valeur à la mauvaise échelle (~×1000 trop petit),
+      // ce qui entrait en conflit avec la vraie valeur d'app.js (#market-cap) et faisait
+      // osciller la barre. Source de vérité unique = #market-cap (app.js) ; le
+      // réconciliateur (reconcileDisplays) en dérive statMcap / milestoneBar / mcapDisplay.
+
+
+      // Smart-Vault Balance — tokenomics + panneau wallet (visibles avant connexion)
+      if (Number.isFinite(vault)) {
+        const vaultFmt = Math.round(vault).toLocaleString("en-US") + " RMHT";
+        const vaultTokEl = document.getElementById("vault-balance-tok");
+        const vaultWalEl = document.getElementById("vault-balance");
+        if (vaultTokEl) vaultTokEl.textContent = vaultFmt;
+        if (vaultWalEl) vaultWalEl.textContent = vaultFmt;
+      }
+
+      // Prix live → champ du Buy Simulator (sinon le simulateur ne calcule jamais)
+      const simPriceEl = document.getElementById("buyCurrentPrice");
+      if (simPriceEl && price > 0) {
+        simPriceEl.value = price.toFixed(8);
+        if (typeof calcBuy === "function") calcBuy();
+      }
+
+      // Holders via l'API Blockscout de Robinhood Chain (schéma v2 : champ holders_count)
+      try {
+        const res = await fetch(
+          "https://robinhoodchain.blockscout.com/api/v2/tokens/" + CONTRACT
+        );
+        const data = await res.json();
+        const holders = data?.holders_count ?? data?.result?.[0]?.holdersCount;
+        const statHoldersEl = document.getElementById("statHolders");
+        if (statHoldersEl && holders) statHoldersEl.textContent = parseInt(holders).toLocaleString("en-US");
+      } catch(e) {
+        // holders unavailable without API key — leave as —
+      }
+
+    } catch(e) {
+      console.warn("Public stats load failed:", e);
+    }
+  })();
+  </script>
+  <script src="app_rmht.js"></script>
+  <script src="music-config.js"></script>
+
+  <script>
+    // ── SCROLL REVEAL ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          // Stagger children
+          e.target.querySelectorAll('.how-card, .phase-card, .doc-card, .tstat-card').forEach((c, i) => {
+            c.style.transitionDelay = (i * 0.08) + 's';
+            c.style.opacity = '1';
+            c.style.transform = 'none';
+          });
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ── MCAP PROGRESS BAR ──
+    // NOTE : le Market Cap réel est lu on-chain par loadPublicStats() (script ci-dessus),
+    // qui remplit statMcap / milestoneBar / mcapDisplay / market-cap. On ne réécrit JAMAIS
+    // ces éléments avec une valeur en dur ici (l'ancien fallback 275200 écrasait la
+    // vraie donnée ET détruisait le span #market-cap utilisé par app.js).
+    // Filet de sécurité prix : si loadPublicStats n'a pas encore renseigné buyCurrentPrice
+    // au chargement, on le complète dès que le prix live est disponible.
+    // NOTE : ce filet fait doublon avec celui plus bas (ligne ~1900) qui fait la même
+    // chose pour le même champ — les deux peuvent cohabiter sans conflit (le second
+    // vérifie déjà dataset.userModified), mais un seul suffirait si simplification voulue.
+    window.addEventListener('load', () => {
+      let tries = 0;
+      const iv = setInterval(() => {
+        const simPriceEl = document.getElementById('buyCurrentPrice');
+        if (window._mhtPrice > 0 && simPriceEl && !simPriceEl.value) {
+          simPriceEl.value = window._mhtPrice.toFixed(8);
+          if (typeof calcBuy === 'function') calcBuy();
+        }
+        if ((window._mhtPrice > 0 && simPriceEl && simPriceEl.value) || ++tries > 10) clearInterval(iv);
+      }, 1000);
+    });
+
+    // 🟢 DEBUT DE LA LOGIQUE DES SIMULATEURS RESTAURÉE 🟢
+    
+    // ── CONSTANTES ON-CHAIN ET VARIABLES COMMUNES ──
+    let currentMilestone = 1;
+    const MAX_MILESTONE  = 20;
+    const MHT_CONTRACT_ADDR = '0x0000000000000000000000000000000000dEaD'; // ⚠️ PLACEHOLDER
+    const BSC_RPC_URL       = 'https://rpc.chain.robinhood.com'; // ⚠️ à vérifier sur docs.robinhood.com/chain avant mise en prod
+    // Requête Blockchain pour l'Eligible Supply
+    async function fetchEligibleSupplyOnChain() {
+        try {
+            const payload = { jsonrpc:'2.0', id:1, method:'eth_call', params:[{ to: MHT_CONTRACT_ADDR, data:'0xcd415c4a' }, 'latest'] };
+            const res  = await fetch(BSC_RPC_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+            const json = await res.json();
+            if (json.result && json.result !== '0x') {
+                const supply = Number(BigInt(json.result)) / 1e18;
+                const el = document.getElementById('calcCirc');
+                if (el && supply > 0) {
+                    el.value = Math.round(supply);
+                    calcReward(); // Met à jour le calculateur avec la vraie data
+                }
+                return supply;
+            }
+        } catch(e) { console.warn('On-chain fetch failed:', e); }
+        return 500000000; // Fallback pré-lancement = supply éligible théorique (43,5% marché + 6,5% airdrop = 50% du supply total 1B)
+    }
+
+    function getEligibleSupply() {
+        const el = document.getElementById('calcCirc');
+        return (el && el.value) ? parseFloat(el.value) : 500000000;
+    }
+
+    // Calcul du Vault asymptotique (1,5% du solde restant, tous les 500 000$ MCap — RMHT, pas de floor/cap contrairement à MHT)
+    function vaultReleaseFor(vaultBalance) {
+        return vaultBalance * 0.015;
+    }
+
+    function getMilestonePriceTarget(n) {
+        return (n * 500000) / 1000000000;
+    }
+
+    // ── LE VRAI BUY SIMULATOR (AVEC TAXES) ──
+    function calcBuy() {
+        const usd         = parseFloat(document.getElementById('buyUSD').value) || 0;
+        const targetPrice = parseFloat(document.getElementById('buyTargetPrice').value) || 0;
+        const priceField  = document.getElementById('buyCurrentPrice');
+        const result      = document.getElementById('buyResult');
+        const placeholder = document.getElementById('buyPlaceholder');
+
+        const curPrice = parseFloat(priceField.value) || window._mhtPrice || 0;
+
+        if (usd <= 0 || curPrice <= 0) { result.style.display='none'; placeholder.style.display='flex'; return; }
+
+        const taxRate     = 0; // $RMHT n'a AUCUNE taxe buy/sell (contrairement à $MHT) — fees captées via le contrat custodian sur la position LP, pas sur le token
+        const mhtReceived = (usd / curPrice) * (1 - taxRate);
+        const circ        = getEligibleSupply();
+        const sharePct    = mhtReceived / circ;
+        const rewardPool  = vaultReleaseFor(500000000); // 100% aux holders sur RMHT, pas de split 70/30
+        const mhtReward   = sharePct * rewardPool;
+
+        result.style.display      = 'block';
+        placeholder.style.display = 'none';
+
+        document.getElementById('buyMHT').textContent    = mhtReceived.toLocaleString('en-US', {maximumFractionDigits: 0}) + ' RMHT';
+        document.getElementById('buyShare').textContent  = (sharePct * 100).toFixed(4) + '%';
+        document.getElementById('buyReward').textContent = mhtReward.toLocaleString('en-US', {maximumFractionDigits: 0}) + ' RMHT';
+
+        if (targetPrice > 0) {
+            const bagValue = (mhtReceived + mhtReward) * targetPrice;
+            const roi      = ((bagValue - usd) / usd) * 100;
+            document.getElementById('buyBagValue').textContent    = '$' + bagValue.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('buyROI').textContent         = (roi >= 0 ? '+' : '') + roi.toLocaleString('en-US', {maximumFractionDigits: 0}) + '%';
+            document.getElementById('buyROI').style.color         = roi > 0 ? 'var(--success)' : '#ef4444';
+            document.getElementById('buyTargetRow').style.display = 'flex';
+            document.getElementById('buyROIRow').style.display    = 'flex';
+        } else {
+            document.getElementById('buyTargetRow').style.display = 'none';
+            document.getElementById('buyROIRow').style.display    = 'none';
+        }
+    }
+
+    // ── LE VRAI REWARD CALCULATOR (AVEC BOUCLE LONG TERME) ──
+    function updateMilestoneUI() {
+        document.getElementById('milestoneLabel').textContent = 'Milestone #' + currentMilestone;
+        document.getElementById('milestoneMcap').textContent  = '$' + (currentMilestone * 500000).toLocaleString('en-US') + ' MCap';
+        calcReward();
+    }
+
+    function changeMilestone(delta) {
+        const next = currentMilestone + delta;
+        if (next < 1 || next > MAX_MILESTONE) return;
+        currentMilestone = next;
+        updateMilestoneUI();
+    }
+
+    function calcReward() {
+        const mht  = parseFloat(document.getElementById('calcMHT').value)  || 0;
+        const circ = getEligibleSupply();
+        const n    = currentMilestone;
+
+        const result         = document.getElementById('calcResult');
+        const placeholder    = document.getElementById('calcPlaceholder');
+        const currentValueEl = document.getElementById('calcCurrentValue');
+
+        const livePrice = window._mhtPrice || 0;
+
+        if (mht > 0 && livePrice > 0) {
+            currentValueEl.textContent = '$' + (mht * livePrice).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        } else {
+            currentValueEl.textContent = '—';
+        }
+
+        if (mht <= 0) { result.style.display='none'; placeholder.style.display='flex'; return; }
+
+        const sharePct = mht / circ;
+
+        // Le coeur du Smart-Vault : La boucle asymptotique
+        let vault       = 500000000;
+        let totalReward = 0;
+        let rewardAtN   = 0;
+        for (let i = 1; i <= n; i++) {
+            const release    = vaultReleaseFor(vault);
+            const holderPool = release; // 100% aux holders sur RMHT (pas de split 70/30 comme MHT)
+            const reward     = sharePct * holderPool;
+            totalReward     += reward;
+            if (i === n) rewardAtN = reward;
+            vault -= release;
+        }
+
+        const priceAtN  = getMilestonePriceTarget(n);
+        const usdReward = totalReward * priceAtN;
+        const totalMHT  = mht + totalReward;
+        const totalUSD  = totalMHT * priceAtN;
+
+        document.getElementById('calcShare').textContent      = (sharePct * 100).toFixed(4) + '%';
+        document.getElementById('calcMHTReward').textContent  = rewardAtN.toLocaleString('en-US', {maximumFractionDigits: 0}) + ' RMHT';
+        document.getElementById('calcMHTCumul').textContent   = totalReward.toLocaleString('en-US', {maximumFractionDigits: 0}) + ' RMHT';
+        document.getElementById('calcUSDReward').textContent  = '$' + usdReward.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('calcTotalValue').textContent = '$' + totalUSD.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        document.getElementById('calcTotalMHT').textContent   = totalMHT.toLocaleString('en-US', {maximumFractionDigits: 0}) + ' RMHT total (holdings + rewards)';
+
+        result.style.display      = 'block';
+        placeholder.style.display = 'none';
+    }
+
+    // ── INITIALISATION ET ÉCOUTEURS ──
+    window.addEventListener('load', () => {
+        const circEl = document.getElementById('calcCirc');
+        if (circEl && !circEl.value) circEl.value = 500000000;
+        fetchEligibleSupplyOnChain();
+        setInterval(fetchEligibleSupplyOnChain, 60000); // Mise à jour de la supply chaque minute
+
+        let tries = 0;
+        const iv = setInterval(() => {
+            const priceField = document.getElementById('buyCurrentPrice');
+            if (window._mhtPrice > 0 && priceField && !priceField.dataset.userModified) {
+                priceField.value = window._mhtPrice.toFixed(8);
+                calcBuy(); 
+            }
+            if ((window._mhtPrice > 0 && priceField && priceField.value) || ++tries > 20) clearInterval(iv);
+        }, 500);
+
+        setInterval(() => {
+            const pf = document.getElementById('buyCurrentPrice');
+            if (pf && !pf.dataset.userModified && window._mhtPrice > 0) {
+                pf.value = window._mhtPrice.toFixed(8);
+                calcBuy();
+            }
+        }, 30000);
+
+        updateMilestoneUI();
+    });
+    // 🔴 FIN DE LA LOGIQUE DES SIMULATEURS RESTAURÉE 🔴 
+
+
+    // connectWallet géré par le modal wallet ci-dessous
+  </script>
+
+
+  <!-- WALLET MODAL -->
+  <div class="wallet-modal-overlay" id="walletModal">
+    <div class="wallet-modal">
+      <div class="wallet-modal-header">
+        <span class="wallet-modal-title">Connect Wallet</span>
+        <button class="wallet-modal-close" id="closeModal">✕</button>
+      </div>
+      <p class="wallet-modal-subtitle">Choose your preferred wallet to connect</p>
+      <div id="walletOptions">
+        <button class="wallet-option" id="btnMetaMask">
+          <div class="wallet-option-icon" style="background:rgba(245,158,11,0.1)">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask">
+          </div>
+          <div class="wallet-option-info">
+            <span class="wallet-option-name">MetaMask</span>
+            <span class="wallet-option-desc">Browser extension wallet</span>
+          </div>
+          <span class="wallet-option-badge" id="metamaskBadge">—</span>
+        </button>
+        <button class="wallet-option" id="btnWalletConnect">
+          <div class="wallet-option-icon" style="background:rgba(59,130,246,0.1)">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#3B99FC"/><path d="M9.6 12.8c3.5-3.5 9.3-3.5 12.8 0l.4.4c.2.2.2.5 0 .7l-1.4 1.4c-.1.1-.3.1-.4 0l-.6-.6c-2.5-2.5-6.5-2.5-9 0l-.6.6c-.1.1-.3.1-.4 0L8.9 13.9c-.2-.2-.2-.5 0-.7l.7-.4zm15.8 3l1.2 1.2c.2.2.2.5 0 .7l-5.5 5.5c-.2.2-.5.2-.7 0l-3.9-3.9c-.1-.1-.2-.1-.4 0l-3.9 3.9c-.2.2-.5.2-.7 0L5.4 17.7c-.2-.2-.2-.5 0-.7l1.2-1.2c.2-.2.5-.2.7 0l3.9 3.9c.1.1.2.1.4 0l3.9-3.9c.2-.2.5-.2.7 0l3.9 3.9c.1.1.2.1.4 0l3.9-3.9c.2-.1.5-.1.6.1z" fill="white"/></svg>
+          </div>
+          <div class="wallet-option-info">
+            <span class="wallet-option-name">WalletConnect</span>
+            <span class="wallet-option-desc">Scan QR with Trust Wallet, MetaMask mobile…</span>
+          </div>
+          <span class="wallet-option-badge badge-qr">📱 QR</span>
+        </button>
+        <div class="wallet-divider">or</div>
+        <button class="wallet-option" id="btnCoinbase">
+          <div class="wallet-option-icon" style="background:rgba(22,163,74,0.1)">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#1652F0"/><path d="M16 6C10.477 6 6 10.477 6 16s4.477 10 10 10 10-4.477 10-10S21.523 6 16 6zm0 15.5c-3.038 0-5.5-2.462-5.5-5.5S12.962 10.5 16 10.5s5.5 2.462 5.5 5.5-2.462 5.5-5.5 5.5zm-2-5.5c0 1.105.895 2 2 2s2-.895 2-2-.895-2-2-2-2 .895-2 2z" fill="white"/></svg>
+          </div>
+          <div class="wallet-option-info">
+            <span class="wallet-option-name">Coinbase Wallet</span>
+            <span class="wallet-option-desc">Extension or mobile app</span>
+          </div>
+          <span class="wallet-option-badge badge-popular">Popular</span>
+        </button>
+        <button class="wallet-option" id="btnTrustWallet">
+          <div class="wallet-option-icon" style="background:rgba(59,130,246,0.08)">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#3375BB"/><path d="M16 6l8 3.5v6c0 4.5-3.4 8.7-8 10-4.6-1.3-8-5.5-8-10v-6L16 6z" fill="white" fill-opacity="0.9"/><path d="M13.5 16l2 2 4-4" stroke="#3375BB" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="wallet-option-info">
+            <span class="wallet-option-name">Trust Wallet</span>
+            <span class="wallet-option-desc">Mobile or browser extension</span>
+          </div>
+          <span class="wallet-option-badge badge-popular">Popular</span>
+        </button>
+      </div>
+      <div class="wallet-loading" id="walletLoading">
+        <div class="spinner-ring"></div>
+        <p style="color:#94a3b8;font-size:0.85rem" id="loadingText">Connecting…</p>
+        <button class="qr-back" id="cancelConnect">Cancel</button>
+      </div>
+      <div class="qr-panel" id="qrPanel">
+        <div class="qr-placeholder" id="qrCodeContainer">
+          <p style="color:#334155;font-size:0.7rem">Initializing…</p>
+        </div>
+        <p style="color:#94a3b8;font-size:0.8rem;margin-bottom:4px">Scan with your mobile wallet</p>
+        <p style="color:#64748b;font-size:0.72rem">Trust Wallet · MetaMask · Coinbase · Rainbow…</p>
+        <button class="qr-back" id="backFromQR">← Back to wallet list</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MUSIC PLAYER -->
+  <div id="musicPlayer">
+    <div id="musicWidget">
+      <div id="musicLabel">🎵 CED'S VIBES — RMHT SOUNDTRACK</div>
+      <iframe id="scWidget" src="" width="280" height="166" frameborder="0" scrolling="no" allow="autoplay" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>
+    </div>
+    <button id="musicToggle" onclick="toggleMusic()" title="🎵 RMHT Soundtrack">🎵</button>
+  </div>
+
+
+  <!-- WALLET MODAL + MUSIC LOGIC -->
+  <script>
+    // ── WALLET MODAL ──────────────────────────────────────────────────────────
+    const modal         = document.getElementById('walletModal');
+    const closeModalBtn = document.getElementById('closeModal');
+    const walletOptions = document.getElementById('walletOptions');
+    const walletLoading = document.getElementById('walletLoading');
+    const loadingText   = document.getElementById('loadingText');
+    const qrPanel       = document.getElementById('qrPanel');
+    const cancelConnect = document.getElementById('cancelConnect');
+    const backFromQR    = document.getElementById('backFromQR');
+    const connectBtn    = document.getElementById('connectWalletBtn');
+    const metamaskBadge = document.getElementById('metamaskBadge');
+
+    function openModal() {
+      if (window.ethereum && window.ethereum.isMetaMask) {
+        metamaskBadge.textContent = 'Detected';
+        metamaskBadge.className = 'wallet-option-badge badge-detected';
+      } else {
+        metamaskBadge.textContent = 'Install';
+        metamaskBadge.className = 'wallet-option-badge';
+        metamaskBadge.style.cssText = 'background:rgba(239,68,68,0.1);color:#f87171;border:1px solid rgba(239,68,68,0.3)';
+      }
+      showOptions();
+      modal.classList.add('active');
+    }
+    function closeModalFn() { modal.classList.remove('active'); setTimeout(showOptions, 300); }
+    function showOptions() { walletOptions.style.display='block'; walletLoading.classList.remove('active'); qrPanel.classList.remove('active'); }
+    function showLoading(text) { walletOptions.style.display='none'; qrPanel.classList.remove('active'); loadingText.textContent=text||'Connecting…'; walletLoading.classList.add('active'); }
+    function showQR() { walletOptions.style.display='none'; walletLoading.classList.remove('active'); qrPanel.classList.add('active'); }
+
+    connectBtn.addEventListener('click', () => { if (!window._mhtConnected) openModal(); });
+    closeModalBtn.addEventListener('click', closeModalFn);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModalFn(); });
+    cancelConnect.addEventListener('click', showOptions);
+    backFromQR.addEventListener('click', showOptions);
+
+    document.getElementById('btnMetaMask').addEventListener('click', async () => {
+      if (!window.ethereum || !window.ethereum.isMetaMask) { window.open('https://metamask.io/download/','_blank'); closeModalFn(); return; }
+      showLoading('Opening MetaMask…');
+      try { await connectWithEthereum(window.ethereum); closeModalFn(); }
+      catch(e) { showOptions(); if(e.code!==4001) alert('MetaMask error: '+e.message); }
+    });
+
+    document.getElementById('btnWalletConnect').addEventListener('click', async () => {
+      showQR();
+      const qrContainer = document.getElementById('qrCodeContainer');
+      qrContainer.innerHTML = '<p style="color:#334155;font-size:0.7rem">Generating QR…</p>';
+      try {
+        // ⚠️ URL à confirmer avec og:url en tête de fichier
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent('https://rmht.apexpad.io/')}&bgcolor=ffffff&color=0f172a`;
+        qrContainer.innerHTML = `<img src="${qrUrl}" style="width:180px;height:180px;border-radius:8px" alt="QR"><p style="color:#64748b;font-size:0.65rem;margin-top:8px"><em style="color:#f5c842">WalletConnect v2 — Coming soon</em></p>`;
+      } catch(e) { qrContainer.innerHTML = '<p style="color:#ef4444;font-size:0.75rem">QR error</p>'; }
+    });
+
+    document.getElementById('btnCoinbase').addEventListener('click', async () => {
+      if (window.ethereum && window.ethereum.isCoinbaseWallet) {
+        showLoading('Opening Coinbase Wallet…');
+        try { await connectWithEthereum(window.ethereum); closeModalFn(); } catch(e) { showOptions(); }
+      } else { window.open('https://www.coinbase.com/wallet/downloads','_blank'); closeModalFn(); }
+    });
+
+    document.getElementById('btnTrustWallet').addEventListener('click', async () => {
+      if (window.ethereum && window.ethereum.isTrust) {
+        showLoading('Opening Trust Wallet…');
+        try { await connectWithEthereum(window.ethereum); closeModalFn(); } catch(e) { showOptions(); }
+      } else { window.open('https://trustwallet.com/browser-extension','_blank'); closeModalFn(); }
+    });
+
+    async function connectWithEthereum(ethereumProvider) {
+      await ethereumProvider.request({ method: 'eth_requestAccounts' });
+      const provider = new ethers.BrowserProvider(ethereumProvider);
+      const signer   = await provider.getSigner();
+      const address  = await signer.getAddress();
+      // Le switch/ajout de réseau (Robinhood Chain, pas BSC) est géré par
+      // ensureRobinhoodChain() dans app_rmht.js — pas de logique dupliquée ici.
+      // Mettre à jour UI
+      const short = address.slice(0,6)+'…'+address.slice(-4);
+      connectBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>'+short;
+      connectBtn.style.background = 'linear-gradient(135deg,#00e096,#00b87a)';
+      window._mhtConnected = true;
+      // Mettre à jour wallet panel
+      document.getElementById('walletAddr').textContent = short;
+      document.getElementById('connectBtn').textContent = '✓ Connected';
+      document.getElementById('connectBtn').style.background = 'linear-gradient(135deg,#00e096,#00b87a)';
+      const claimBtnEl = document.getElementById('claimBtn');
+      if (claimBtnEl) claimBtnEl.style.display = 'block';
+      // Lancer app_rmht.js (bascule sur Robinhood Chain incluse)
+      if (typeof window.initRMHT === 'function') await window.initRMHT(provider, signer, address);
+      ethereumProvider.on('accountsChanged', ()=>location.reload());
+      ethereumProvider.on('chainChanged', ()=>location.reload());
+    }
+
+    // Auto-connect si déjà connecté
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.ethereum && window.ethereum.selectedAddress) {
+        const p = new ethers.BrowserProvider(window.ethereum);
+        p.getSigner().then(s => s.getAddress().then(addr => {
+          const short = addr.slice(0,6)+'…'+addr.slice(-4);
+          connectBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>'+short;
+          connectBtn.style.background = 'linear-gradient(135deg,#00e096,#00b87a)';
+          window._mhtConnected = true;
+          p.getSigner().then(sg => window.initRMHT && window.initRMHT(p, sg, addr));
+        })).catch(()=>{});
+      }
+    });
+
+    // ── MUSIC WIDGET ──────────────────────────────────────────────────────────
+    let musicOpen = false;
+    let musicLoaded = false;
+    function toggleMusic() {
+      musicOpen = !musicOpen;
+      const widget = document.getElementById('musicWidget');
+      const btn    = document.getElementById('musicToggle');
+      const iframe = document.getElementById('scWidget');
+      if (musicOpen) {
+        // Charge l'iframe au 1er clic. On teste un drapeau, PAS iframe.src :
+        // un <iframe src=""> renvoie l'URL de la page via .src, donc l'ancien
+        // test (iframe.src === '') était toujours faux → l'iframe ne se chargeait jamais.
+        if (!musicLoaded && typeof SOUNDCLOUD_URL !== 'undefined') {
+          iframe.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(SOUNDCLOUD_URL) + '&color=%23f5c842&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false';
+          musicLoaded = true;
+        }
+        widget.classList.add('open');
+        btn.textContent = '✕';
+        btn.classList.add('playing');
+      } else {
+        widget.classList.remove('open');
+        btn.textContent = '🎵';
+        btn.classList.remove('playing');
+      }
+    }
+  </script>
+
+  <script>
+    // ── RÉCONCILIATEUR D'AFFICHAGE ────────────────────────────────────────────
+    // app.js (inchangé) remplit #mht-balance, #market-cap, #vault-balance.
+    // Ici on alimente les éléments du nouveau design qu'app.js ne connaît pas :
+    //   • #walletUsd  (valeur USD du solde, restait figé à "$0.00")
+    //   • #vault-balance-tok (vault des tokenomics, restait figé à "— MHT")
+    // Parse robuste des nombres formatés fr-FR ("1 234,56" → 1234.56).
+    function parseFrNumber(txt) {
+      if (!txt) return NaN;
+      return parseFloat(
+        String(txt).replace(/[\s\u00A0\u202F]/g, "").replace(/,/g, ".").replace(/[^\d.\-]/g, "")
+      );
+    }
+    function reconcileDisplays() {
+      // walletUsd = solde MHT × prix live
+      const balEl = document.getElementById("mht-balance");
+      const usdEl = document.getElementById("walletUsd");
+      if (balEl && usdEl && window._mhtPrice > 0) {
+        const bal = parseFrNumber(balEl.textContent);
+        if (!isNaN(bal)) {
+          const usd = bal * window._mhtPrice;
+          usdEl.textContent = "$" + usd.toLocaleString("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: usd > 0 && usd < 1 ? 6 : 2,
+          });
+        }
+      }
+      // Miroir vault wallet → vault tokenomics
+      const vWal = document.getElementById("vault-balance");
+      const vTok = document.getElementById("vault-balance-tok");
+      if (vWal && vTok && vWal.textContent && !/^[—-]/.test(vWal.textContent.trim())) {
+        vTok.textContent = vWal.textContent;
+      }
+      // ── Market Cap : source de vérité UNIQUE = #market-cap (rempli par app.js) ──
+      // On en dérive TOUJOURS le hero (stat + label + barre). #market-cap est au format
+      // ANGLAIS ($276,826 → virgule = milliers), donc on NE PEUT PAS utiliser
+      // parseFrNumber (format français) : on enlève simplement $, espaces et virgules.
+      const mcEl   = document.getElementById("market-cap");
+      const statEl = document.getElementById("statMcap");
+      const dispEl = document.getElementById("mcapDisplay");
+      const barEl  = document.getElementById("milestoneBar");
+      if (mcEl && !/nan/i.test(mcEl.textContent)) {
+        const mc = parseFloat(String(mcEl.textContent).replace(/[$\s\u00A0\u202F,]/g, ""));
+        if (!isNaN(mc) && mc > 0) {
+          const compact = "$" + (mc >= 1000000 ? (mc/1000000).toFixed(2)+"M"
+                               : mc >= 1000     ? Math.round(mc/1000)+"K"
+                               :                  Math.round(mc));
+          if (statEl) statEl.textContent = compact;
+          if (dispEl) dispEl.textContent = compact;
+          if (barEl) {
+            // Pas de milestone RMHT = $500K (pas $1M comme MHT). On utilise le vrai
+            // nextMilestoneUSD on-chain (window._mhtNextMilestone) quand disponible,
+            // sinon on le déduit du MCap courant.
+            const STEP = 500000;
+            const nextMs = (Number.isFinite(window._mhtNextMilestone) && window._mhtNextMilestone > mc)
+              ? window._mhtNextMilestone
+              : Math.ceil((mc + 1) / STEP) * STEP;
+            const prevMs = nextMs - STEP;
+            const pct = Math.max(0, Math.min(100, ((mc - prevMs) / STEP) * 100));
+            barEl.style.width = pct + "%";
+            barEl.textContent = "$" + Math.round(mc).toLocaleString("en-US") + " / $" + Math.round(nextMs).toLocaleString("en-US");
+          }
+        }
+      }
+    }
+    setInterval(reconcileDisplays, 3000);
+    window.addEventListener("load", () => setTimeout(reconcileDisplays, 2000));
+  </script>
+<script src="js/disclaimer.js"></script>
+</body>
+</html>
