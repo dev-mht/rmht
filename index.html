@@ -190,7 +190,6 @@
       padding: 60px 40px;
     }
 
-    /* En-tête plein largeur : titre + ticker + sous-titre */
     .hero-head {
       grid-column: 1 / -1;
       grid-row: 1;
@@ -198,7 +197,6 @@
       padding-bottom: 24px;
     }
 
-    /* Titre au-dessus, pleine largeur */
     .hero-title-top {
       text-align: center;
       font-family: var(--display);
@@ -221,7 +219,6 @@
       animation: fadePulse 9s ease-in-out infinite;
     }
 
-    /* Sous-titre du hero : plus grand et plus clair, sur toute la largeur */
     .hero-head .hero-sub {
       max-width: 720px;
       margin: 16px auto 0;
@@ -232,7 +229,6 @@
     }
     .hero-head .hero-sub strong { color: var(--text); }
 
-    /* Radial glow */
     .hero::before {
       content: '';
       position: absolute; inset: 0;
@@ -243,7 +239,6 @@
       pointer-events: none;
     }
 
-    /* Gold horizontal line */
     .hero-line {
       position: absolute;
       bottom: 0; left: 0; right: 0;
@@ -252,7 +247,6 @@
       opacity: 0.3;
     }
 
-    /* Video columns */
     .hero-video-left,
     .hero-video-right {
       display: flex; align-items: center; justify-content: center;
@@ -280,12 +274,10 @@
       border-radius: 20px;
       position: relative; z-index: 0;
     }
-    /* Logo de gauche : même taille que la vidéo de droite */
     .hero-logo-img { width: 220px; height: 220px; object-fit: contain; }
     .hero-video-right .video-wrap video,
     .hero-video-right .video-wrap img { width: 220px; height: 220px; object-fit: contain; }
 
-    /* Video glow */
     .video-glow {
       position: absolute;
       width: 300px; height: 300px;
@@ -293,7 +285,6 @@
       background: radial-gradient(circle, rgba(245,200,66,0.12) 0%, transparent 70%);
       pointer-events: none; z-index: -1;
     }
-    /* Center content */
     .hero-center {
       text-align: center;
       display: flex; flex-direction: column;
@@ -341,7 +332,6 @@
     }
     .hero-sub strong { color: var(--text); }
 
-    /* MCap progress */
     .hero-mcap {
       width: 100%;
       background: var(--bg2);
@@ -357,7 +347,6 @@
       display: flex; justify-content: space-between;
     }
     .mcap-value { color: var(--gold); }
-    /* ── Barre de progression "ancienne version" : verte, rayée, animée, texte au centre ── */
     .progress-track {
       height: 30px;
       background: #0f172a;
@@ -428,7 +417,6 @@
     }
     .cta-secondary:hover { background: rgba(245,200,66,0.06); border-color: var(--gold); }
 
-    /* Key stats */
     .hero-stats {
       display: flex; gap: 24px;
       animation: fadeUp 0.8s ease 0.5s both;
@@ -454,7 +442,6 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ── SECTIONS COMMON ── */
     section { padding: 100px 40px; position: relative; }
     .section-inner { max-width: 1100px; margin: 0 auto; }
     .section-tag {
@@ -481,7 +468,6 @@
       margin-bottom: 56px;
     }
 
-    /* ── HOW IT WORKS ── */
     .how-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -524,7 +510,6 @@
     }
     .how-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
-    /* ── TOKENOMICS ── */
     .tokenomics-section { background: var(--bg2); }
     .tokenomics-grid {
       display: grid;
@@ -532,7 +517,6 @@
       gap: 48px; align-items: start;
     }
 
-    /* Donut chart */
     .donut-wrap {
       display: flex; flex-direction: column;
       align-items: center; gap: 28px;
@@ -568,7 +552,6 @@
     .legend-label { font-size: 13px; color: var(--muted); }
     .legend-pct { font-family: var(--mono); font-size: 12px; color: var(--text); font-weight: 700; }
 
-    /* Tax info */
     .tax-grid {
       display: grid; grid-template-columns: 1fr 1fr;
       gap: 12px; margin-top: 24px;
@@ -593,7 +576,6 @@
       line-height: 1.7; margin-top: 8px;
     }
 
-    /* Right side stats */
     .tokenomics-right { display: flex; flex-direction: column; gap: 16px; }
     .tstat-card {
       background: var(--bg3);
@@ -612,7 +594,6 @@
     }
     .tstat-val.green { color: var(--success); }
 
-    /* LP Tranches */
     .tranches-title {
       font-family: var(--mono); font-size: 11px;
       letter-spacing: 0.08em; text-transform: uppercase;
@@ -630,7 +611,6 @@
     .tranche-mcap { font-size: 11px; color: var(--muted); }
     .tranche-amount { font-family: var(--mono); font-size: 12px; color: var(--gold); }
 
-    /* ── INTERACTIVE TOOLS ── */
     .tools-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -667,7 +647,6 @@
       animation: blink 2s infinite;
     }
 
-    /* Buy Simulator */
     .field { margin-bottom: 16px; }
     .field label {
       display: block; font-size: 11px; font-weight: 700;
@@ -695,7 +674,6 @@
     }
     .sim-result strong { color: var(--gold); }
 
-    /* Wallet panel */
     .wallet-status {
       background: var(--bg3); border: 1px solid var(--border);
       border-radius: 12px; padding: 16px;
@@ -715,7 +693,6 @@
     }
     .connect-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(245,200,66,0.4); }
 
-    /* Rewards info */
     .reward-info {
       background: var(--bg3); border: 1px solid var(--border);
       border-radius: 10px; padding: 14px 16px;
@@ -725,7 +702,6 @@
     .reward-info-val { font-family: var(--mono); font-size: 16px; color: var(--gold); font-weight: 700; margin-top: 4px; }
     .reward-info-val.pending { color: #888; font-size: 13px; }
 
-    /* ── ROADMAP ── */
     .roadmap-section { background: var(--bg2); }
     .roadmap-grid {
       display: grid;
@@ -787,7 +763,6 @@
     .phase-item.pending .icon { color: var(--gold); }
     .phase-item.future .icon { color: var(--muted); }
 
-    /* ── DOCUMENT CENTER ── */
     .docs-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -820,7 +795,6 @@
       color: var(--gold);
     }
 
-    /* Exec summary */
     .exec-box {
       background: var(--bg3); border: 1px solid var(--border);
       border-radius: 16px; padding: 28px;
@@ -838,7 +812,6 @@
     .exec-item i { color: var(--success); flex-shrink: 0; margin-top: 2px; }
     .exec-item strong { color: var(--text); }
 
-    /* ── FAQ ── */
     .faq-list { display: flex; flex-direction: column; gap: 1px; }
     .faq-item {
       background: var(--bg2); border: 1px solid var(--border);
@@ -867,7 +840,6 @@
       font-size: 14px; color: var(--muted); line-height: 1.7;
     }
 
-    /* ── FOOTER ── */
     footer {
       background: var(--bg2);
       border-top: 1px solid var(--border);
@@ -906,14 +878,12 @@
     }
     .footer-contract a { color: var(--gold); text-decoration: none; }
 
-    /* ── SCROLL REVEAL ── */
     .reveal {
       opacity: 0; transform: translateY(24px);
       transition: opacity 0.6s ease, transform 0.6s ease;
     }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
-    /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
       .hero { grid-template-columns: 1fr; grid-template-rows: auto auto auto; padding: 40px 20px; min-height: auto; gap: 40px; }
       .hero-video-left, .hero-video-right { display: none; }
@@ -1010,7 +980,7 @@
     </div>
     <span class="trust-divider">|</span>
     <div class="trust-item">
-      <span class="badge badge-green">✓ KYC VERIFIED</span>
+      <span class="badge badge-green">✓ KYC VERIFIED (same KYC as $MHT)</span>
     </div>
     <span class="trust-divider">|</span>
     <div class="trust-item">
@@ -1038,7 +1008,7 @@
     </div>
   </nav>
 
-  <!-- ANCHOR NAV -->
+  <!-- ANCHOR NAV (liens internes à la page — toujours fonctionnels) -->
   <div class="anchor-nav">
     <a href="#tools" class="an">📊 Dashboard</a>
     <a href="#tokenomics" class="an">🪙 Tokenomics</a>
@@ -1046,38 +1016,47 @@
     <a href="#roadmap" class="an">🗺️ Roadmap</a>
   </div>
 
-  <!-- QUICK LINKS -->
+  <!-- QUICK LINKS — on ne garde visibles que les liens utiles/fonctionnels aujourd'hui.
+       Tout le reste est en commentaire HTML, à réactiver dès que la page/l'adresse existe :
+       il suffit de retirer  autour du bloc concerné. -->
   <div class="quick-links">
     <a href="https://app.uniswap.org/swap?outputCurrency=0x0000000000000000000000000000000000dEaD&chain=robinhood" target="_blank" class="ql ql-highlight">🦄 BUY ON UNISWAP</a>
-    <!-- ⚠️ Dexscreener/Coinbrain/Bubblemaps pointaient vers l'adresse BSC de $MHT — retirés en attendant l'adresse RMHT réelle sur Robinhood Chain -->
-    <a href="#" class="ql" style="opacity:0.5;pointer-events:none;">📊 DEXSCREENER (⚠️ post-launch)</a>
-    <a href="#" class="ql" style="opacity:0.5;pointer-events:none;">🧠 COINBRAIN (⚠️ post-launch)</a>
-    <a href="#" class="ql" style="opacity:0.5;pointer-events:none;">🫧 BUBBLEMAPS (⚠️ post-launch)</a>
-    <a href="#" class="ql" style="opacity:0.5;pointer-events:none;">🛡️ SECURITY SCAN (⚠️ lien public à ajouter)</a>
-    <!-- ⚠️ Les liens pages/* ci-dessous pointent vers le dossier du site $MHT — à confirmer :
-         RMHT partage-t-il ce dossier "pages/" ou a-t-il besoin de ses propres pages dédiées ? -->
+
+    <!--
+    <a href="#" class="ql">📊 DEXSCREENER</a>
+    <a href="#" class="ql">🧠 COINBRAIN</a>
+    <a href="#" class="ql">🫧 BUBBLEMAPS</a>
+    <a href="#" class="ql">🛡️ SECURITY SCAN</a>
+    -->
+
+    <!-- ⚠️ Pages pages/*.html : contenu $MHT pas encore adapté à $RMHT — à décommenter une par une au fur et à mesure de l'adaptation
     <a href="pages/how-it-works-en.html" class="ql">🇬🇧 HOW IT WORKS</a>
     <a href="pages/how-it-works-fr.html" class="ql">🇫🇷 COMMENT ÇA MARCHE</a>
     <a href="pages/roadmap.html" class="ql">🗺️ ROADMAP</a>
     <a href="pages/mht_architecture.html" class="ql">🏗️ ARCHITECTURE</a>
     <a href="pages/why-hold-mht.html" class="ql">📊 WHY HOLD</a>
     <a href="pages/contact.html" class="ql">📩 CONTACT</a>
-    <!-- ⚠️ Pas encore de whitepaper $RMHT dédié — ne pas relier les PDF $MHT ici -->
-    <span class="ql" style="opacity:0.5;">📄 WHITEPAPER EN (soon)</span>
-    <span class="ql" style="opacity:0.5;">📄 WHITEPAPER FR (soon)</span>
+    -->
+
+    <!-- ⚠️ Pas encore de whitepaper $RMHT dédié
+    <span class="ql">📄 WHITEPAPER EN (soon)</span>
+    <span class="ql">📄 WHITEPAPER FR (soon)</span>
+    -->
+
     <a href="https://t.me/Community_Milestone_hodl" target="_blank" class="ql">💬 TELEGRAM</a>
+    <a href="pages/legal.html" class="ql">⚖️ LEGAL NOTICE</a>
   </div>
 
-  <!-- LPP -->
+  <!-- LPP — page pas encore adaptée pour RMHT, en commentaire en attendant
   <div class="quick-links">
     <a href="pages/liquidity-pioneer-en.html" class="ql ql-highlight">🥇 LIQUIDITY PIONEER PROGRAM</a>
   </div>
-  
+  -->
+
   <!-- HERO -->
   <section class="hero">
     <div class="hero-line"></div>
 
-    <!-- En-tête pleine largeur : titre + ticker + sous-titre -->
     <div class="hero-head">
       <h1 class="hero-title-top">🔥ROBINHOOD MILESTONE <span class="gold">HODL</span> TOKEN🔥</h1>
       <div class="mht-ticker">$RMHT</div>
@@ -1113,7 +1092,7 @@
 
       <div class="hero-ctas">
         <a href="https://app.uniswap.org/swap?outputCurrency=0x0000000000000000000000000000000000dEaD&chain=robinhood" target="_blank" class="cta-main">🏹 Buy $RMHT Now</a>
-        <a href="pages/how-it-works-en.html" class="cta-secondary">How it works →</a>
+        <a href="#how" class="cta-secondary">How it works →</a>
       </div>
 
       <div class="hero-stats">
@@ -1142,9 +1121,7 @@
     <div class="hero-video-right">
       <div style="position:relative">
         <div class="video-glow"></div>
-        <div class="video-wrap">
-          <img src="piece_rmht.png" alt="RMHT Coin" style="width:220px;height:220px;object-fit:contain;display:block;border-radius:20px;">
-        </div>
+        <img src="piece_rmht.png" alt="RMHT Coin" style="width:220px;height:220px;object-fit:contain;display:block;border-radius:20px;">
       </div>
     </div>
   </section>
@@ -1161,13 +1138,10 @@
           <div class="donut-container">
             <svg class="donut-svg" viewBox="0 0 100 100">
               <!-- ⚠️ Pourcentages airdrop/marché à ajuster une fois le snapshot final figé (6,5% vs 6,57% vs 6,6%) -->
-              <!-- Smart-Vault 50% -->
               <circle cx="50" cy="50" r="38" fill="none" stroke="#f5c842" stroke-width="12"
                 stroke-dasharray="119.4 238.8" stroke-dashoffset="0" opacity="0.9"/>
-              <!-- Airdrop ~6.5% -->
               <circle cx="50" cy="50" r="38" fill="none" stroke="#00e096" stroke-width="12"
                 stroke-dasharray="15.52 223.24" stroke-dashoffset="-119.4"/>
-              <!-- Marché ~43.5% -->
               <circle cx="50" cy="50" r="38" fill="none" stroke="#5a6478" stroke-width="12"
                 stroke-dasharray="103.86 134.9" stroke-dashoffset="-134.92" opacity="0.7"/>
             </svg>
@@ -1262,8 +1236,7 @@
       <p class="section-sub reveal">Connect your wallet to track rewards. Simulate your investment. All live.</p>
 
       <div class="tools-grid reveal">
-        <!-- Buy Simulator -->
-     <div class="tool-card">
+        <div class="tool-card">
           <div class="tool-title">
             <div class="tool-live"></div>
             BUY SIMULATOR
@@ -1360,8 +1333,7 @@
           </div>
           <div id="calcPlaceholder" class="sim-result" style="justify-content:center;">Enter your holdings to calculate 🚀</div>
         </div>
-  
-        <!-- Wallet -->
+
         <div class="tool-card">
           <div class="tool-title">💼 YOUR ACCOUNT</div>
           <div class="wallet-status">
@@ -1499,7 +1471,7 @@
 
       <div class="docs-grid reveal">
         <div>
-          <!-- ⚠️ Pas encore de whitepaper dédié $RMHT — ne PAS relier les PDF $MHT ici, ils décrivent un autre contrat/tokenomics -->
+          <!-- ⚠️ Pas encore de whitepaper dédié $RMHT — ne PAS relier les PDF $MHT ici -->
           <div class="doc-card" style="margin-bottom:16px;opacity:0.6;cursor:default;pointer-events:none;">
             <span class="doc-icon">🇫🇷</span>
             <div class="doc-title">WHITEPAPER FR</div>
@@ -1543,7 +1515,7 @@
             </div>
           </div>
           <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:20px;flex-wrap:wrap">
-            <!-- ⚠️ Pas de badge SolidProof pour RMHT (celui-ci appartenait à $MHT-BSC) — lien à ajouter dès que le rapport SolidityScan public est disponible -->
+            <!-- ⚠️ Pas de badge SolidProof pour RMHT — lien à ajouter dès que le rapport SolidityScan public est disponible -->
             <a href="#" style="display:inline-flex;align-items:center;gap:10px;padding:12px 20px;border:1px solid rgba(245,200,66,0.3);border-radius:10px;text-decoration:none;color:var(--gold);font-size:13px;font-weight:700;transition:all 0.2s" onmouseover="this.style.background='rgba(245,200,66,0.06)'" onmouseout="this.style.background='transparent'">
               🛡️ SolidityScan <strong>93.13/100</strong> · Foundry 56/56 tests <i class="bi bi-box-arrow-up-right"></i>
             </a>
@@ -1606,7 +1578,7 @@
         <span class="footer-contract">
           <a href="https://robinhoodchain.blockscout.com/token/0x0000000000000000000000000000000000dEaD" target="_blank">⚠️-ADRESSE-RMHT-A-VENIR-⚠️</a>
         </span>
-        <a href="pages/contact.html" style="color:var(--muted);text-decoration:none;font-size:12px">Contact</a>
+        <a href="pages/legal.html" style="color:var(--muted);text-decoration:none;font-size:12px">Legal</a>
       </div>
     </div>
   </footer>
@@ -1624,8 +1596,6 @@
       "function getRMHTPriceInETH() view returns (uint256)",
     ];
 
-    // getRMHTPriceInETH() renvoie un prix en ETH (wei), pas en USD directement —
-    // on récupère le taux ETH/USD via CoinGecko pour convertir.
     async function getETHPriceUSD() {
       try {
         const res  = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd");
@@ -1638,8 +1608,6 @@
       const provider = new ethers.JsonRpcProvider(RPC);
       const contract = new ethers.Contract(CONTRACT, ABI_MIN, provider);
 
-      // Chaque lecture est indépendante : si une fonction reverte sur le contrat,
-      // les autres s'affichent quand même (avant, un seul revert cassait tout le hero).
       const safeCall = async (fn) => { try { return await fn(); } catch(e){ console.warn('call failed:', e); return null; } };
       const [mcapRaw, nextRaw, priceEthRaw, vaultRaw, ethUsd] = await Promise.all([
         safeCall(() => contract.getMarketCap()),
@@ -1654,22 +1622,13 @@
       const priceEth = priceEthRaw != null ? parseFloat(ethers.formatUnits(priceEthRaw, 18)) : NaN;
       const price    = (Number.isFinite(priceEth) && ethUsd) ? priceEth * ethUsd : NaN;
       const vault    = vaultRaw    != null ? parseFloat(ethers.formatUnits(vaultRaw, 18))    : NaN;
-      // Expose pour le simulateur, le calcul walletUsd et le réconciliateur
       window._mhtPrice = price;
       window._mhtMcap  = mcap;
       window._mhtNextMilestone = next;
-      const STEP = 500_000; // pas de milestone RMHT = $500K (pas $1M comme MHT)
+      const STEP = 500_000;
       const prev = next - STEP;
       const pct  = mcap <= prev ? 0 : mcap >= next ? 100 : Math.round(((mcap - prev) / STEP) * 100);
 
-      // NOTE : on n'écrit PLUS le Market Cap depuis loadPublicStats.
-      // getMarketCap() renvoie ici une valeur à la mauvaise échelle (~×1000 trop petit),
-      // ce qui entrait en conflit avec la vraie valeur d'app.js (#market-cap) et faisait
-      // osciller la barre. Source de vérité unique = #market-cap (app.js) ; le
-      // réconciliateur (reconcileDisplays) en dérive statMcap / milestoneBar / mcapDisplay.
-
-
-      // Smart-Vault Balance — tokenomics + panneau wallet (visibles avant connexion)
       if (Number.isFinite(vault)) {
         const vaultFmt = Math.round(vault).toLocaleString("en-US") + " RMHT";
         const vaultTokEl = document.getElementById("vault-balance-tok");
@@ -1678,14 +1637,12 @@
         if (vaultWalEl) vaultWalEl.textContent = vaultFmt;
       }
 
-      // Prix live → champ du Buy Simulator (sinon le simulateur ne calcule jamais)
       const simPriceEl = document.getElementById("buyCurrentPrice");
       if (simPriceEl && price > 0) {
         simPriceEl.value = price.toFixed(8);
         if (typeof calcBuy === "function") calcBuy();
       }
 
-      // Holders via l'API Blockscout de Robinhood Chain (schéma v2 : champ holders_count)
       try {
         const res = await fetch(
           "https://robinhoodchain.blockscout.com/api/v2/tokens/" + CONTRACT
@@ -1707,12 +1664,10 @@
   <script src="music-config.js"></script>
 
   <script>
-    // ── SCROLL REVEAL ──
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting) {
           e.target.classList.add('visible');
-          // Stagger children
           e.target.querySelectorAll('.how-card, .phase-card, .doc-card, .tstat-card').forEach((c, i) => {
             c.style.transitionDelay = (i * 0.08) + 's';
             c.style.opacity = '1';
@@ -1723,16 +1678,6 @@
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-    // ── MCAP PROGRESS BAR ──
-    // NOTE : le Market Cap réel est lu on-chain par loadPublicStats() (script ci-dessus),
-    // qui remplit statMcap / milestoneBar / mcapDisplay / market-cap. On ne réécrit JAMAIS
-    // ces éléments avec une valeur en dur ici (l'ancien fallback 275200 écrasait la
-    // vraie donnée ET détruisait le span #market-cap utilisé par app.js).
-    // Filet de sécurité prix : si loadPublicStats n'a pas encore renseigné buyCurrentPrice
-    // au chargement, on le complète dès que le prix live est disponible.
-    // NOTE : ce filet fait doublon avec celui plus bas (ligne ~1900) qui fait la même
-    // chose pour le même champ — les deux peuvent cohabiter sans conflit (le second
-    // vérifie déjà dataset.userModified), mais un seul suffirait si simplification voulue.
     window.addEventListener('load', () => {
       let tries = 0;
       const iv = setInterval(() => {
@@ -1745,14 +1690,10 @@
       }, 1000);
     });
 
-    // 🟢 DEBUT DE LA LOGIQUE DES SIMULATEURS RESTAURÉE 🟢
-    
-    // ── CONSTANTES ON-CHAIN ET VARIABLES COMMUNES ──
     let currentMilestone = 1;
     const MAX_MILESTONE  = 20;
-    const MHT_CONTRACT_ADDR = '0x0000000000000000000000000000000000dEaD'; // ⚠️ PLACEHOLDER
-    const BSC_RPC_URL       = 'https://rpc.chain.robinhood.com'; // ⚠️ à vérifier sur docs.robinhood.com/chain avant mise en prod
-    // Requête Blockchain pour l'Eligible Supply
+    const MHT_CONTRACT_ADDR = '0x0000000000000000000000000000000000dEaD';
+    const BSC_RPC_URL       = 'https://rpc.chain.robinhood.com';
     async function fetchEligibleSupplyOnChain() {
         try {
             const payload = { jsonrpc:'2.0', id:1, method:'eth_call', params:[{ to: MHT_CONTRACT_ADDR, data:'0xcd415c4a' }, 'latest'] };
@@ -1763,12 +1704,12 @@
                 const el = document.getElementById('calcCirc');
                 if (el && supply > 0) {
                     el.value = Math.round(supply);
-                    calcReward(); // Met à jour le calculateur avec la vraie data
+                    calcReward();
                 }
                 return supply;
             }
         } catch(e) { console.warn('On-chain fetch failed:', e); }
-        return 500000000; // Fallback pré-lancement = supply éligible théorique (43,5% marché + 6,5% airdrop = 50% du supply total 1B)
+        return 500000000;
     }
 
     function getEligibleSupply() {
@@ -1776,7 +1717,6 @@
         return (el && el.value) ? parseFloat(el.value) : 500000000;
     }
 
-    // Calcul du Vault asymptotique (1,5% du solde restant, tous les 500 000$ MCap — RMHT, pas de floor/cap contrairement à MHT)
     function vaultReleaseFor(vaultBalance) {
         return vaultBalance * 0.015;
     }
@@ -1785,7 +1725,6 @@
         return (n * 500000) / 1000000000;
     }
 
-    // ── LE VRAI BUY SIMULATOR (AVEC TAXES) ──
     function calcBuy() {
         const usd         = parseFloat(document.getElementById('buyUSD').value) || 0;
         const targetPrice = parseFloat(document.getElementById('buyTargetPrice').value) || 0;
@@ -1797,11 +1736,11 @@
 
         if (usd <= 0 || curPrice <= 0) { result.style.display='none'; placeholder.style.display='flex'; return; }
 
-        const taxRate     = 0; // $RMHT n'a AUCUNE taxe buy/sell (contrairement à $MHT) — fees captées via le contrat custodian sur la position LP, pas sur le token
+        const taxRate     = 0;
         const mhtReceived = (usd / curPrice) * (1 - taxRate);
         const circ        = getEligibleSupply();
         const sharePct    = mhtReceived / circ;
-        const rewardPool  = vaultReleaseFor(500000000); // 100% aux holders sur RMHT, pas de split 70/30
+        const rewardPool  = vaultReleaseFor(500000000);
         const mhtReward   = sharePct * rewardPool;
 
         result.style.display      = 'block';
@@ -1825,7 +1764,6 @@
         }
     }
 
-    // ── LE VRAI REWARD CALCULATOR (AVEC BOUCLE LONG TERME) ──
     function updateMilestoneUI() {
         document.getElementById('milestoneLabel').textContent = 'Milestone #' + currentMilestone;
         document.getElementById('milestoneMcap').textContent  = '$' + (currentMilestone * 500000).toLocaleString('en-US') + ' MCap';
@@ -1860,13 +1798,12 @@
 
         const sharePct = mht / circ;
 
-        // Le coeur du Smart-Vault : La boucle asymptotique
         let vault       = 500000000;
         let totalReward = 0;
         let rewardAtN   = 0;
         for (let i = 1; i <= n; i++) {
             const release    = vaultReleaseFor(vault);
-            const holderPool = release; // 100% aux holders sur RMHT (pas de split 70/30 comme MHT)
+            const holderPool = release;
             const reward     = sharePct * holderPool;
             totalReward     += reward;
             if (i === n) rewardAtN = reward;
@@ -1889,12 +1826,11 @@
         placeholder.style.display = 'none';
     }
 
-    // ── INITIALISATION ET ÉCOUTEURS ──
     window.addEventListener('load', () => {
         const circEl = document.getElementById('calcCirc');
         if (circEl && !circEl.value) circEl.value = 500000000;
         fetchEligibleSupplyOnChain();
-        setInterval(fetchEligibleSupplyOnChain, 60000); // Mise à jour de la supply chaque minute
+        setInterval(fetchEligibleSupplyOnChain, 60000);
 
         let tries = 0;
         const iv = setInterval(() => {
@@ -1916,10 +1852,7 @@
 
         updateMilestoneUI();
     });
-    // 🔴 FIN DE LA LOGIQUE DES SIMULATEURS RESTAURÉE 🔴 
 
-
-    // connectWallet géré par le modal wallet ci-dessous
   </script>
 
 
@@ -2002,7 +1935,6 @@
 
   <!-- WALLET MODAL + MUSIC LOGIC -->
   <script>
-    // ── WALLET MODAL ──────────────────────────────────────────────────────────
     const modal         = document.getElementById('walletModal');
     const closeModalBtn = document.getElementById('closeModal');
     const walletOptions = document.getElementById('walletOptions');
@@ -2049,7 +1981,6 @@
       const qrContainer = document.getElementById('qrCodeContainer');
       qrContainer.innerHTML = '<p style="color:#334155;font-size:0.7rem">Generating QR…</p>';
       try {
-        // ⚠️ URL à confirmer avec og:url en tête de fichier
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent('https://rmht.apexpad.io/')}&bgcolor=ffffff&color=0f172a`;
         qrContainer.innerHTML = `<img src="${qrUrl}" style="width:180px;height:180px;border-radius:8px" alt="QR"><p style="color:#64748b;font-size:0.65rem;margin-top:8px"><em style="color:#f5c842">WalletConnect v2 — Coming soon</em></p>`;
       } catch(e) { qrContainer.innerHTML = '<p style="color:#ef4444;font-size:0.75rem">QR error</p>'; }
@@ -2074,26 +2005,20 @@
       const provider = new ethers.BrowserProvider(ethereumProvider);
       const signer   = await provider.getSigner();
       const address  = await signer.getAddress();
-      // Le switch/ajout de réseau (Robinhood Chain, pas BSC) est géré par
-      // ensureRobinhoodChain() dans app_rmht.js — pas de logique dupliquée ici.
-      // Mettre à jour UI
       const short = address.slice(0,6)+'…'+address.slice(-4);
       connectBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>'+short;
       connectBtn.style.background = 'linear-gradient(135deg,#00e096,#00b87a)';
       window._mhtConnected = true;
-      // Mettre à jour wallet panel
       document.getElementById('walletAddr').textContent = short;
       document.getElementById('connectBtn').textContent = '✓ Connected';
       document.getElementById('connectBtn').style.background = 'linear-gradient(135deg,#00e096,#00b87a)';
       const claimBtnEl = document.getElementById('claimBtn');
       if (claimBtnEl) claimBtnEl.style.display = 'block';
-      // Lancer app_rmht.js (bascule sur Robinhood Chain incluse)
       if (typeof window.initRMHT === 'function') await window.initRMHT(provider, signer, address);
       ethereumProvider.on('accountsChanged', ()=>location.reload());
       ethereumProvider.on('chainChanged', ()=>location.reload());
     }
 
-    // Auto-connect si déjà connecté
     window.addEventListener('DOMContentLoaded', () => {
       if (window.ethereum && window.ethereum.selectedAddress) {
         const p = new ethers.BrowserProvider(window.ethereum);
@@ -2107,7 +2032,6 @@
       }
     });
 
-    // ── MUSIC WIDGET ──────────────────────────────────────────────────────────
     let musicOpen = false;
     let musicLoaded = false;
     function toggleMusic() {
@@ -2116,9 +2040,6 @@
       const btn    = document.getElementById('musicToggle');
       const iframe = document.getElementById('scWidget');
       if (musicOpen) {
-        // Charge l'iframe au 1er clic. On teste un drapeau, PAS iframe.src :
-        // un <iframe src=""> renvoie l'URL de la page via .src, donc l'ancien
-        // test (iframe.src === '') était toujours faux → l'iframe ne se chargeait jamais.
         if (!musicLoaded && typeof SOUNDCLOUD_URL !== 'undefined') {
           iframe.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(SOUNDCLOUD_URL) + '&color=%23f5c842&auto_play=true&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false';
           musicLoaded = true;
@@ -2135,12 +2056,6 @@
   </script>
 
   <script>
-    // ── RÉCONCILIATEUR D'AFFICHAGE ────────────────────────────────────────────
-    // app.js (inchangé) remplit #mht-balance, #market-cap, #vault-balance.
-    // Ici on alimente les éléments du nouveau design qu'app.js ne connaît pas :
-    //   • #walletUsd  (valeur USD du solde, restait figé à "$0.00")
-    //   • #vault-balance-tok (vault des tokenomics, restait figé à "— MHT")
-    // Parse robuste des nombres formatés fr-FR ("1 234,56" → 1234.56).
     function parseFrNumber(txt) {
       if (!txt) return NaN;
       return parseFloat(
@@ -2148,7 +2063,6 @@
       );
     }
     function reconcileDisplays() {
-      // walletUsd = solde MHT × prix live
       const balEl = document.getElementById("mht-balance");
       const usdEl = document.getElementById("walletUsd");
       if (balEl && usdEl && window._mhtPrice > 0) {
@@ -2161,16 +2075,11 @@
           });
         }
       }
-      // Miroir vault wallet → vault tokenomics
       const vWal = document.getElementById("vault-balance");
       const vTok = document.getElementById("vault-balance-tok");
       if (vWal && vTok && vWal.textContent && !/^[—-]/.test(vWal.textContent.trim())) {
         vTok.textContent = vWal.textContent;
       }
-      // ── Market Cap : source de vérité UNIQUE = #market-cap (rempli par app.js) ──
-      // On en dérive TOUJOURS le hero (stat + label + barre). #market-cap est au format
-      // ANGLAIS ($276,826 → virgule = milliers), donc on NE PEUT PAS utiliser
-      // parseFrNumber (format français) : on enlève simplement $, espaces et virgules.
       const mcEl   = document.getElementById("market-cap");
       const statEl = document.getElementById("statMcap");
       const dispEl = document.getElementById("mcapDisplay");
@@ -2184,9 +2093,6 @@
           if (statEl) statEl.textContent = compact;
           if (dispEl) dispEl.textContent = compact;
           if (barEl) {
-            // Pas de milestone RMHT = $500K (pas $1M comme MHT). On utilise le vrai
-            // nextMilestoneUSD on-chain (window._mhtNextMilestone) quand disponible,
-            // sinon on le déduit du MCap courant.
             const STEP = 500000;
             const nextMs = (Number.isFinite(window._mhtNextMilestone) && window._mhtNextMilestone > mc)
               ? window._mhtNextMilestone
@@ -2203,52 +2109,6 @@
     window.addEventListener("load", () => setTimeout(reconcileDisplays, 2000));
   </script>
 <script src="js/disclaimer.js"></script>
-<!-- ============================================================
-     $RMHT legal disclaimer popup — paste this block just before
-     the closing </body> tag on every page of the RMHT site.
-     Update the href below if your legal page has a different name.
-     ============================================================ -->
-<div id="rmht-legal-banner" style="
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 9999;
-  background: #0d140d; border-top: 1px solid #2a3a2a;
-  color: #e8e8e0; font-family: 'Segoe UI', Arial, sans-serif;
-  padding: 16px 20px; display: none;
-  box-shadow: 0 -4px 16px rgba(0,0,0,0.4);
-">
-  <div style="max-width: 980px; margin: 0 auto; display: flex; flex-wrap: wrap;
-              align-items: center; justify-content: space-between; gap: 16px;">
-    <p style="margin: 0; font-size: 14px; flex: 1 1 420px;">
-      $RMHT is an experimental digital asset. Nothing here is financial advice, and no
-      returns or value are guaranteed. By using this site you accept our
-      <a href="legal.html" style="color:#7fbf6a;">Legal Notice &amp; Disclaimer</a>.
-    </p>
-    <button id="rmht-legal-accept" style="
-      background: #7fbf6a; color: #0d140d; border: none; border-radius: 6px;
-      padding: 10px 20px; font-weight: 600; cursor: pointer; flex: 0 0 auto;
-    ">Got it</button>
-  </div>
-</div>
 
-<script>
-(function () {
-  var KEY = 'rmht_legal_ack_v1';
-  var banner = document.getElementById('rmht-legal-banner');
-  var btn = document.getElementById('rmht-legal-accept');
-  try {
-    if (!localStorage.getItem(KEY)) {
-      banner.style.display = 'block';
-    }
-  } catch (e) {
-    // localStorage unavailable (e.g. private mode) — show banner anyway
-    banner.style.display = 'block';
-  }
-  btn.addEventListener('click', function () {
-    banner.style.display = 'none';
-    try { localStorage.setItem(KEY, '1'); } catch (e) {}
-  });
-})();
-</script>
-
-  
 </body>
 </html>
