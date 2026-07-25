@@ -1588,7 +1588,7 @@
   // ── CHARGEMENT PUBLIC MCap + Holders (sans wallet) ──────────────────────────
   (async function loadPublicStats() {
     const CONTRACT = "0x0000000000000000000000000000000000dEaD"; // ⚠️ PLACEHOLDER — remplacer par l'adresse RMHT mainnet réelle
-    const RPC      = "https://rpc.chain.robinhood.com"; // ⚠️ à vérifier/actualiser sur docs.robinhood.com/chain avant mise en prod — Robinhood Chain, PAS BSC
+    const RPC      = "https://rpc.mainnet.chain.robinhood.com"; // ⚠️ à vérifier/actualiser sur docs.robinhood.com/chain avant mise en prod — Robinhood Chain, PAS BSC
     const ABI_MIN  = [
       "function getMarketCap() view returns (uint256)",
       "function nextMilestoneUSD() view returns (uint256)",
@@ -1693,7 +1693,7 @@
     let currentMilestone = 1;
     const MAX_MILESTONE  = 20;
     const MHT_CONTRACT_ADDR = '0x0000000000000000000000000000000000dEaD';
-    const BSC_RPC_URL       = 'https://rpc.chain.robinhood.com';
+    const BSC_RPC_URL       = 'https://rpc.mainnet.chain.robinhood.com';
     async function fetchEligibleSupplyOnChain() {
         try {
             const payload = { jsonrpc:'2.0', id:1, method:'eth_call', params:[{ to: MHT_CONTRACT_ADDR, data:'0xcd415c4a' }, 'latest'] };

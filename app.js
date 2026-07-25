@@ -25,7 +25,7 @@ const CONFIG = {
     chainId           : 4663,
     chainIdHex        : "0x1237", // 4663 en hexadécimal, requis pour wallet_switchEthereumChain / wallet_addEthereumChain
     chainName         : "Robinhood Chain",
-    rpcUrl            : "https://rpc.chain.robinhood.com", // ⚠️ à vérifier/actualiser sur docs.robinhood.com/chain avant mise en prod
+    rpcUrl            : "https://rpc.mainnet.chain.robinhood.com", // RPC public officiel mainnet, confirmé sur docs.robinhood.com/chain
     explorerUrl       : "https://robinhoodchain.blockscout.com/tx/",
     explorerAddressUrl: "https://robinhoodchain.blockscout.com/address/",
     nativeCurrency    : { name: "Ether", symbol: "ETH", decimals: 18 },
