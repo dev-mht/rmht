@@ -17,17 +17,23 @@
 //      vers RMHTLiquidityCustodian pour la transparence sur les fees LP
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ⚠️⚠️⚠️ MODE TESTNET TEMPORAIRE ⚠️⚠️⚠️
+// Ce CONFIG pointe actuellement sur Robinhood Chain TESTNET (contrat réellement déployé,
+// vérifié le 11/07/2026), pour permettre au dashboard d'afficher de vraies données pendant
+// la Phase 2 (mainnet en préparation). Les tokens/adresses ci-dessous n'ont AUCUNE valeur
+// réelle. À la bascule mainnet : remplacer contractAddress/custodianAddress par les
+// adresses mainnet réelles, chainId par 4663, chainIdHex par "0x1237", rpcUrl par
+// "https://rpc.mainnet.chain.robinhood.com", et les explorerUrl/explorerAddressUrl par
+// robinhoodchain.blockscout.com (sans "testnet.").
 const CONFIG = {
-    // ⚠️ Adresse à renseigner une fois le contrat déployé sur Robinhood Chain mainnet.
-    // Ne JAMAIS pointer ce champ vers l'adresse testnet en production.
-    contractAddress   : "0x0000000000000000000000000000000000dEaD", // ⚠️ PLACEHOLDER — À REMPLACER
-    custodianAddress  : "0x0000000000000000000000000000000000dEaD", // ⚠️ PLACEHOLDER — À REMPLACER (RMHTLiquidityCustodian)
-    chainId           : 4663,
-    chainIdHex        : "0x1237", // 4663 en hexadécimal, requis pour wallet_switchEthereumChain / wallet_addEthereumChain
-    chainName         : "Robinhood Chain",
-    rpcUrl            : "https://rpc.mainnet.chain.robinhood.com", // RPC public officiel mainnet, confirmé sur docs.robinhood.com/chain
-    explorerUrl       : "https://robinhoodchain.blockscout.com/tx/",
-    explorerAddressUrl: "https://robinhoodchain.blockscout.com/address/",
+    contractAddress   : "0xf649F034Bc4e65B0035f69dC1624Aed4588f1D1c", // Contrat RMHT — TESTNET
+    custodianAddress  : "0xd81AD39405579656f3E529195cfDf06cdE8b1DA3", // RMHTLiquidityCustodian — TESTNET (vérifié 11/07/2026)
+    chainId           : 46630, // Robinhood Chain TESTNET (confirmé docs.robinhood.com/chain + chainid.network)
+    chainIdHex        : "0xB626", // 46630 en hexadécimal
+    chainName         : "Robinhood Chain Testnet",
+    rpcUrl            : "https://rpc.testnet.chain.robinhood.com", // RPC public testnet officiel, gratuit, sans clé API
+    explorerUrl       : "https://explorer.testnet.chain.robinhood.com/tx/",
+    explorerAddressUrl: "https://explorer.testnet.chain.robinhood.com/address/",
     nativeCurrency    : { name: "Ether", symbol: "ETH", decimals: 18 },
 };
 
