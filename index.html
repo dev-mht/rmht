@@ -27,9 +27,9 @@
 
   <style>
     :root {
-      --bg:       #07090e;
-      --bg2:      #0c0f18;
-      --bg3:      #111520;
+      --bg:       rgba(10,18,7,0.75);
+      --bg2:      rgba(14,26,10,0.86);
+      --bg3:      rgba(21,38,14,0.88);
       --border:   rgba(245,200,66,0.12);
       --gold:     #f5c842;
       --gold2:    #ffde7a;
@@ -48,7 +48,7 @@
 
     body {
       background:
-      linear-gradient(rgba(7,9,14,0.55), rgba(7,9,14,0.65)),
+      linear-gradient(rgba(8,14,6,0.45), rgba(8,14,6,0.7)),
       url('fond-bg.jpg') center top / cover no-repeat fixed;
       color: var(--text);
       font-family: var(--body);
@@ -70,7 +70,7 @@
 
     /* ── TOP TRUST BAR ── */
     .trust-bar {
-      background: linear-gradient(90deg, #0c0f18, #111520, #0c0f18);
+      background: linear-gradient(90deg, rgba(14,26,10,0.92), rgba(21,38,14,0.92), rgba(14,26,10,0.92));
       border-bottom: 1px solid var(--border);
       padding: 8px 24px;
       display: flex; align-items: center; justify-content: center;
@@ -93,7 +93,7 @@
     /* ── NAVBAR ── */
     nav.main-nav {
       position: sticky; top: 0; z-index: 200;
-      background: rgba(7,9,14,0.92);
+      background: rgba(9,17,7,0.82);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
       padding: 0 32px;
@@ -349,7 +349,7 @@
     .mcap-value { color: var(--gold); }
     .progress-track {
       height: 30px;
-      background: #0f172a;
+      background: rgba(14,26,10,0.9);
       border: 1px solid rgba(255,255,255,0.06);
       border-radius: 50px;
       overflow: hidden;
@@ -908,12 +908,12 @@
         ═══════════════════════════════════════════════ */
         .wallet-modal-overlay {
             display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+            background: rgba(4,10,3,0.78); backdrop-filter: blur(6px);
             z-index: 9999; align-items: center; justify-content: center;
         }
         .wallet-modal-overlay.active { display: flex; }
         .wallet-modal {
-            background: #1e293b; border: 1px solid rgba(59,130,246,0.3);
+            background: #16240f; border: 1px solid rgba(245,200,66,0.25);
             border-radius: 24px; padding: 32px; width: 100%; max-width: 420px;
             box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 40px rgba(59,130,246,0.1);
             animation: modalSlideIn 0.25s ease;
@@ -957,10 +957,10 @@
         #musicToggle:hover { transform:scale(1.1); }
         #musicToggle.playing { animation:pulse-music 2s infinite; }
         @keyframes pulse-music { 0%,100%{box-shadow:0 4px 20px rgba(245,200,66,0.4);}50%{box-shadow:0 4px 30px rgba(245,200,66,0.8);} }
-        #musicWidget { display:none; border-radius:16px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,0.5); border:1px solid rgba(245,200,66,0.2); background:#1a1a2e; min-width:280px; }
+        #musicWidget { display:none; border-radius:16px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,0.5); border:1px solid rgba(245,200,66,0.2); background:#16240f; min-width:280px; }
         #musicWidget.open { display:block; }
-        #musicLabel { background:linear-gradient(135deg,#1a1a2e,#0f0f1a); color:#f5c842; font-size:11px; font-weight:700; letter-spacing:0.08em; padding:10px 14px; border-bottom:1px solid rgba(245,200,66,0.15); font-family:'Space Mono',monospace; }
-        #musicLabel { background:linear-gradient(45deg,#1e293b,#0f172a); padding:6px 12px; font-size:0.7rem; color:#94a3b8; text-align:center; border-bottom:1px solid rgba(255,255,255,0.05); font-family:'Space Mono',monospace; letter-spacing:1px; }
+        #musicLabel { background:linear-gradient(135deg,#16240f,#0a120a); color:#f5c842; font-size:11px; font-weight:700; letter-spacing:0.08em; padding:10px 14px; border-bottom:1px solid rgba(245,200,66,0.15); font-family:'Space Mono',monospace; }
+        #musicLabel { background:linear-gradient(45deg,#1c3012,#0e1a09); padding:6px 12px; font-size:0.7rem; color:#94a3b8; text-align:center; border-bottom:1px solid rgba(255,255,255,0.05); font-family:'Space Mono',monospace; letter-spacing:1px; }
 
         /* Cooldown badges */
         .info-badge { display:inline-block; font-size:0.72rem; padding:4px 10px; border-radius:20px; margin-top:6px; }
@@ -973,7 +973,7 @@
 <body>
 
   <!-- ECOSYSTEM NOTICE — cross-link vers le site officiel $MHT, même équipe -->
-  <div style="background:linear-gradient(90deg,#111520,#1a1f2e,#111520);border-bottom:1px solid rgba(245,200,66,0.25);padding:10px 20px;text-align:center;font-family:'Space Mono',monospace;font-size:12px;color:#e8ecf4;letter-spacing:0.01em;">
+  <div style="background:linear-gradient(90deg,rgba(21,38,14,0.92),rgba(28,48,18,0.92),rgba(21,38,14,0.92));border-bottom:1px solid rgba(245,200,66,0.25);padding:10px 20px;text-align:center;font-family:'Space Mono',monospace;font-size:12px;color:#e8ecf4;letter-spacing:0.01em;">
     🏛️ <strong>Official ecosystem notice:</strong> $RMHT is developed and maintained by the same team as <a href="https://milestonehodl.apexpad.io" target="_blank" rel="noopener" style="color:#f5c842;font-weight:700;text-decoration:underline;">$MHT — Milestone HODL Token</a> (original deployment on BNB Chain).
   </div>
 
@@ -1152,7 +1152,7 @@
                 stroke-dasharray="103.86 134.9" stroke-dashoffset="-134.92" opacity="0.7"/>
             </svg>
             <div class="donut-center">
-              <img src="piece_rmht.png" alt="RMHT" style="width:168px;height:168px;object-fit:contain;border-radius:50%;border:2px solid rgba(245,200,66,0.35);box-shadow:0 0 28px rgba(245,200,66,0.25);background:#0c0f18;">
+              <img src="piece_rmht.png" alt="RMHT" style="width:168px;height:168px;object-fit:contain;border-radius:50%;border:2px solid rgba(245,200,66,0.35);box-shadow:0 0 28px rgba(245,200,66,0.25);background:rgba(14,26,10,0.9);">
             </div>
           </div>
           <div class="donut-legend">
@@ -1979,9 +1979,18 @@
     backFromQR.addEventListener('click', showOptions);
 
     document.getElementById('btnMetaMask').addEventListener('click', async () => {
-      if (!window.ethereum || !window.ethereum.isMetaMask) { window.open('https://metamask.io/download/','_blank'); closeModalFn(); return; }
+      // Détection robuste : quand plusieurs wallets sont installés (Coinbase Wallet,
+      // Trust, etc.), window.ethereum ne pointe pas toujours vers MetaMask et
+      // window.ethereum.isMetaMask peut être absent même si MetaMask est bien présent.
+      // On regarde d'abord window.ethereum.providers (EIP-5749 multi-provider),
+      // puis window.ethereum lui-même, avant de conclure que rien n'est installé.
+      const injected  = window.ethereum;
+      const mmProvider = injected?.providers?.find(p => p.isMetaMask)
+                       || (injected?.isMetaMask ? injected : null)
+                       || injected; // dernier recours : tenter avec le provider injecté tel quel
+      if (!mmProvider) { window.open('https://metamask.io/download/','_blank'); closeModalFn(); return; }
       showLoading('Opening MetaMask…');
-      try { await connectWithEthereum(window.ethereum); closeModalFn(); }
+      try { await connectWithEthereum(mmProvider); closeModalFn(); }
       catch(e) { showOptions(); if(e.code!==4001) alert('MetaMask error: '+e.message); }
     });
 
