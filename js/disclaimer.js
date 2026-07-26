@@ -1,6 +1,6 @@
 /**
  * disclaimer.js
- * Blocking legal disclaimer popup for Robinhood Milestone HODL Token ($RMHT).
+ * Blocking legal disclaimer popup for R Milestone HODL Token ($RMHT).
  * - Shows on every page load until the user has accepted.
  * - No close button, no click-outside-to-close, no ESC dismissal.
  * - "I Accept" button stays disabled until ALL checkboxes are checked.

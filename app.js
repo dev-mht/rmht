@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-//  RMHT — Robinhood Milestone HODL Token — app.js V1.0
+//  RMHT — R Milestone HODL Token — app.js V1.0
 //  Contrat V1.0 Robinhood Chain Mainnet : ⚠️ À COMPLÉTER après déploiement mainnet
 //  Adapté depuis app.js MHT (BSC V2.3) — changements :
 //    - Nouvelle chaîne : Robinhood Chain (chainId 4663) au lieu de BSC (56)
