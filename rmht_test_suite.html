@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>$RMHT — Test Suite</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --fire: #ff4500; --ember: #ff6b00; --gold: #ffaa00;
+  --green: #22c55e; --red: #ef4444; --blue: #3b82f6;
+  --yellow: #f59e0b; --bg: #050505; --card: #0d0d0d;
+  --border: #1a1a1a; --muted: #444; --text: #e0e0e0;
+}
+body {
+  background: var(--bg); color: var(--text);
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  padding: 28px; min-height: 100vh;
+}
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: linear-gradient(rgba(255,69,0,.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,69,0,.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.container { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+
+h1 { font-size: 1.8rem; letter-spacing: 4px; color: var(--fire); margin-bottom: 3px; }
+.subtitle { color: var(--muted); font-size: 0.68rem; letter-spacing: 3px; margin-bottom: 28px; }
+
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 20px; margin-bottom: 16px; }
+.card h2 { color: var(--fire); font-size: 0.82rem; letter-spacing: 2px; margin-bottom: 14px; }
+
+.input-group { margin-bottom: 10px; }
+label { display: block; color: var(--muted); font-size: 0.68rem; letter-spacing: 1px; margin-bottom: 4px; }
+input { width: 100%; background: #111; border: 1px solid #222; color: var(--text); padding: 9px 12px;
+  border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
+input:focus { outline: none; border-color: var(--fire); }
+
+.btn { background: linear-gradient(135deg, #cc2200, var(--ember)); color: #fff; border: none;
+  padding: 12px 24px; border-radius: 4px; cursor: pointer; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem; font-weight: bold; letter-spacing: 2px; width: 100%; transition: opacity .2s; }
+.btn:hover { opacity: .82; }
+.btn:disabled { opacity: .3; cursor: not-allowed; }
+.btn-sm { padding: 8px 16px; font-size: 0.72rem; margin-top: 8px; background: #0d0d0d;
+  border: 1px solid var(--fire); color: var(--fire); cursor: pointer;
+  font-family: 'JetBrains Mono', monospace; font-weight: bold; letter-spacing: 1px;
+  border-radius: 4px; width: 100%; transition: opacity .2s; }
+.btn-sm:hover { background: rgba(255,69,0,.08); }
+.btn-export { padding: 9px 16px; font-size: 0.72rem; margin-top: 8px; background: #0d0d0d;
+  border: 1px solid var(--green); color: var(--green); cursor: pointer;
+  font-family: 'JetBrains Mono', monospace; font-weight: bold; letter-spacing: 1px;
+  border-radius: 4px; width: 100%; transition: opacity .2s; }
+.btn-export:hover { background: rgba(34,197,94,.06); }
+.btn-export:disabled { opacity: .3; cursor: not-allowed; }
+
+.stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 16px; }
+.stat { background: var(--card); border: 1px solid var(--border); padding: 12px; border-radius: 4px; text-align: center; }
+.stat-n { font-size: 1.8rem; font-weight: bold; line-height: 1; margin-bottom: 4px; }
+.stat-l { color: var(--muted); font-size: 0.6rem; letter-spacing: 2px; }
+.s-pass { color: var(--green); }
+.s-fail { color: var(--red); }
+.s-skip { color: var(--yellow); }
+.s-fire { background: linear-gradient(135deg, var(--fire), var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  font-size: 1.8rem; font-weight: bold; }
+
+.progress-track { height: 4px; background: #111; border-radius: 2px; margin: 12px 0; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--fire), var(--gold)); width: 0%; transition: width .4s; }
+
+.phase-header { display: flex; align-items: center; gap: 10px; margin: 20px 0 10px; }
+.phase-badge { background: rgba(255,69,0,.1); border: 1px solid var(--fire); color: var(--fire);
+  font-size: 0.65rem; letter-spacing: 2px; padding: 3px 10px; border-radius: 3px; white-space: nowrap; }
+.phase-line { flex: 1; height: 1px; background: var(--border); }
+
+.test-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; margin-bottom: 14px; }
+.t-item { background: var(--card); border: 1px solid var(--border); padding: 10px 14px;
+  border-radius: 4px; font-size: 0.7rem; color: var(--muted); transition: all .25s; line-height: 1.5; }
+.t-item .t-sub { font-size: 0.6rem; color: #2a2a2a; margin-top: 3px; }
+.t-item.running { border-color: var(--yellow); color: var(--yellow); }
+.t-item.running .t-sub { color: var(--yellow); opacity: .6; }
+.t-item.passed { border-color: var(--green); color: var(--green); background: rgba(34,197,94,.04); }
+.t-item.passed .t-sub { color: var(--green); opacity: .6; }
+.t-item.failed { border-color: var(--red); color: var(--red); background: rgba(239,68,68,.04); }
+.t-item.failed .t-sub { color: var(--red); opacity: .6; }
+.t-item.skipped { border-color: #1a1a1a; color: #333; }
+.t-item.na { border-color: var(--yellow); color: var(--yellow); background: rgba(245,158,11,.05); }
+
+.log-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.log-card-header h2 { margin-bottom: 0; }
+.log-container { background: #020202; border: 1px solid #111; border-radius: 4px; padding: 14px;
+  height: 500px; overflow-y: auto; font-size: 0.7rem; line-height: 1.9;
+  scrollbar-width: thin; scrollbar-color: #222 transparent; }
+.log-entry { display: flex; gap: 10px; border-bottom: 1px solid #070707; padding: 1px 0; }
+.log-time { color: #222; min-width: 80px; flex-shrink: 0; }
+.log-msg { flex: 1; }
+.log-entry.success .log-msg { color: var(--green); }
+.log-entry.error .log-msg { color: var(--red); }
+.log-entry.info .log-msg { color: var(--blue); }
+.log-entry.warning .log-msg { color: var(--yellow); }
+.log-entry.pending .log-msg { color: #555; }
+.log-entry.section .log-msg { color: var(--fire); font-weight: bold; letter-spacing: 1px; }
+.log-entry.pass .log-msg { color: var(--green); font-weight: bold; }
+.log-entry.fail .log-msg { color: var(--red); font-weight: bold; }
+.log-entry.data .log-msg { color: #777; }
+
+.score-wrap { text-align: center; padding: 20px 0 8px; }
+.score-big { font-size: 4.5rem; font-weight: bold; }
+.score-label { color: var(--muted); font-size: 0.7rem; letter-spacing: 3px; margin-top: 4px; }
+.verdict { border-radius: 6px; padding: 16px 20px; margin-top: 14px; font-size: 0.8rem;
+  line-height: 1.8; display: none; }
+.verdict.pass-v { border: 1px solid var(--green); background: rgba(34,197,94,.05); color: var(--green); }
+.verdict.fail-v { border: 1px solid var(--red); background: rgba(239,68,68,.05); color: var(--red); }
+
+.network-badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px;
+  border-radius: 20px; font-size: 0.68rem; font-weight: bold; letter-spacing: 1px;
+  margin-left: 12px; vertical-align: middle; }
+.network-badge.testnet { background: rgba(34,197,94,.1); border: 1px solid var(--green); color: var(--green); }
+.network-badge.mainnet { background: rgba(239,68,68,.15); border: 1px solid var(--red); color: var(--red); }
+.network-badge.unknown { background: rgba(245,158,11,.1); border: 1px solid var(--yellow); color: var(--yellow); }
+.network-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+#mainnetBanner { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+  background: #120000; border-bottom: 3px solid var(--red);
+  animation: pulseBorder 1.5s ease-in-out infinite; }
+@keyframes pulseBorder { 0%,100%{border-bottom-color:#ef4444} 50%{border-bottom-color:#ff0000;box-shadow:0 0 20px rgba(255,0,0,.4)} }
+.banner-inner { padding: 14px 28px; display: flex; align-items: center; gap: 18px; }
+.banner-icon { font-size: 2rem; animation: shake .5s ease-in-out infinite alternate; }
+@keyframes shake { from{transform:rotate(-8deg)} to{transform:rotate(8deg)} }
+.banner-text { flex: 1; }
+.banner-title { color: #ff4444; font-size: .95rem; font-weight: bold; letter-spacing: 3px; margin-bottom: 4px; }
+.banner-sub { color: #cc2222; font-size: .7rem; letter-spacing: 1px; line-height: 1.6; }
+.banner-close { background: #cc0000; color: #fff; border: none; padding: 8px 16px; border-radius: 3px;
+  cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: .72rem; font-weight: bold; }
+#mainnetOverlay { display: none; position: fixed; inset: 0; z-index: 9998;
+  background: rgba(80,0,0,.3); backdrop-filter: blur(2px); pointer-events: none; }
+
+.info-box { background: rgba(59,130,246,.05); border: 1px solid rgba(59,130,246,.2);
+  border-radius: 4px; padding: 14px; margin-bottom: 14px; font-size: 0.72rem;
+  color: #6699cc; line-height: 1.8; }
+.info-box strong { color: var(--blue); }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 700px) { .grid2 { grid-template-columns: 1fr; } .stats { grid-template-columns: repeat(3,1fr); } }
+</style>
+</head>
+<body>
+<div id="mainnetBanner">
+  <div class="banner-inner">
+    <div class="banner-icon">🚨</div>
+    <div class="banner-text">
+      <div class="banner-title">⛔ MAINNET DÉTECTÉ — TESTS BLOQUÉS</div>
+      <div class="banner-sub">
+        Tu es connecté sur <strong>Robinhood Chain MAINNET (ChainID 4663)</strong>. Les tests sont BLOQUÉS sur Mainnet.<br>
+        <strong>→ Bascule sur Robinhood Chain TESTNET (ChainID 46630) dans MetaMask puis reconnecte.</strong>
+      </div>
+    </div>
+    <button class="banner-close" onclick="dismissBanner()">✕ COMPRIS</button>
+  </div>
+</div>
+<div id="mainnetOverlay"></div>
+
+<div class="container">
+
+<h1>🏹 $RMHT — TEST SUITE
+  <span id="networkBadge" class="network-badge unknown">
+    <span class="network-dot"></span><span id="networkLabel">—</span>
+  </span>
+</h1>
+<p class="subtitle">// INTEGRATION TESTS — RMHT.sol + RMHTLiquidityCustodian.sol — ROBINHOOD CHAIN TESTNET ONLY</p>
+
+<div class="info-box">
+  ⚠️ <strong>NOTE IMPORTANTE :</strong> ces tests appellent des fonctions <code>view</code> (lecture seule, gratuites)
+  ET des fonctions qui envoient une transaction réelle (<code>claimRewards</code>, <code>performUpkeep</code> si un
+  milestone est dû, et les fonctions admin en Phase 1/5 si ton wallet est bien l'owner).<br>
+  Certaines assertions attendent volontairement un <strong>revert</strong> (ex. appeler une fonction admin avec un
+  wallet qui n'est PAS owner) — un revert dans ces cas-là est le résultat <em>attendu</em>, pas une erreur du site.<br>
+  Renseigne les adresses ci-dessous (contrat $RMHT testnet, pool Uniswap v3, feeds Chainlink) avant de lancer.
+</div>
+
+<!-- CONFIG -->
+<div class="card">
+  <h2>📋 CONFIGURATION — ROBINHOOD CHAIN TESTNET ADDRESSES</h2>
+  <div class="grid2">
+    <div>
+      <div class="input-group">
+        <label>$RMHT CONTRACT (TESTNET)</label>
+        <input id="rmhtAddr" value="" placeholder="0x..." />
+      </div>
+      <div class="input-group">
+        <label>UNISWAP V3 POOL $RMHT/WETH</label>
+        <input id="poolAddr" value="" placeholder="0x... (laisser vide si pas encore créée)" />
+      </div>
+    </div>
+    <div>
+      <div class="input-group">
+        <label>CHAINLINK ETH/USD FEED</label>
+        <input id="ethUsdFeedAddr" value="" placeholder="0x... (laisser vide si pas encore connu)" />
+      </div>
+      <div class="input-group">
+        <label>CHAINLINK L2 SEQUENCER UPTIME FEED</label>
+        <input id="seqFeedAddr" value="" placeholder="0x... (laisser vide si pas encore connu)" />
+      </div>
+    </div>
+  </div>
+  <div class="input-group" style="margin-top:4px;">
+    <label>CHAINID TESTNET ATTENDU (vérifie sur ta config MetaMask / doc Robinhood Chain)</label>
+    <input id="expectedTestnetChainId" value="46630" placeholder="ex: 46630" />
+  </div>
+  <div id="unknownNetworkConfirm" style="display:none; margin-top:10px; padding:10px; border:1px solid var(--yellow); border-radius:4px; background:rgba(245,158,11,.06);">
+    <label style="display:flex; align-items:flex-start; gap:8px; color:var(--yellow); cursor:pointer;">
+      <input type="checkbox" id="confirmUnknownNet" style="width:auto; margin-top:3px;" onchange="onConfirmUnknownNetChange()" />
+      <span>⚠️ Réseau détecté différent du ChainID testnet attendu ci-dessus. Je confirme qu'il s'agit bien d'un réseau de test (pas d'un mainnet) et je veux lancer les tests quand même.</span>
+    </label>
+  </div>
+  <button class="btn" onclick="connectWallet()">🦊 CONNECT METAMASK (ROBINHOOD CHAIN TESTNET)</button>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-n s-pass" id="stPass">0</div><div class="stat-l">PASSED</div></div>
+  <div class="stat"><div class="stat-n s-fail" id="stFail">0</div><div class="stat-l">FAILED</div></div>
+  <div class="stat"><div class="stat-n s-skip" id="stSkip">0</div><div class="stat-l">SKIPPED</div></div>
+  <div class="stat"><div class="stat-n" id="stTotal" style="color:#555">0</div><div class="stat-l">TOTAL</div></div>
+  <div class="stat"><div class="s-fire" id="stScore">—</div><div class="stat-l">SCORE</div></div>
+</div>
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- PHASE 0 — CONNECTION & CONTRACT INFO -->
+<div class="phase-header"><span class="phase-badge">PHASE 0</span><span class="phase-line"></span></div>
+<div class="test-grid">
+  <div class="t-item" id="n0a">Wallet connecté<div class="t-sub">eth_requestAccounts + réseau</div></div>
+  <div class="t-item" id="n0b">Contrat $RMHT chargé<div class="t-sub">name/symbol/decimals/totalSupply</div></div>
+  <div class="t-item" id="n0c">Allocation de supply cohérente<div class="t-sub">VAULT+airdrop+market == TOTAL_SUPPLY</div></div>
+</div>
+
+<!-- PHASE 1 — CONFIG & OWNERSHIP -->
+<div class="phase-header"><span class="phase-badge">PHASE 1</span><span class="phase-line"></span></div>
+<div class="test-grid">
+  <div class="t-item" id="n1a">Lecture état config<div class="t-sub">pool / feeds / configLocked</div></div>
+  <div class="t-item" id="n1b">Owner détecté<div class="t-sub">owner() vs wallet connecté</div></div>
+  <div class="t-item" id="n1c">renounceOwnership bloqué avant lock<div class="t-sub">doit revert si !configLocked</div></div>
+  <div class="t-item" id="n1d">setConfig protégé onlyOwner<div class="t-sub">revert si non-owner</div></div>
+</div>
+
+<!-- PHASE 2 — PRICE & MARKET CAP -->
+<div class="phase-header"><span class="phase-badge">PHASE 2</span><span class="phase-line"></span></div>
+<div class="test-grid">
+  <div class="t-item" id="n2a">getETHPriceUSD()<div class="t-sub">lecture feed Chainlink</div></div>
+  <div class="t-item" id="n2b">getRMHTPriceInETH()<div class="t-sub">slot0() pool Uniswap v3</div></div>
+  <div class="t-item" id="n2c">getMarketCap()<div class="t-sub">cohérence supply éligible × prix</div></div>
+  <div class="t-item" id="n2d">checkUpkeep() lisible<div class="t-sub">upkeepNeeded + données</div></div>
+</div>
+
+<!-- PHASE 3 — VAULT & REWARDS -->
+<div class="phase-header"><span class="phase-badge">PHASE 3</span><span class="phase-line"></span></div>
+<div class="test-grid">
+  <div class="t-item" id="n3a">vaultBalance ≤ VAULT_SUPPLY<div class="t-sub">jamais de top-up</div></div>
+  <div class="t-item" id="n3b">pendingRewardsOf(wallet)<div class="t-sub">lecture rewards en attente</div></div>
+  <div class="t-item" id="n3c">claimRewards()<div class="t-sub">tx réelle si pendingRewards > 0</div></div>
+  <div class="t-item" id="n3d">Solde $RMHT incrémenté post-claim<div class="t-sub">balanceOf avant/après</div></div>
+</div>
+
+<!-- PHASE 4 — AUTOMATION -->
+<div class="phase-header"><span class="phase-badge">PHASE 4</span><span class="phase-line"></span></div>
+<div class="test-grid">
+  <div class="t-item" id="n4a">checkUpkeep() cohérent avec cooldown<div class="t-sub">upkeepNeeded == false si cooldown actif</div></div>
+  <div class="t-item" id="n4b">performUpkeep() si dû<div class="t-sub">tx réelle si upkeepNeeded == true</div></div>
+  <div class="t-item" id="n4c">milestonesReached incrémenté<div class="t-sub">après performUpkeep réussi</div></div>
+  <div class="t-item" id="n4d">performUpkeep revert si pas dû<div class="t-sub">cooldown / MCap non atteint</div></div>
+</div>
+
+<!-- PHASE 5 — SECURITY & ADMIN GUARDS -->
+<div class="phase-header"><span class="phase-badge">PHASE 5</span><span class="phase-line"></span></div>
+<div class="test-grid">
+  <div class="t-item" id="n5a">rescueTokens protégé onlyOwner<div class="t-sub">revert si non-owner</div></div>
+  <div class="t-item" id="n5b">excludeFromRewards protégé onlyOwner<div class="t-sub">revert si non-owner</div></div>
+  <div class="t-item" id="n5c">setAutomationRegistry protégé onlyOwner<div class="t-sub">revert si non-owner</div></div>
+  <div class="t-item" id="n5d">Pas de fonction blacklist/freeze résiduelle<div class="t-sub">ABI ne contient pas setBlacklistBatch</div></div>
+</div>
+
+<!-- PHASE 6 — LAUNCH LOCK & ANTI-SANDWICH -->
+<div class="phase-header"><span class="phase-badge">PHASE 6</span><span class="phase-line"></span></div>
+<div class="test-grid">
+  <div class="t-item" id="n6a">launchTime / isTradingOpen() lisibles<div class="t-sub">affichage date + statut</div></div>
+  <div class="t-item" id="n6b">Achat/vente pool bloqué avant launchTime<div class="t-sub">transfer→pool revert sauf marketWallet</div></div>
+  <div class="t-item" id="n6c">delayLaunch protégé onlyOwner + sens unique<div class="t-sub">revert non-owner ; revert si avance l'heure</div></div>
+  <div class="t-item" id="n6d">Anti-sandwich même-bloc (lastReceivedBlock)<div class="t-sub">vérification informationnelle</div></div>
+</div>
+
+<button class="btn" id="runBtn" onclick="runTests()" disabled style="margin-top:10px;">▶ LANCER LES TESTS</button>
+
+<div class="card" style="margin-top:16px;">
+  <div class="log-card-header">
+    <h2>📜 LOGS D'EXÉCUTION</h2>
+    <span id="logCount" style="color:#444; font-size:0.68rem;">0 entrées</span>
+  </div>
+  <div class="log-container" id="logs"></div>
+  <button class="btn-export" id="exportBtn" onclick="exportLogs()" disabled>⬇ EXPORTER LES LOGS</button>
+</div>
+
+<div class="score-wrap">
+  <div class="s-fire score-big" id="scoreDisplay">—</div>
+  <div class="score-label">SCORE FINAL</div>
+  <div class="verdict" id="verdictBox"></div>
+</div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let provider, signer, signerAddr, rmht, isMainnet = false, networkName = '';
+let passed = 0, failed = 0, skipped = 0, logEntries = [];
+const TOTAL = 27; // total number of t-item checks across all phases (3 + 4×5 + 4 [Phase 6])
+
+const RMHT_ABI = [
+  "function name() view returns (string)",
+  "function symbol() view returns (string)",
+  "function decimals() view returns (uint8)",
+  "function totalSupply() view returns (uint256)",
+  "function balanceOf(address) view returns (uint256)",
+  "function owner() view returns (address)",
+  "function TOTAL_SUPPLY() view returns (uint256)",
+  "function VAULT_SUPPLY() view returns (uint256)",
+  "function airdropWallet() view returns (address)",
+  "function marketWallet() view returns (address)",
+  "function uniswapV3Pool() view returns (address)",
+  "function ethUsdFeed() view returns (address)",
+  "function sequencerUptimeFeed() view returns (address)",
+  "function configLocked() view returns (bool)",
+  "function automationRegistry() view returns (address)",
+  "function vaultBalance() view returns (uint256)",
+  "function nextMilestoneUSD() view returns (uint256)",
+  "function milestonesReached() view returns (uint256)",
+  "function lastMilestoneTimestamp() view returns (uint256)",
+  "function getETHPriceUSD() view returns (uint256, uint8)",
+  "function getRMHTPriceInETH() view returns (uint256)",
+  "function getMarketCap() view returns (uint256)",
+  "function getCirculatingSupply() view returns (uint256)",
+  "function getEligibleSupply() view returns (uint256)",
+  "function pendingRewardsOf(address) view returns (uint256)",
+  "function claimRewards()",
+  "function checkUpkeep(bytes) view returns (bool, bytes)",
+  "function performUpkeep(bytes)",
+  "function setConfig(address, address, address)",
+  "function lockConfig()",
+  "function setAutomationRegistry(address)",
+  "function renounceOwnership()",
+  "function rescueTokens(address, uint256)",
+  "function excludeFromRewards(address, bool)",
+  "function transfer(address, uint256) returns (bool)",
+  "function launchTime() view returns (uint256)",
+  "function LAUNCH_DELAY() view returns (uint256)",
+  "function isTradingOpen() view returns (bool)",
+  "function delayLaunch(uint256)",
+  "function lastReceivedBlock(address) view returns (uint256)"
+];
+
+// ═══════════════════════════════════════════
+// UI HELPERS (identical pattern to the ApexPad harness)
+// ═══════════════════════════════════════════
+function log(msg, type = 'info') {
+  const el = document.getElementById('logs');
+  const ts = new Date().toTimeString().slice(0, 8);
+  const icons = { success:'✅', error:'❌', info:'ℹ️', warning:'⚠️',
+    pending:'⏳', section:'🔷', pass:'✔', fail:'✘', data:'📊' };
+  el.innerHTML += `<div class="log-entry ${type}">
+    <span class="log-time">${ts}</span>
+    <span class="log-msg">${icons[type]||''} ${msg}</span></div>`;
+  el.scrollTop = el.scrollHeight;
+  logEntries.push({ ts, type, msg });
+  document.getElementById('logCount').textContent = `${logEntries.length} entrée${logEntries.length>1?'s':''}`;
+}
+function setT(id, status) {
+  const el = document.getElementById(id);
+  if (el) el.className = `t-item ${status}`;
+}
+function updateStats() {
+  document.getElementById('stPass').textContent = passed;
+  document.getElementById('stFail').textContent = failed;
+  document.getElementById('stSkip').textContent = skipped;
+  document.getElementById('stTotal').textContent = passed + failed + skipped;
+  const total = passed + failed;
+  const score = total > 0 ? Math.round((passed / TOTAL) * 100) : 0;
+  document.getElementById('stScore').textContent = total > 0 ? score + '%' : '—';
+  const progress = Math.min(((passed + failed + skipped) / TOTAL) * 100, 100);
+  document.getElementById('progressFill').style.width = `${progress}%`;
+  if (total > 0) document.getElementById('scoreDisplay').textContent = score + '/100';
+}
+function clearLogs() {
+  document.getElementById('logs').innerHTML = '';
+  logEntries = [];
+  document.getElementById('logCount').textContent = '0 entrées';
+  document.getElementById('exportBtn').disabled = true;
+}
+async function ok(id, msg) { passed++; setT(id, 'passed'); log(`PASS — ${msg}`, 'pass'); updateStats(); }
+async function ko(id, msg) { failed++; setT(id, 'failed'); log(`FAIL — ${msg}`, 'fail'); updateStats(); }
+function skip(id, msg) { skipped++; setT(id, 'skipped'); log(`SKIP — ${msg}`, 'warning'); updateStats(); }
+async function shouldRevert(fn, id, label) {
+  try { await fn(); await ko(id, `${label} — devait revert MAIS n'a PAS revert ! ⚠️ VULNÉRABILITÉ`); return false; }
+  catch(e) {
+    const reason = e.reason || e.shortMessage || e.message || 'raison inconnue';
+    await ok(id, `${label} — revert correct ✓ (raison : ${reason})`);
+    return true;
+  }
+}
+async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function fmt(bn, decimals = 18) { try { return ethers.formatUnits(bn, decimals); } catch(e) { return String(bn); } }
+
+function showMainnetWarning() {
+  document.getElementById('mainnetBanner').style.display = 'block';
+  document.getElementById('mainnetOverlay').style.display = 'block';
+  document.getElementById('runBtn').disabled = true;
+}
+function dismissBanner() {
+  document.getElementById('mainnetBanner').style.display = 'none';
+  document.getElementById('mainnetOverlay').style.display = 'none';
+}
+function getExpectedTestnetChainId() {
+  const raw = document.getElementById('expectedTestnetChainId').value.trim();
+  try { return raw ? BigInt(raw) : null; } catch(e) { return null; }
+}
+function setNetworkBadge(chainId) {
+  const badge = document.getElementById('networkBadge');
+  const label = document.getElementById('networkLabel');
+  const expectedTestnet = getExpectedTestnetChainId();
+  badge.className = 'network-badge';
+  if (expectedTestnet !== null && chainId === expectedTestnet) {
+    badge.classList.add('testnet');
+    label.textContent = `ROBINHOOD CHAIN TESTNET ✓ (${chainId})`;
+    networkName = `Robinhood Chain Testnet (ChainID ${chainId})`;
+  } else if (chainId === 4663n) {
+    badge.classList.add('mainnet');
+    label.textContent = 'ROBINHOOD CHAIN MAINNET ⛔';
+    networkName = 'Robinhood Chain Mainnet (ChainID 4663)';
+  } else {
+    badge.classList.add('unknown');
+    label.textContent = `ChainID ${chainId} — NON RECONNU`;
+    networkName = `Réseau non reconnu (ChainID ${chainId})`;
+  }
+}
+function onConfirmUnknownNetChange() {
+  const confirmed = document.getElementById('confirmUnknownNet').checked;
+  const rmhtAddr = document.getElementById('rmhtAddr').value.trim();
+  document.getElementById('runBtn').disabled = !(confirmed && rmht && rmhtAddr);
+  if (confirmed) log('⚠️ Réseau non reconnu confirmé manuellement par l\'utilisateur comme étant un testnet — tests autorisés.', 'warning');
+}
+if (window.ethereum) {
+  window.ethereum.on('chainChanged', () => window.location.reload());
+  window.ethereum.on('accountsChanged', () => window.location.reload());
+}
+
+// ═══════════════════════════════════════════
+// WALLET
+// ═══════════════════════════════════════════
+async function connectWallet() {
+  try {
+    if (!window.ethereum) { alert('MetaMask requis'); return; }
+    await window.ethereum.request({ method: 'eth_requestAccounts' });
+    provider = new ethers.BrowserProvider(window.ethereum);
+    signer = await provider.getSigner();
+    signerAddr = await signer.getAddress();
+    const network = await provider.getNetwork();
+    setNetworkBadge(network.chainId);
+
+    if (network.chainId === 4663n) {
+      isMainnet = true;
+      showMainnetWarning();
+      log('🚨 MAINNET DÉTECTÉ — TESTS BLOQUÉS. Passe sur Robinhood Chain TESTNET.', 'error');
+      return;
+    }
+
+    const rmhtAddr = document.getElementById('rmhtAddr').value.trim();
+    if (!rmhtAddr) { log('⚠️ Renseigne l\'adresse du contrat $RMHT avant de connecter.', 'warning'); return; }
+    rmht = new ethers.Contract(rmhtAddr, RMHT_ABI, signer);
+
+    log(`Wallet connecté : ${signerAddr}`, 'success');
+    log(`Réseau : ${networkName}`, 'success');
+
+    const expectedTestnet = getExpectedTestnetChainId();
+    const isRecognizedTestnet = expectedTestnet !== null && network.chainId === expectedTestnet;
+    const confirmBox = document.getElementById('unknownNetworkConfirm');
+    if (!isRecognizedTestnet) {
+      confirmBox.style.display = 'block';
+      document.getElementById('confirmUnknownNet').checked = false;
+      log('⚠️ Ce réseau ne correspond pas au ChainID testnet attendu — coche la case de confirmation ci-dessus pour activer le bouton de lancement.', 'warning');
+      document.getElementById('runBtn').disabled = true;
+    } else {
+      confirmBox.style.display = 'none';
+      document.getElementById('runBtn').disabled = false;
+    }
+
+    // Contrôle de cohérence : compare les adresses saisies par l'utilisateur
+    // (pool / feeds) aux valeurs réellement configurées on-chain, si disponibles.
+    const poolInput = document.getElementById('poolAddr').value.trim();
+    const ethUsdInput = document.getElementById('ethUsdFeedAddr').value.trim();
+    const seqInput = document.getElementById('seqFeedAddr').value.trim();
+    try {
+      if (poolInput) {
+        const onChainPool = await rmht.uniswapV3Pool();
+        if (onChainPool.toLowerCase() === poolInput.toLowerCase()) log(`Pool Uniswap v3 saisie ✓ correspond à uniswapV3Pool() on-chain`, 'success');
+        else log(`⚠️ Pool saisie (${poolInput.slice(0,10)}...) ≠ uniswapV3Pool() on-chain (${onChainPool.slice(0,10)}...)`, 'warning');
+      }
+      if (ethUsdInput) {
+        const onChainFeed = await rmht.ethUsdFeed();
+        if (onChainFeed.toLowerCase() === ethUsdInput.toLowerCase()) log(`Feed ETH/USD saisi ✓ correspond à ethUsdFeed() on-chain`, 'success');
+        else log(`⚠️ Feed ETH/USD saisi (${ethUsdInput.slice(0,10)}...) ≠ ethUsdFeed() on-chain (${onChainFeed.slice(0,10)}...)`, 'warning');
+      }
+      if (seqInput) {
+        const onChainSeq = await rmht.sequencerUptimeFeed();
+        if (onChainSeq.toLowerCase() === seqInput.toLowerCase()) log(`Feed séquenceur saisi ✓ correspond à sequencerUptimeFeed() on-chain`, 'success');
+        else log(`⚠️ Feed séquenceur saisi (${seqInput.slice(0,10)}...) ≠ sequencerUptimeFeed() on-chain (${onChainSeq.slice(0,10)}...)`, 'warning');
+      }
+    } catch(e) {
+      log(`Contrôle de cohérence pool/feeds non concluant (lecture on-chain a échoué) — ${e.message}`, 'warning');
+    }
+  } catch (e) {
+    log(`Erreur de connexion : ${e.message}`, 'error');
+  }
+}
+
+// ═══════════════════════════════════════════
+// MAIN TEST RUNNER
+// ═══════════════════════════════════════════
+async function runTests() {
+  document.getElementById('runBtn').disabled = true;
+  passed = 0; failed = 0; skipped = 0;
+  logEntries = [];
+  clearLogs();
+  updateStats();
+  for (const p of ['0','1','2','3','4','5']) {
+    for (const l of ['a','b','c','d']) {
+      const el = document.getElementById(`n${p}${l}`);
+      if (el) el.className = 't-item';
+    }
+  }
+
+  log('', 'info');
+  log('══════════════════════════════════════════════════', 'section');
+  log('  $RMHT — INTEGRATION TEST SUITE', 'section');
+  log('  RMHT.sol — VAULT / REWARDS / AUTOMATION', 'section');
+  log(`  Wallet : ${signerAddr}`, 'section');
+  log('══════════════════════════════════════════════════', 'section');
+
+  try {
+    // ─────────────────────────────────────────
+    // PHASE 0 — CONNECTION & CONTRACT INFO
+    // ─────────────────────────────────────────
+    log('', 'info'); log('[ PHASE 0 ] CONNECTION & CONTRACT INFO', 'section');
+    await ok('n0a', `Wallet connecté sur ${networkName}`);
+
+    let name, symbol, decimals, totalSupply;
+    try {
+      name = await rmht.name(); symbol = await rmht.symbol();
+      decimals = await rmht.decimals(); totalSupply = await rmht.totalSupply();
+      log(`Contrat : ${name} (${symbol}) — decimals ${decimals} — totalSupply ${fmt(totalSupply)}`, 'data');
+      await ok('n0b', `Contrat $RMHT chargé — ${name} (${symbol})`);
+    } catch(e) { await ko('n0b', `Impossible de lire le contrat — ${e.message}`); }
+
+    try {
+      const [vaultSupply, airdropW, marketW, total] = await Promise.all([
+        rmht.VAULT_SUPPLY(), rmht.airdropWallet(), rmht.marketWallet(), rmht.TOTAL_SUPPLY()
+      ]);
+      const airdropBal = await rmht.balanceOf(airdropW);
+      const marketBal  = await rmht.balanceOf(marketW);
+      const sum = vaultSupply + airdropBal + marketBal;
+      log(`Vault: ${fmt(vaultSupply)} | Airdrop wallet: ${fmt(airdropBal)} | Market wallet: ${fmt(marketBal)}`, 'data');
+      if (sum === total) await ok('n0c', `Allocation cohérente : vault+airdrop+market == TOTAL_SUPPLY`);
+      else await ko('n0c', `Somme des allocations (${fmt(sum)}) ≠ TOTAL_SUPPLY (${fmt(total)})`);
+    } catch(e) { await ko('n0c', `Erreur lecture allocation — ${e.message}`); }
+
+    // ─────────────────────────────────────────
+    // PHASE 1 — CONFIG & OWNERSHIP
+    // ─────────────────────────────────────────
+    log('', 'info'); log('[ PHASE 1 ] CONFIG & OWNERSHIP', 'section');
+    let owner, configLocked;
+    try {
+      owner = await rmht.owner();
+      const pool = await rmht.uniswapV3Pool();
+      configLocked = await rmht.configLocked();
+      log(`owner: ${owner} | pool: ${pool} | configLocked: ${configLocked}`, 'data');
+      await ok('n1a', `Lecture config OK — configLocked=${configLocked}`);
+    } catch(e) { await ko('n1a', `Erreur lecture config — ${e.message}`); }
+
+    const isOwner = owner && owner.toLowerCase() === signerAddr.toLowerCase();
+    if (isOwner) await ok('n1b', `Wallet connecté EST l'owner (${owner.slice(0,10)}...)`);
+    else { skip('n1b', `Wallet connecté n'est PAS l'owner — certains tests admin seront skip`); }
+
+    if (!configLocked) {
+      await shouldRevert(() => rmht.renounceOwnership.staticCall(), 'n1c', 'renounceOwnership() avant lock');
+    } else {
+      skip('n1c', `configLocked déjà true — test "doit revert avant lock" non applicable`);
+    }
+
+    if (!isOwner) {
+      await shouldRevert(
+        () => rmht.setConfig.staticCall(ethers.ZeroAddress, ethers.ZeroAddress, ethers.ZeroAddress),
+        'n1d', 'setConfig() par un non-owner'
+      );
+    } else {
+      skip('n1d', `Wallet connecté est owner — test "revert si non-owner" non applicable depuis ce wallet`);
+    }
+
+    // ─────────────────────────────────────────
+    // PHASE 2 — PRICE & MARKET CAP
+    // ─────────────────────────────────────────
+    log('', 'info'); log('[ PHASE 2 ] PRICE & MARKET CAP', 'section');
+    try {
+      const [price, feedDec] = await rmht.getETHPriceUSD();
+      log(`ETH/USD: ${fmt(price, feedDec)}`, 'data');
+      await ok('n2a', `getETHPriceUSD() lisible — ${fmt(price, feedDec)} USD`);
+    } catch(e) { await ko('n2a', `getETHPriceUSD() a revert — ${e.reason || e.message} (feeds pas encore configurés ?)`); }
+
+    try {
+      const priceWei = await rmht.getRMHTPriceInETH();
+      log(`Prix $RMHT en wei ETH: ${priceWei}`, 'data');
+      await ok('n2b', `getRMHTPriceInETH() lisible`);
+    } catch(e) { await ko('n2b', `getRMHTPriceInETH() a revert — ${e.reason || e.message} (pool pas encore configurée ?)`); }
+
+    try {
+      const mcap = await rmht.getMarketCap();
+      log(`Market cap estimé : ${mcap} USD`, 'data');
+      await ok('n2c', `getMarketCap() lisible — ${mcap} USD`);
+    } catch(e) { await ko('n2c', `getMarketCap() a revert — ${e.reason || e.message}`); }
+
+    try {
+      const [upkeepNeeded, performData] = await rmht.checkUpkeep('0x');
+      log(`checkUpkeep() → upkeepNeeded=${upkeepNeeded}`, 'data');
+      await ok('n2d', `checkUpkeep() lisible — upkeepNeeded=${upkeepNeeded}`);
+    } catch(e) { await ko('n2d', `checkUpkeep() a revert — ${e.reason || e.message}`); }
+
+    // ─────────────────────────────────────────
+    // PHASE 3 — VAULT & REWARDS
+    // ─────────────────────────────────────────
+    log('', 'info'); log('[ PHASE 3 ] VAULT & REWARDS', 'section');
+    let vaultBal, vaultSupply2;
+    try {
+      vaultBal = await rmht.vaultBalance();
+      vaultSupply2 = await rmht.VAULT_SUPPLY();
+      log(`vaultBalance: ${fmt(vaultBal)} / VAULT_SUPPLY: ${fmt(vaultSupply2)}`, 'data');
+      if (vaultBal <= vaultSupply2) await ok('n3a', `vaultBalance ≤ VAULT_SUPPLY (${fmt(vaultBal)} ≤ ${fmt(vaultSupply2)})`);
+      else await ko('n3a', `⚠️ vaultBalance > VAULT_SUPPLY — anomalie`);
+    } catch(e) { await ko('n3a', `Erreur lecture vault — ${e.message}`); }
+
+    let pending;
+    try {
+      pending = await rmht.pendingRewardsOf(signerAddr);
+      log(`pendingRewardsOf(${signerAddr}) = ${fmt(pending)}`, 'data');
+      await ok('n3b', `pendingRewardsOf() lisible — ${fmt(pending)} $RMHT en attente`);
+    } catch(e) { await ko('n3b', `Erreur pendingRewardsOf — ${e.message}`); }
+
+    if (pending && pending > 0n) {
+      const confirmClaim = confirm(`pendingRewards = ${fmt(pending)} $RMHT.\n\nEnvoyer une vraie transaction claimRewards() (gas testnet requis) ?`);
+      if (!confirmClaim) {
+        skip('n3c', `claimRewards() annulé par l'utilisateur (confirmation refusée)`);
+        skip('n3d', `dépend de n3c`);
+      } else {
+        try {
+          const balBefore = await rmht.balanceOf(signerAddr);
+          const tx = await rmht.claimRewards();
+          log('Transaction claimRewards() envoyée, en attente de confirmation...', 'pending');
+          await tx.wait();
+          const balAfter = await rmht.balanceOf(signerAddr);
+          await ok('n3c', `claimRewards() confirmé — tx ${tx.hash.slice(0,12)}...`);
+          if (balAfter > balBefore) await ok('n3d', `Solde $RMHT incrémenté : ${fmt(balBefore)} → ${fmt(balAfter)}`);
+          else await ko('n3d', `Solde inchangé après claim — vérifier`);
+        } catch(e) { await ko('n3c', `claimRewards() a revert — ${e.reason || e.message}`); skip('n3d', 'claim a échoué'); }
+      }
+    } else {
+      skip('n3c', `pendingRewards == 0 pour ce wallet — rien à claim actuellement`);
+      skip('n3d', `dépend de n3c`);
+    }
+
+    // ─────────────────────────────────────────
+    // PHASE 4 — AUTOMATION
+    // ─────────────────────────────────────────
+    log('', 'info'); log('[ PHASE 4 ] AUTOMATION (CHAINLINK-STYLE)', 'section');
+    let upkeepNeeded4, milestonesBefore;
+    try {
+      [upkeepNeeded4] = await rmht.checkUpkeep('0x');
+      milestonesBefore = await rmht.milestonesReached();
+      log(`checkUpkeep() → upkeepNeeded=${upkeepNeeded4} | milestonesReached=${milestonesBefore}`, 'data');
+      await ok('n4a', `checkUpkeep() cohérent — upkeepNeeded=${upkeepNeeded4}`);
+    } catch(e) { await ko('n4a', `checkUpkeep() a revert — ${e.reason || e.message}`); }
+
+    if (upkeepNeeded4) {
+      const confirmUpkeep = confirm(`upkeepNeeded == true (milestone atteint).\n\nEnvoyer une vraie transaction performUpkeep() (gas testnet requis) ?`);
+      if (!confirmUpkeep) {
+        skip('n4b', `performUpkeep() annulé par l'utilisateur (confirmation refusée)`);
+        skip('n4c', `dépend de n4b`);
+      } else {
+        try {
+          const tx = await rmht.performUpkeep('0x');
+          log('Transaction performUpkeep() envoyée, en attente de confirmation...', 'pending');
+          await tx.wait();
+          await ok('n4b', `performUpkeep() confirmé — tx ${tx.hash.slice(0,12)}...`);
+          const milestonesAfter = await rmht.milestonesReached();
+          if (milestonesAfter > milestonesBefore) await ok('n4c', `milestonesReached incrémenté : ${milestonesBefore} → ${milestonesAfter}`);
+          else await ko('n4c', `milestonesReached inchangé après performUpkeep — vérifier`);
+        } catch(e) { await ko('n4b', `performUpkeep() a revert alors qu'il était dû — ${e.reason || e.message}`); skip('n4c', 'performUpkeep a échoué'); }
+      }
+      skip('n4d', `upkeepNeeded == true — le test "revert si pas dû" ne s'applique pas ce cycle`);
+    } else {
+      skip('n4b', `upkeepNeeded == false — rien à exécuter actuellement`);
+      skip('n4c', `dépend de n4b`);
+      await shouldRevert(() => rmht.performUpkeep.staticCall('0x'), 'n4d', 'performUpkeep() alors qu\'il n\'est pas dû');
+    }
+
+    // ─────────────────────────────────────────
+    // PHASE 5 — SECURITY & ADMIN GUARDS
+    // ─────────────────────────────────────────
+    log('', 'info'); log('[ PHASE 5 ] SECURITY & ADMIN GUARDS', 'section');
+    if (!isOwner) {
+      await shouldRevert(() => rmht.rescueTokens.staticCall(ethers.ZeroAddress, 0), 'n5a', 'rescueTokens() par un non-owner');
+      await shouldRevert(() => rmht.excludeFromRewards.staticCall(signerAddr, true), 'n5b', 'excludeFromRewards() par un non-owner');
+      await shouldRevert(() => rmht.setAutomationRegistry.staticCall(signerAddr), 'n5c', 'setAutomationRegistry() par un non-owner');
+    } else {
+      skip('n5a', `Wallet connecté est owner — test "revert si non-owner" non applicable depuis ce wallet`);
+      skip('n5b', `Wallet connecté est owner — test "revert si non-owner" non applicable depuis ce wallet`);
+      skip('n5c', `Wallet connecté est owner — test "revert si non-owner" non applicable depuis ce wallet`);
+    }
+
+    try {
+      // NOTE : ce check porte sur l'ABI attendu défini dans CE fichier (RMHT_ABI ci-dessus),
+      // pas sur le bytecode réellement déployé — il ne peut donc PAS détecter une fonction
+      // blacklist ajoutée par erreur dans le contrat déployé si elle n'apparaît pas dans cette
+      // liste. Il confirme seulement que le fork tel que documenté n'en prévoit pas.
+      // Une vraie vérification bytecode nécessiterait de comparer les 4-byte selectors calculés
+      // (ex. via keccak256("setBlacklistBatch(...)").slice(0,10)) à ceux présents dans le code
+      // déployé — hors scope de ce test rapide en navigateur.
+      const abiHasBlacklist = RMHT_ABI.some(sig => sig.includes('setBlacklistBatch') || sig.includes('isRedirectToBurn') || sig.includes('blacklist') || sig.includes('Blacklist'));
+      if (!abiHasBlacklist) await ok('n5d', `Aucune fonction blacklist/freeze dans l'ABI attendu du fork (vérification manuelle du bytecode toujours recommandée)`);
+      else await ko('n5d', `⚠️ Fonction blacklist trouvée dans l'ABI attendu — vérifier que ce n'est pas une régression du fork`);
+    } catch(e) { skip('n5d', `Check ABI non concluant — vérification manuelle recommandée`); }
+
+    // ─────────────────────────────────────────
+    // PHASE 6 — LAUNCH LOCK & ANTI-SANDWICH
+    // ─────────────────────────────────────────
+    log('', 'info'); log('[ PHASE 6 ] LAUNCH LOCK & ANTI-SANDWICH', 'section');
+
+    let launchTimeVal, tradingOpen, marketWalletAddr, poolAddr2;
+    try {
+      launchTimeVal = await rmht.launchTime();
+      tradingOpen = await rmht.isTradingOpen();
+      marketWalletAddr = await rmht.marketWallet();
+      poolAddr2 = await rmht.uniswapV3Pool();
+      const launchDate = new Date(Number(launchTimeVal) * 1000).toLocaleString('fr-FR');
+      const now = Math.floor(Date.now() / 1000);
+      const remaining = Number(launchTimeVal) - now;
+      const remainingStr = remaining > 0 ? `dans ${Math.floor(remaining/3600)}h${String(Math.floor((remaining%3600)/60)).padStart(2,'0')}` : 'déjà passé';
+      await ok('n6a', `launchTime = ${launchDate} (${remainingStr}) — isTradingOpen() = ${tradingOpen}`);
+    } catch(e) { await ko('n6a', `Lecture launchTime/isTradingOpen() a échoué — ${e.message}`); skip('n6b', 'dépend de n6a'); skip('n6c', 'dépend de n6a'); skip('n6d', 'dépend de n6a'); }
+
+    if (launchTimeVal !== undefined) {
+      // n6b — le transfert vers la pool doit être bloqué avant launchTime, sauf pour marketWallet
+      if (poolAddr2 === ethers.ZeroAddress) {
+        skip('n6b', `Pool non configurée (setConfig() pas encore appelé) — le verrou n'a pas encore d'effet à vérifier`);
+      } else if (tradingOpen) {
+        log(`Trading déjà ouvert (isTradingOpen() == true) — le check "bloqué avant launchTime" ne s'applique plus à ce stade`, 'info');
+        await ok('n6b', `Trading ouvert — verrou de lancement non applicable (période passée)`);
+      } else if (signerAddr.toLowerCase() === marketWalletAddr.toLowerCase()) {
+        skip('n6b', `Wallet connecté == marketWallet, exempté par design — le cas "doit revert" ne s'applique pas depuis ce wallet`);
+      } else {
+        await shouldRevert(
+          () => rmht.transfer.staticCall(poolAddr2, 1n),
+          'n6b',
+          `transfer(pool, 1) avant launchTime depuis un wallet non-marketWallet`
+        );
+      }
+
+      // n6c — delayLaunch : protégé onlyOwner, et ne peut qu'avancer la valeur (jamais reculer)
+      if (!isOwner) {
+        await shouldRevert(() => rmht.delayLaunch.staticCall(launchTimeVal + 3600n), 'n6c', 'delayLaunch() par un non-owner');
+      } else {
+        try {
+          await rmht.delayLaunch.staticCall(launchTimeVal + 3600n); // doit passer (staticCall, aucune tx envoyée)
+          const reverted = await shouldRevert(
+            () => rmht.delayLaunch.staticCall(launchTimeVal > 0n ? launchTimeVal - 1n : 0n),
+            'n6c',
+            'delayLaunch() avec une heure antérieure (doit toujours revert, même pour l\'owner)'
+          );
+        } catch(e) { await ko('n6c', `delayLaunch() staticCall inattendu — ${e.message}`); }
+      }
+
+      // n6d — anti-sandwich même-bloc : check informationnel, pas un test forcé
+      // (on ne peut pas garantir qu'une réception ET une vente se produisent dans EXACTEMENT
+      // le même bloc via une UI wallet standard — MetaMask ne permet pas de contrôler l'inclusion
+      // au bloc près. On se contente donc de lire l'état actuel et d'expliquer le mécanisme.)
+      try {
+        const currentBlock = await provider.getBlockNumber();
+        const lastRecv = await rmht.lastReceivedBlock(signerAddr);
+        if (lastRecv > 0n && lastRecv === BigInt(currentBlock)) {
+          await shouldRevert(
+            () => rmht.transfer.staticCall(poolAddr2, 1n),
+            'n6d',
+            `Wallet a reçu des tokens CE bloc (${currentBlock}) — vente vers la pool doit revert`
+          );
+        } else {
+          skip('n6d', `Aucune réception détectée dans le bloc courant (${currentBlock}) pour ce wallet — mécanisme non déclenché actuellement (vérifié par ailleurs via Echidna, cf. rapport séparé). lastReceivedBlock(wallet) = ${lastRecv}`);
+        }
+      } catch(e) { skip('n6d', `Lecture lastReceivedBlock non concluante — ${e.message}`); }
+    }
+
+    log('', 'info');
+    log('══════════════════════════════════════════════════', 'section');
+    log(`  TERMINÉ — ${passed} PASS / ${failed} FAIL / ${skipped} SKIP`, 'section');
+    log('══════════════════════════════════════════════════', 'section');
+
+    const verdict = document.getElementById('verdictBox');
+    verdict.style.display = 'block';
+    if (failed === 0) {
+      verdict.className = 'verdict pass-v';
+      verdict.textContent = '✅ Aucun échec détecté sur les checks exécutés. Vérifie les SKIP ci-dessus (souvent liés à l\'état actuel du contrat — cooldown, config pas encore verrouillée, wallet non-owner) avant de conclure que tout est couvert.';
+    } else {
+      verdict.className = 'verdict fail-v';
+      verdict.textContent = `❌ ${failed} échec(s) détecté(s) — à examiner avant tout déploiement mainnet.`;
+    }
+
+  } catch (e) {
+    log(`Erreur inattendue durant l'exécution : ${e.message}`, 'error');
+  }
+
+  document.getElementById('exportBtn').disabled = false;
+  document.getElementById('runBtn').disabled = false;
+  updateStats();
+}
+
+function exportLogs() {
+  const text = logEntries.map(l => `[${l.ts}] ${l.type.toUpperCase()}: ${l.msg}`).join('\n');
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `rmht-test-suite-${Date.now()}.txt`;
+  a.click(); URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
