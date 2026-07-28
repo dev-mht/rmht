@@ -139,8 +139,21 @@ window.initRMHT = async function(provider, signer, address) {
 };
 
 // ── Mise à jour de l'interface ────────────────────────────────────────────────
+// Chaque lecture contrat est isolée (safeCall) : si l'une d'elles revert
+// (ex. getMarketCap() pendant la "Grace period" post-setConfig()), les autres
+// champs (balance, vault, eligible supply, etc.) continuent quand même à
+// s'afficher normalement au lieu de rester bloqués/à 0.
 async function updateUI() {
     if (!_contract || !_userAddress) return;
+
+    const safeCall = async (fn, label) => {
+        try {
+            return await fn();
+        } catch (err) {
+            console.warn(`updateUI: ${label}() a échoué —`, err.reason || err.message || err);
+            return null;
+        }
+    };
 
     try {
         const [
@@ -153,31 +166,31 @@ async function updateUI() {
             vaultBal,
             lastMilestoneTs,
         ] = await Promise.all([
-            _contract.balanceOf(_userAddress),
-            _contract.pendingRewardsOf(_userAddress),
-            _contract.nextMilestoneUSD(),
-            _contract.milestonesReached(),
-            _contract.getMarketCap(),
-            _contract.getEligibleSupply(),
-            _contract.vaultBalance(),
-            _contract.lastMilestoneTimestamp(),
+            safeCall(() => _contract.balanceOf(_userAddress), "balanceOf"),
+            safeCall(() => _contract.pendingRewardsOf(_userAddress), "pendingRewardsOf"),
+            safeCall(() => _contract.nextMilestoneUSD(), "nextMilestoneUSD"),
+            safeCall(() => _contract.milestonesReached(), "milestonesReached"),
+            safeCall(() => _contract.getMarketCap(), "getMarketCap"),
+            safeCall(() => _contract.getEligibleSupply(), "getEligibleSupply"),
+            safeCall(() => _contract.vaultBalance(), "vaultBalance"),
+            safeCall(() => _contract.lastMilestoneTimestamp(), "lastMilestoneTimestamp"),
         ]);
 
         // ── Balance utilisateur ───────────────────────────────────────────────
         const balEl = document.getElementById("mht-balance");
-        if (balEl) balEl.textContent = fmt(balance, 2) + " RMHT";
+        if (balEl) balEl.textContent = balance !== null ? fmt(balance, 2) + " RMHT" : "—";
 
-        // ── Market Cap ────────────────────────────────────────────────────────
+        // ── Market Cap (peut être temporairement indisponible : grace period) ──
         const mcEl = document.getElementById("market-cap");
-        if (mcEl) mcEl.textContent = fmtUSD(marketCap);
+        if (mcEl) mcEl.textContent = marketCap !== null ? fmtUSD(marketCap) : "Grace period…";
 
         // ── Vault Balance ─────────────────────────────────────────────────────
         const vaultEl = document.getElementById("vault-balance");
-        if (vaultEl) vaultEl.textContent = fmt(vaultBal, 0) + " RMHT";
+        if (vaultEl) vaultEl.textContent = vaultBal !== null ? fmt(vaultBal, 0) + " RMHT" : "—";
 
         // ── Eligible Supply ───────────────────────────────────────────────────
         const esEl = document.getElementById("eligible-supply");
-        if (esEl) esEl.textContent = fmt(eligibleSupply, 0) + " RMHT";
+        if (esEl) esEl.textContent = eligibleSupply !== null ? fmt(eligibleSupply, 0) + " RMHT" : "—";
 
         // ── Statut connexion ──────────────────────────────────────────────────
         const statusEl = document.getElementById("accountStatus");
@@ -188,13 +201,13 @@ async function updateUI() {
 
         // ── Milestones ────────────────────────────────────────────────────────
         const msEl = document.getElementById("milestoneStatus");
-        if (msEl) msEl.textContent = milestonesDone.toString() + " Milestone(s) Reached! 🎉";
+        if (msEl) msEl.textContent = milestonesDone !== null ? milestonesDone.toString() + " Milestone(s) Reached! 🎉" : "—";
 
         // ── Cooldown prochain milestone (calculé côté client — RMHT n'expose
         //    pas de getCooldownRemaining(), donc on le dérive de
         //    lastMilestoneTimestamp + MILESTONE_COOLDOWN_SEC) ───────────────────
         const cooldownEl = document.getElementById("milestoneCooldown");
-        if (cooldownEl) {
+        if (cooldownEl && lastMilestoneTs !== null) {
             const nowSec = Math.floor(Date.now() / 1000);
             const readyAt = Number(lastMilestoneTs) + MILESTONE_COOLDOWN_SEC;
             const remaining = readyAt - nowSec;
@@ -202,29 +215,37 @@ async function updateUI() {
                 ? `⏳ Next milestone in: ${fmtCountdown(remaining)}`
                 : "✅ Milestone available";
             cooldownEl.className = `info-badge ${remaining > 0 ? "badge-cooldown" : "badge-ready"}`;
+        } else if (cooldownEl) {
+            cooldownEl.textContent = "—";
         }
 
         // ── Barre de progression milestone (pas = 500 000$, pas 1M$ comme MHT) ─
-        const STEP = ethers.parseUnits(MILESTONE_STEP_USD.toString(), 18);
-        const prevMilestone = nextMilestone - STEP;
-        let progress = 0;
-        if (marketCap >= nextMilestone) {
-            progress = 100;
-        } else if (marketCap > prevMilestone) {
-            const numerator   = marketCap - prevMilestone;
-            const denominator = nextMilestone - prevMilestone;
-            progress = Number((numerator * 100n) / denominator);
-        }
-
+        // Nécessite marketCap ET nextMilestone ; l'un des deux peut être null
+        // si getMarketCap() a reverté (ex. grace period post-setConfig()).
         const progressBar = document.getElementById("milestoneBar");
         if (progressBar) {
-            progressBar.style.width = progress + "%";
-            progressBar.textContent = fmtUSD(marketCap) + " / " + fmtUSD(nextMilestone);
+            if (marketCap !== null && nextMilestone !== null) {
+                const STEP = ethers.parseUnits(MILESTONE_STEP_USD.toString(), 18);
+                const prevMilestone = nextMilestone - STEP;
+                let progress = 0;
+                if (marketCap >= nextMilestone) {
+                    progress = 100;
+                } else if (marketCap > prevMilestone) {
+                    const numerator   = marketCap - prevMilestone;
+                    const denominator = nextMilestone - prevMilestone;
+                    progress = Number((numerator * 100n) / denominator);
+                }
+                progressBar.style.width = progress + "%";
+                progressBar.textContent = fmtUSD(marketCap) + " / " + fmtUSD(nextMilestone);
+            } else {
+                progressBar.style.width = "0%";
+                progressBar.textContent = "Grace period…";
+            }
         }
 
         // ── Bouton Claim ──────────────────────────────────────────────────────
         const claimBtn = document.getElementById("claimBtn");
-        const pendingFloat = parseFloat(ethers.formatUnits(pending, 18));
+        const pendingFloat = pending !== null ? parseFloat(ethers.formatUnits(pending, 18)) : 0;
         if (claimBtn) {
             if (pendingFloat > 0) {
                 claimBtn.innerHTML = `<i class="bi bi-gift me-2"></i>Claim ${fmt(pending, 2)} RMHT`;
