@@ -26,7 +26,7 @@
 // "https://rpc.mainnet.chain.robinhood.com", et les explorerUrl/explorerAddressUrl par
 // robinhoodchain.blockscout.com (sans "testnet.").
 const CONFIG = {
-    contractAddress   : "0xf649F034Bc4e65B0035f69dC1624Aed4588f1D1c", // Contrat RMHT — TESTNET
+    contractAddress   : "0xf9B7353a386E9fad8bf39a23dbCDb7dff67638C0", // Contrat RMHT — TESTNET
     custodianAddress  : "0xd81AD39405579656f3E529195cfDf06cdE8b1DA3", // RMHTLiquidityCustodian — TESTNET (vérifié 11/07/2026)
     chainId           : 46630, // Robinhood Chain TESTNET (confirmé docs.robinhood.com/chain + chainid.network)
     chainIdHex        : "0xB626", // 46630 en hexadécimal
