@@ -1653,8 +1653,9 @@
       }
 
       try {
+        // ⚠️ MODE TESTNET TEMPORAIRE — à remplacer par robinhoodchain.blockscout.com (sans "testnet.") à la bascule mainnet
         const res = await fetch(
-          "https://robinhoodchain.blockscout.com/api/v2/tokens/" + CONTRACT
+          "https://explorer.testnet.chain.robinhood.com/api/v2/tokens/" + CONTRACT
         );
         const data = await res.json();
         const holders = data?.holders_count ?? data?.result?.[0]?.holdersCount;
