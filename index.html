@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="piece_rmht.png">
   <title>R Milestone HODL Token — $RMHT | Proof-of-Performance on Robinhood Chain</title>
   <meta name="description" content="$RMHT is the Proof-of-Performance token on Robinhood Chain. 50% supply locked in a Smart-Vault, auto-released by Chainlink at every $500K Market Cap milestone, 100% to holders. Buy, hold, earn." />
   <meta name="keywords" content="RMHT, R Milestone HODL Token, Robinhood Chain token, DeFi, Smart-Vault, Chainlink, Uniswap v3, crypto rewards" />
@@ -2029,20 +2030,29 @@
       } catch(e) { qrContainer.innerHTML = '<p style="color:#ef4444;font-size:0.75rem">QR error</p>'; }
     });
 
+    function markWalletConnectedUI(address) {
+      const short = address.slice(0,6)+'…'+address.slice(-4);
+      connectBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>'+short;
+      connectBtn.style.background = 'linear-gradient(135deg,#00e096,#00b87a)';
+      window._mhtConnected = true;
+      const walletAddrEl = document.getElementById('walletAddr');
+      if (walletAddrEl) walletAddrEl.textContent = short;
+      const dashConnectBtn = document.getElementById('connectBtn');
+      if (dashConnectBtn) {
+        dashConnectBtn.textContent = '✓ Connected';
+        dashConnectBtn.style.background = 'linear-gradient(135deg,#00e096,#00b87a)';
+      }
+      const claimBtnEl = document.getElementById('claimBtn');
+      if (claimBtnEl) claimBtnEl.style.display = 'block';
+      return short;
+    }
+
     async function connectWithEthereum(ethereumProvider) {
       await ethereumProvider.request({ method: 'eth_requestAccounts' });
       const provider = new ethers.BrowserProvider(ethereumProvider);
       const signer   = await provider.getSigner();
       const address  = await signer.getAddress();
-      const short = address.slice(0,6)+'…'+address.slice(-4);
-      connectBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>'+short;
-      connectBtn.style.background = 'linear-gradient(135deg,#00e096,#00b87a)';
-      window._mhtConnected = true;
-      document.getElementById('walletAddr').textContent = short;
-      document.getElementById('connectBtn').textContent = '✓ Connected';
-      document.getElementById('connectBtn').style.background = 'linear-gradient(135deg,#00e096,#00b87a)';
-      const claimBtnEl = document.getElementById('claimBtn');
-      if (claimBtnEl) claimBtnEl.style.display = 'block';
+      markWalletConnectedUI(address);
       if (typeof window.initRMHT === 'function') await window.initRMHT(provider, signer, address);
       ethereumProvider.on('accountsChanged', ()=>location.reload());
       ethereumProvider.on('chainChanged', ()=>location.reload());
@@ -2052,10 +2062,7 @@
       if (window.ethereum && window.ethereum.selectedAddress) {
         const p = new ethers.BrowserProvider(window.ethereum);
         p.getSigner().then(s => s.getAddress().then(addr => {
-          const short = addr.slice(0,6)+'…'+addr.slice(-4);
-          connectBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i>'+short;
-          connectBtn.style.background = 'linear-gradient(135deg,#00e096,#00b87a)';
-          window._mhtConnected = true;
+          markWalletConnectedUI(addr);
           p.getSigner().then(sg => window.initRMHT && window.initRMHT(p, sg, addr));
         })).catch(()=>{});
       }
