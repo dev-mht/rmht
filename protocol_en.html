@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>$RMHT — How the protocol works</title>
+<meta name="description" content="Technical reference for the $RMHT protocol: milestone state machine, TWAP oracle, custodians, residual governance and accepted limitations. Written from the frozen source code." />
+<link rel="alternate" hreflang="en" href="protocol-en.html" />
+<link rel="alternate" hreflang="fr" href="protocol-fr.html" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:rgba(10,18,7,.75); --bg2:rgba(14,26,10,.86); --bg3:rgba(21,38,14,.88);
+  --border:rgba(245,200,66,.12); --gold:#f5c842; --gold2:#ffde7a; --gold3:#c8971a;
+  --orange:#e8501a; --text:#e8ecf4; --muted:#9aa6ba; --success:#00e096;
+  --warn:#ffb020;
+  --mono:'Space Mono',monospace; --display:'Bebas Neue',sans-serif; --body:'Syne',sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; color:var(--text); font-family:var(--body); line-height:1.65;
+  background:linear-gradient(rgba(8,14,6,.55),rgba(8,14,6,.82)),url('fond-bg.jpg') center top/cover no-repeat fixed;
+  background-color:#0a1207;
+  overflow-x:hidden;
+}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(245,200,66,.3)}
+a:hover{color:var(--gold2)}
+
+header{padding:64px 0 28px;text-align:center}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold3)}
+h1{font-family:var(--display);font-size:clamp(2.6rem,7vw,4.4rem);line-height:.95;margin:.25em 0 .15em;letter-spacing:.02em}
+h1 .accent{color:var(--gold)}
+.lede{max-width:660px;margin:0 auto;color:var(--muted);font-size:1.02rem}
+.stamp{
+  display:inline-block;margin-top:22px;padding:9px 16px;border-radius:999px;
+  border:1px solid var(--border);background:var(--bg2);
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:var(--muted)
+}
+.stamp b{color:var(--success);font-weight:700}
+.lang{display:flex;gap:6px;justify-content:center;margin-top:18px}
+.lang a{
+  border:1px solid var(--border);border-radius:999px;padding:5px 15px;background:var(--bg2);
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;color:var(--muted)
+}
+.lang a.on{background:rgba(245,200,66,.13);border-color:rgba(245,200,66,.45);color:var(--gold)}
+.lang a:hover{color:var(--gold2)}
+
+nav.toc{
+  margin:40px 0 8px;padding:20px 22px;border:1px solid var(--border);
+  border-radius:14px;background:var(--bg);backdrop-filter:blur(6px)
+}
+nav.toc p{margin:0 0 12px;font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold3)}
+nav.toc ol{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:6px 22px;counter-reset:t}
+nav.toc li{counter-increment:t;font-size:.93rem}
+nav.toc li a{border:0;display:block;padding:3px 0;color:var(--text)}
+nav.toc li a::before{content:counter(t,decimal-leading-zero);font-family:var(--mono);font-size:.72rem;color:var(--gold3);margin-right:10px}
+nav.toc li a:hover{color:var(--gold)}
+
+section{padding:46px 0;border-top:1px solid rgba(245,200,66,.08)}
+section:first-of-type{border-top:0}
+h2{font-family:var(--display);font-size:clamp(1.7rem,4vw,2.4rem);letter-spacing:.03em;margin:0 0 6px;color:var(--gold)}
+h2 .num{font-family:var(--mono);font-size:.62em;color:var(--gold3);margin-right:12px;letter-spacing:0}
+h3{font-family:var(--body);font-weight:800;font-size:1.06rem;margin:30px 0 8px;color:var(--gold2)}
+p{margin:0 0 14px}
+.sub{color:var(--muted);margin:-2px 0 22px;font-size:.95rem}
+ul{margin:0 0 14px;padding-left:20px}
+li{margin-bottom:7px}
+code{font-family:var(--mono);font-size:.87em;background:rgba(245,200,66,.09);border:1px solid var(--border);border-radius:5px;padding:1px 6px;color:var(--gold2);word-break:break-word}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:26px 0}
+.card{border:1px solid var(--border);border-radius:12px;padding:16px 18px;background:var(--bg2)}
+.card .k{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.card .v{font-family:var(--display);font-size:1.85rem;letter-spacing:.02em;color:var(--gold);line-height:1.15;margin-top:4px}
+.card .n{font-size:.8rem;color:var(--muted);margin-top:3px}
+
+.box{border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;background:var(--bg2);padding:16px 20px;margin:20px 0}
+.box.warn{border-left-color:var(--warn)}
+.box.ok{border-left-color:var(--success)}
+.box .t{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold3);margin-bottom:7px}
+.box.warn .t{color:var(--warn)}
+.box.ok .t{color:var(--success)}
+.box p:last-child{margin-bottom:0}
+
+.tw{overflow-x:auto;margin:20px 0;border:1px solid var(--border);border-radius:12px;background:var(--bg2)}
+table{width:100%;border-collapse:collapse;min-width:560px;font-size:.92rem}
+th,td{padding:11px 15px;text-align:left;vertical-align:top;border-bottom:1px solid rgba(245,200,66,.08)}
+th{font-family:var(--mono);font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;color:var(--gold3);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td strong{color:var(--gold2)}
+
+ol.steps{list-style:none;padding:0;counter-reset:s;margin:22px 0}
+ol.steps li{counter-increment:s;position:relative;padding:0 0 20px 46px;border-left:1px solid rgba(245,200,66,.16);margin-left:13px}
+ol.steps li:last-child{border-left-color:transparent;padding-bottom:0}
+ol.steps li::before{
+  content:counter(s);position:absolute;left:-13px;top:-2px;width:26px;height:26px;border-radius:50%;
+  display:grid;place-items:center;background:var(--bg3);border:1px solid var(--border);
+  font-family:var(--mono);font-size:.72rem;color:var(--gold)
+}
+ol.steps b{color:var(--gold2)}
+
+figure{margin:26px 0}
+figure svg{width:100%;height:auto;display:block;border:1px solid var(--border);border-radius:12px;background:var(--bg2)}
+figcaption{font-size:.83rem;color:var(--muted);margin-top:9px;text-align:center}
+
+footer{padding:44px 0 60px;border-top:1px solid rgba(245,200,66,.08);color:var(--muted);font-size:.85rem}
+footer a{color:var(--muted)}
+@media(max-width:640px){ header{padding-top:44px} section{padding:34px 0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="lang"><a href="protocol-fr.html">FR</a><a href="protocol-en.html" class="on">EN</a></div>
+  <div class="eyebrow" style="margin-top:22px">Technical reference</div>
+  <h1>How <span class="accent">$RMHT</span> works</h1>
+  <p class="lede">What the protocol actually does, written from the frozen source code — mechanisms, figures, residual powers and accepted limitations. No marketing.</p>
+  <div class="stamp">In sync with the code frozen on <b>29 Aug 2026</b> &nbsp;·&nbsp; 311/311 tests &nbsp;·&nbsp; Robinhood Chain (4663)</div>
+</header>
+
+<nav class="toc">
+  <p>Contents</p>
+  <ol>
+    <li><a href="#numbers">The immutable numbers</a></li>
+    <li><a href="#vault">The vault and its milestones</a></li>
+    <li><a href="#trigger">Who triggers a milestone</a></li>
+    <li><a href="#price">How the price is computed</a></li>
+    <li><a href="#rewards">How rewards reach you</a></li>
+    <li><a href="#custodians">The three custodians</a></li>
+    <li><a href="#governance">Governance and residual powers</a></li>
+    <li><a href="#limits">Known and accepted limitations</a></li>
+    <li><a href="#verify">Check it yourself</a></li>
+  </ol>
+</nav>
+
+<!-- 1 --------------------------------------------------------------- -->
+<section id="numbers">
+  <h2><span class="num">01</span>The immutable numbers</h2>
+  <p class="sub">Fixed in the code at deployment. No function can change them — not even for the owner.</p>
+
+  <div class="grid">
+    <div class="card"><div class="k">Total supply</div><div class="v">1,000,000,000</div><div class="n">Minted once, in the constructor</div></div>
+    <div class="card"><div class="k">Smart-Vault</div><div class="v">500,000,000</div><div class="n">50% — released milestone by milestone</div></div>
+    <div class="card"><div class="k">Milestone step</div><div class="v">$500,000</div><div class="n">of market cap, cumulative</div></div>
+    <div class="card"><div class="k">Release</div><div class="v">1.5%</div><div class="n">of the remaining vault, each milestone</div></div>
+    <div class="card"><div class="k">Buy / sell tax</div><div class="v">0%</div><div class="n">None. Revenue comes from LP fees</div></div>
+    <div class="card"><div class="k">Milestone cooldown</div><div class="v">24 h</div><div class="n">Anti-manipulation delay</div></div>
+  </div>
+
+  <h3>Allocation at deployment</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Allocation</th><th>Amount</th><th>Share</th><th>Where the tokens sit</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Smart-Vault</strong></td><td>500,000,000</td><td>50.00%</td><td>Held by the $RMHT contract itself, released only through milestones</td></tr>
+      <tr><td><strong>Liquidity (LP)</strong></td><td>433,001,104</td><td>43.30%</td><td>Single-sided Uniswap v3 position, locked forever inside the LiquidityCustodian</td></tr>
+      <tr><td><strong>Founder</strong></td><td>50,000,000</td><td>5.00%</td><td>FounderCustodian, one-year time lock, immutable</td></tr>
+      <tr><td><strong>Community airdrop</strong></td><td>16,998,896</td><td>1.70%</td><td>AirdropCustodian, 18 addresses, individually claimable</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box">
+    <div class="t">About the airdrop</div>
+    <p>This is a <strong>1-for-1</strong> airdrop: every $MHT-BSC token held at the snapshot converts to 1 $RMHT. It is not a pro-rata share of a fixed envelope — the 16,998,896 total is simply the sum of the real balances of the 18 retained addresses, each truncated down to a whole token. The snapshot was frozen on <strong>29 August 2026</strong>, and the table is written into the contract at deployment in a single transaction, with no way to add to it afterwards.</p>
+  </div>
+</section>
+
+<!-- 2 --------------------------------------------------------------- -->
+<section id="vault">
+  <h2><span class="num">02</span>The vault and its milestones</h2>
+  <p class="sub">Half the supply is locked inside the contract, and only leaves when market cap crosses a milestone — and stays there, not for the span of one block.</p>
+
+  <p>A milestone is not crossed because the price touched a threshold once. It is crossed because market cap stayed above that threshold across several measurements spaced out in time. That is what makes an artificial pump useless here: you would have to hold the price up for <strong>thirty minutes of time-weighted average, then twenty more minutes of confirmations</strong> — something a flash loan structurally cannot do.</p>
+
+  <figure>
+    <svg viewBox="0 0 880 250" role="img" aria-label="Milestone state machine">
+      <defs>
+        <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="#c8971a"/>
+        </marker>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="#e8501a"/>
+        </marker>
+      </defs>
+      <g font-family="'Space Mono',monospace" font-size="12">
+        <rect x="18" y="86" width="150" height="58" rx="10" fill="rgba(21,38,14,.9)" stroke="rgba(245,200,66,.35)"/>
+        <text x="93" y="110" fill="#e8ecf4" text-anchor="middle" font-size="13">IDLE</text>
+        <text x="93" y="128" fill="#9aa6ba" text-anchor="middle" font-size="10.5">mcap &lt; milestone</text>
+
+        <rect x="250" y="86" width="160" height="58" rx="10" fill="rgba(21,38,14,.9)" stroke="rgba(245,200,66,.55)"/>
+        <text x="330" y="110" fill="#f5c842" text-anchor="middle" font-size="13">ARMED</text>
+        <text x="330" y="128" fill="#9aa6ba" text-anchor="middle" font-size="10.5">confirmation 1 / 3</text>
+
+        <rect x="492" y="86" width="160" height="58" rx="10" fill="rgba(21,38,14,.9)" stroke="rgba(245,200,66,.55)"/>
+        <text x="572" y="110" fill="#f5c842" text-anchor="middle" font-size="13">CONFIRMED</text>
+        <text x="572" y="128" fill="#9aa6ba" text-anchor="middle" font-size="10.5">3 / 3 reached</text>
+
+        <rect x="734" y="86" width="128" height="58" rx="10" fill="rgba(0,224,150,.10)" stroke="rgba(0,224,150,.5)"/>
+        <text x="798" y="110" fill="#00e096" text-anchor="middle" font-size="13">RELEASED</text>
+        <text x="798" y="128" fill="#9aa6ba" text-anchor="middle" font-size="10.5">1.5% of vault</text>
+
+        <line x1="170" y1="115" x2="242" y2="115" stroke="#c8971a" stroke-width="1.6" marker-end="url(#a)"/>
+        <line x1="412" y1="115" x2="484" y2="115" stroke="#c8971a" stroke-width="1.6" marker-end="url(#a)"/>
+        <line x1="654" y1="115" x2="726" y2="115" stroke="#c8971a" stroke-width="1.6" marker-end="url(#a)"/>
+        <text x="206" y="105" fill="#c8971a" text-anchor="middle" font-size="10">mcap ≥ milestone</text>
+        <text x="448" y="99" fill="#c8971a" text-anchor="middle" font-size="10">+2 confirmations</text>
+        <text x="448" y="112" fill="#c8971a" text-anchor="middle" font-size="10">10 min apart</text>
+        <text x="690" y="105" fill="#c8971a" text-anchor="middle" font-size="10">24 h cooldown</text>
+
+        <path d="M330 150 C330 200 172 200 100 200 L100 152" fill="none" stroke="#e8501a" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ar)"/>
+        <path d="M572 150 C572 218 200 222 100 214" fill="none" stroke="#e8501a" stroke-width="1.5" stroke-dasharray="5 4" opacity=".65"/>
+        <text x="360" y="196" fill="#e8501a" font-size="10">disarms if the price falls back below the milestone</text>
+        <text x="360" y="234" fill="#e8501a" font-size="10" opacity=".8">or if the 2-hour window expires</text>
+      </g>
+    </svg>
+    <figcaption>The full path of a milestone. Any step backwards resets the confirmation counter to zero.</figcaption>
+  </figure>
+
+  <h3>The four steps in detail</h3>
+  <ol class="steps">
+    <li><b>Arming.</b> Market cap reaches the next milestone. The contract records the moment, counts a first confirmation, and opens a <strong>2-hour window</strong>.</li>
+    <li><b>Confirmations.</b> <strong>Three confirmations</strong> are required in total, each at least <strong>10 minutes</strong> apart. A reading taken too soon after the previous one simply does not count.</li>
+    <li><b>Disarming.</b> If at any point market cap falls back below the milestone, or if the two hours run out before the three confirmations, everything is cancelled and the counter restarts from zero.</li>
+    <li><b>Release.</b> Once the three confirmations are in and the 24-hour cooldown since the previous milestone has elapsed, <strong>1.5% of the remaining vault</strong> is released and becomes claimable by holders. The next milestone is set $500,000 higher.</li>
+  </ol>
+
+  <div class="box">
+    <div class="t">Why 1.5% of what remains, not of the total</div>
+    <p>The calculation applies to the <em>remaining</em> vault balance, never to the original 500 million. The amount released therefore shrinks with every milestone. The vault drains asymptotically: there is no exhaustion date, and no single milestone can ever empty it.</p>
+  </div>
+</section>
+
+<!-- 3 --------------------------------------------------------------- -->
+<section id="trigger">
+  <h2><span class="num">03</span>Who triggers a milestone</h2>
+  <p class="sub">Nobody in particular. And that is deliberate.</p>
+
+  <p>The contract exposes a public function, <code>pokeMilestone()</code>, that <strong>anyone can call</strong>, at any time, without permission. It reads the price, compares it to the target, and advances the state machine by one step if the conditions are met. If they are not, it does nothing and costs the caller only a little gas.</p>
+
+  <p>There is <strong>no third-party keeper, no proprietary bot, no subscription to fund</strong>. The protocol depends on no external service to move forward: if a single holder anywhere calls the function three times, ten minutes apart, while the price holds, the milestone fires. This is a deliberate architectural choice, made after what happened to $MHT V2 on BSC, where a paused third-party automation left the mechanism frozen for good.</p>
+
+  <div class="box ok">
+    <div class="t">What this means in practice</div>
+    <p>A milestone cannot be "forgotten". Nor can it be fired early or quietly: the function only evaluates public, verifiable conditions. Whoever calls it receives no privilege, no share, no advantage — they pay the gas, and that is all.</p>
+  </div>
+</section>
+
+<!-- 4 --------------------------------------------------------------- -->
+<section id="price">
+  <h2><span class="num">04</span>How the price is computed</h2>
+  <p class="sub">Two sources, never just one, and never an instantaneous price.</p>
+
+  <p>Market cap is computed in two stages: the price of $RMHT in ETH, then the price of ETH in dollars. Each stage has its own protection.</p>
+
+  <h3>RMHT / ETH — an average, not a snapshot</h3>
+  <p>The protocol never reads the pool's spot price. It uses a <strong>time-weighted average over a full 30 minutes</strong> (Uniswap v3 TWAP). Two direct consequences:</p>
+  <ul>
+    <li>A single large buy moves the average by only a fraction of its instantaneous effect. To actually move the number, you have to hold the position for half an hour.</li>
+    <li>The mechanism is <strong>fail-closed</strong>: until the pool has accumulated a complete 30 minutes of history, no price is produced at all, and <code>pokeMilestone()</code> does nothing. The protocol would rather do nothing than work from partial data.</li>
+  </ul>
+  <p>So that this window cannot be flushed by transaction spam, the pool is sized at deployment to store <strong>1,801 observations</strong> — the full window, to the second. The contract refuses to be configured against a pool that lacks that capacity.</p>
+
+  <h3>ETH / USD — Chainlink, with a freshness check</h3>
+  <p>The dollar conversion comes from the official Chainlink ETH/USD feed on Robinhood Chain. The contract rejects any reading older than <strong>26 hours</strong>, refuses a zero or negative price, and verifies that the answering round is not older than the requested one. The 26-hour threshold is not arbitrary: the feed advertises a 24-hour heartbeat, plus two hours of jitter margin.</p>
+
+  <div class="box">
+    <div class="t">Three layers, not one</div>
+    <p>Manipulating a milestone means defeating all three at once: moving a 30-minute average, holding it across three confirmations spaced 10 minutes apart inside a 2-hour window, and doing so with a fresh ETH/USD price supplied by an oracle you do not control. Any single layer could be worked around. All three together are out of flash-loan territory.</p>
+  </div>
+</section>
+
+<!-- 5 --------------------------------------------------------------- -->
+<section id="rewards">
+  <h2><span class="num">05</span>How rewards reach you</h2>
+  <p class="sub">Pro rata to what you hold, with no registration and nothing to do to become eligible.</p>
+
+  <p>When a milestone fires, the released tokens are not pushed to every address one by one — that would not scale. The contract increments a global "reward per token" accumulator. Your share follows from your balance at any moment, and you collect it whenever you want by calling <code>claimRewards()</code>.</p>
+
+  <p>An important consequence: <strong>you do not have to do anything to accrue</strong>. Your entitlement grows as long as you hold. You lose nothing by waiting, and nothing expires.</p>
+
+  <h3>Who counts in the calculation</h3>
+  <p>Each holder's share is computed against the "eligible supply" — total supply minus everything that must not dilute holders:</p>
+  <div class="tw"><table>
+    <thead><tr><th>Excluded</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td><strong>The vault</strong> (tokens still in the contract)</td><td>Nobody holds them — counting them would mean paying rewards to ourselves</td></tr>
+      <tr><td><strong>The Uniswap pool</strong></td><td>Liquidity is not a holder; including it would dilute everyone in favour of the pool</td></tr>
+      <tr><td><strong>The burn address</strong></td><td>Destroyed tokens, with no owner</td></tr>
+    </tbody>
+  </table></div>
+  <p>Everything else counts, with no exceptions and no allow-list.</p>
+</section>
+
+<!-- 6 --------------------------------------------------------------- -->
+<section id="custodians">
+  <h2><span class="num">06</span>The three custodians</h2>
+  <p class="sub">Three separate contracts, with different rules, all deployed alongside the token.</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>Contract</th><th>What it holds</th><th>Exit rule</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>LiquidityCustodian</strong></td>
+        <td>The Uniswap v3 position NFT</td>
+        <td>None. There is <em>no</em> function to withdraw liquidity or transfer the NFT. The position is locked permanently. The only thing that can leave is trading fees, through <code>collect()</code> — callable by anyone, and always paying the configured recipient, never the caller.</td>
+      </tr>
+      <tr>
+        <td><strong>FounderCustodian</strong></td>
+        <td>The founder's 50,000,000</td>
+        <td>A <strong>one-year</strong> time lock, set at construction and <strong>immutable</strong> — no function can bring it forward. The milestone rewards those tokens accrue are, by contrast, claimable at any time.</td>
+      </tr>
+      <tr>
+        <td><strong>AirdropCustodian</strong></td>
+        <td>The airdrop's 16,998,896</td>
+        <td>Claimable by each beneficiary as soon as either condition is met: <strong>one year elapsed</strong>, or <strong>the 10<sup>th</sup> milestone reached</strong>. Milestone rewards are claimable separately, without waiting for the principal to unlock.</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <div class="box">
+    <div class="t">About liquidity fees</div>
+    <p>There is no transaction tax. Revenue comes from Uniswap v3 swap fees, captured by the LiquidityCustodian. The function that collects them is open to everyone — not a weakness, but the guarantee that collection keeps working even if nobody is left to take care of it.</p>
+  </div>
+</section>
+
+<!-- 7 --------------------------------------------------------------- -->
+<section id="governance">
+  <h2><span class="num">07</span>Governance and residual powers</h2>
+  <p class="sub">What disappears after launch, and what does not. The part that cannot honestly be summed up as "renounced".</p>
+
+  <p>After deployment, the configuration is locked (<code>lockConfig()</code>) and ownership is then renounced on all four contracts. From that point the pool is frozen forever, allocations can no longer be changed, no token can be frozen or blacklisted, and there is no pause function anywhere.</p>
+
+  <p><strong>One role deliberately remains</strong>, and it deserves to be stated plainly rather than discovered in the code.</p>
+
+  <div class="box warn">
+    <div class="t">The feedGovernor role — the one residual power</div>
+    <p>This role is entirely separate from ownership and <strong>survives renouncement</strong>. It can do exactly one thing: replace the <em>addresses</em> of the two Chainlink oracles — the ETH/USD feed and the sequencer uptime feed. It cannot touch the pool, the allocations, the vault, any balance, or any threshold or constant in the protocol. Every other administrative function is out of its reach, and that is enforced by test.</p>
+    <p>Why it exists: on $MHT V2, on BSC, an oracle dependency failed <em>after</em> contract ownership had been renounced. There was then no way left to repair anything, and roughly 76% of the supply ended up frozen for good. <code>feedGovernor</code> is the answer to that specific failure — the minimum ability to repair a broken oracle, and nothing more.</p>
+    <p>It is held by a <strong>hardware wallet, separate from the deployment key</strong>, can be transferred in two steps to a multisig, and can be <strong>permanently destroyed</strong> by its holder through <code>renounceFeedGovernor()</code> on the day the feeds are considered settled. From that day, the protocol has no residual power of any kind.</p>
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>After launch</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Change the pool, the milestones, the supply, any threshold</td><td><strong>Impossible</strong> — constants, or locked configuration</td></tr>
+      <tr><td>Add or modify an airdrop allocation</td><td><strong>Impossible</strong> — one-shot, then ownership renounced</td></tr>
+      <tr><td>Freeze, blacklist or seize tokens</td><td><strong>Impossible</strong> — the function does not exist</td></tr>
+      <tr><td>Pause the protocol</td><td><strong>Impossible</strong> — the function does not exist</td></tr>
+      <tr><td>Withdraw liquidity</td><td><strong>Impossible</strong> — the function does not exist in the custodian</td></tr>
+      <tr><td>Replace a Chainlink oracle address</td><td><strong>Possible</strong>, by <code>feedGovernor</code> only</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- 8 --------------------------------------------------------------- -->
+<section id="limits">
+  <h2><span class="num">08</span>Known and accepted limitations</h2>
+  <p class="sub">What is not perfect, and why this trade-off was chosen over the alternative.</p>
+
+  <h3>The sequencer uptime check will be inactive</h3>
+  <p>The code knows how to verify that an L2 sequencer is running before accepting a price, and that path is tested. But Chainlink publishes no uptime feed for Robinhood Chain, and has announced it is no longer deploying them to new networks. Making the check mandatory would have blocked every price read forever, freezing half the supply. The check is therefore <strong>disabled at deployment</strong>, and <code>feedGovernor</code> can switch it on without redeployment the day a feed exists. In the meantime, the Chainlink freshness check, the 30-minute average and the three confirmations all remain active.</p>
+
+  <h3>One airdrop allocation will most likely never be claimed</h3>
+  <p>One of the 18 snapshot addresses is a custodial wallet whose holder does not control the keys. Its 150,000 tokens — <strong>0.88% of the airdrop</strong> — were credited anyway, so that the announced rule applies with no exception in either direction. The mechanical consequence, stated here rather than hidden: that share stays counted as active and will permanently take 0.88% of the milestone rewards otherwise going to the other 17 beneficiaries.</p>
+
+  <h3>The vault never empties completely</h3>
+  <p>Because each milestone releases 1.5% of what <em>remains</em>, the series converges towards zero without reaching it. That is a property of the model, not a defect: it guarantees there is always something left to distribute, but it also means a residual fraction stays in the contract indefinitely.</p>
+
+  <h3>The window between deployment and lock-down</h3>
+  <p>The TWAP needs 30 minutes of observations before it can be used. The final configuration lock therefore cannot run in the same breath as the deployment: there is a short period during which the token is tradable while the configuration is not yet frozen. That window is known, short, and will be documented publicly at launch.</p>
+</section>
+
+<!-- 9 --------------------------------------------------------------- -->
+<section id="verify">
+  <h2><span class="num">09</span>Check it yourself</h2>
+  <p class="sub">Nothing above requires taking our word for it.</p>
+
+  <p>Every constant quoted on this page is a public variable of the contract, readable from any explorer or from the command line. The most useful ones:</p>
+  <ul>
+    <li><code>vaultBalance</code> — what is left in the vault, live</li>
+    <li><code>milestonesReached</code> / <code>nextMilestoneUSD</code> — how many milestones have fired, and the next target</li>
+    <li><code>milestoneStatus()</code> — the current state of the machine: armed or not, confirmations gathered, measured market cap</li>
+    <li><code>getMarketCap()</code> — market cap as the contract computes it, not as an aggregator estimates it</li>
+    <li><code>isTwapReady()</code> — whether the pool already covers the 30-minute window</li>
+    <li><code>owner()</code> and <code>feedGovernor()</code> — to check the governance state for yourself</li>
+    <li><code>pendingRewardsOf(your_address)</code> — what you can claim right now</li>
+  </ul>
+
+  <div class="box ok">
+    <div class="t">Review status as of 29 August 2026</div>
+    <p>311 automated tests, including invariants run across 128,000 random calls with no violation. Eight independent analysis tools run against the code: Slither, Solhint, Mythril, Wake, Aderyn, Surya, SolidityScan and the Foundry suite. Line coverage between 98.4% and 100% depending on the contract. SCSVS/SCSTG checklist: no Critical, High or Medium item left open. The remaining findings are documented false positives, each with the reason for its classification.</p>
+  </div>
+
+  <p style="margin-top:24px">Deployed contract addresses, explorer links and full audit reports will be published here at launch.</p>
+</section>
+
+<footer>
+  <p><strong>$RMHT — R Milestone HODL Token</strong> · Robinhood Chain (chain 4663)<br />
+  Technical reference page, generated from the source code frozen on 29 August 2026. Where this page and the deployed code disagree, <strong>the code is authoritative</strong>.</p>
+  <p style="margin-top:14px"><a href="index.html">Back to the site</a> · <a href="legal.html">Legal notice</a></p>
+  <p style="margin-top:14px;font-size:.78rem;opacity:.75">This document describes a technical mechanism. It is neither investment advice nor a promise of returns. Holding digital assets carries a risk of total loss.</p>
+</footer>
+
+</div>
+</body>
+</html>

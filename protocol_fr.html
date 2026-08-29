@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>$RMHT — Comment le protocole fonctionne</title>
+<meta name="description" content="Reference technique du protocole $RMHT : machine a paliers, oracle TWAP, custodians, gouvernance residuelle et limites assumees. Synchronisee avec le code gele." />
+<link rel="alternate" hreflang="en" href="protocol-en.html" />
+<link rel="alternate" hreflang="fr" href="protocol-fr.html" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:rgba(10,18,7,.75); --bg2:rgba(14,26,10,.86); --bg3:rgba(21,38,14,.88);
+  --border:rgba(245,200,66,.12); --gold:#f5c842; --gold2:#ffde7a; --gold3:#c8971a;
+  --orange:#e8501a; --text:#e8ecf4; --muted:#9aa6ba; --success:#00e096;
+  --warn:#ffb020;
+  --mono:'Space Mono',monospace; --display:'Bebas Neue',sans-serif; --body:'Syne',sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; color:var(--text); font-family:var(--body); line-height:1.65;
+  background:linear-gradient(rgba(8,14,6,.55),rgba(8,14,6,.82)),url('fond-bg.jpg') center top/cover no-repeat fixed;
+  background-color:#0a1207;
+  overflow-x:hidden;
+}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(245,200,66,.3)}
+a:hover{color:var(--gold2)}
+
+/* ---------- entete ---------- */
+header{padding:64px 0 28px;text-align:center}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold3)}
+h1{font-family:var(--display);font-size:clamp(2.6rem,7vw,4.4rem);line-height:.95;margin:.25em 0 .15em;letter-spacing:.02em}
+h1 .accent{color:var(--gold)}
+.lede{max-width:660px;margin:0 auto;color:var(--muted);font-size:1.02rem}
+.stamp{
+  display:inline-block;margin-top:22px;padding:9px 16px;border-radius:999px;
+  border:1px solid var(--border);background:var(--bg2);
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:var(--muted)
+}
+.stamp b{color:var(--success);font-weight:700}
+.lang{display:flex;gap:6px;justify-content:center;margin-top:18px}
+.lang a{
+  border:1px solid var(--border);border-radius:999px;padding:5px 15px;background:var(--bg2);
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;color:var(--muted)
+}
+.lang a.on{background:rgba(245,200,66,.13);border-color:rgba(245,200,66,.45);color:var(--gold)}
+.lang a:hover{color:var(--gold2)}
+
+/* ---------- sommaire ---------- */
+nav.toc{
+  margin:40px 0 8px;padding:20px 22px;border:1px solid var(--border);
+  border-radius:14px;background:var(--bg);backdrop-filter:blur(6px)
+}
+nav.toc p{margin:0 0 12px;font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold3)}
+nav.toc ol{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:6px 22px;counter-reset:t}
+nav.toc li{counter-increment:t;font-size:.93rem}
+nav.toc li a{border:0;display:block;padding:3px 0;color:var(--text)}
+nav.toc li a::before{content:counter(t,decimal-leading-zero);font-family:var(--mono);font-size:.72rem;color:var(--gold3);margin-right:10px}
+nav.toc li a:hover{color:var(--gold)}
+
+/* ---------- sections ---------- */
+section{padding:46px 0;border-top:1px solid rgba(245,200,66,.08)}
+section:first-of-type{border-top:0}
+h2{font-family:var(--display);font-size:clamp(1.7rem,4vw,2.4rem);letter-spacing:.03em;margin:0 0 6px;color:var(--gold)}
+h2 .num{font-family:var(--mono);font-size:.62em;color:var(--gold3);margin-right:12px;letter-spacing:0}
+h3{font-family:var(--body);font-weight:800;font-size:1.06rem;margin:30px 0 8px;color:var(--gold2)}
+p{margin:0 0 14px}
+.sub{color:var(--muted);margin:-2px 0 22px;font-size:.95rem}
+ul{margin:0 0 14px;padding-left:20px}
+li{margin-bottom:7px}
+code{font-family:var(--mono);font-size:.87em;background:rgba(245,200,66,.09);border:1px solid var(--border);border-radius:5px;padding:1px 6px;color:var(--gold2);word-break:break-word}
+
+/* ---------- cartes chiffres ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:26px 0}
+.card{border:1px solid var(--border);border-radius:12px;padding:16px 18px;background:var(--bg2)}
+.card .k{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.card .v{font-family:var(--display);font-size:1.85rem;letter-spacing:.02em;color:var(--gold);line-height:1.15;margin-top:4px}
+.card .n{font-size:.8rem;color:var(--muted);margin-top:3px}
+
+/* ---------- encadres ---------- */
+.box{border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;background:var(--bg2);padding:16px 20px;margin:20px 0}
+.box.warn{border-left-color:var(--warn)}
+.box.ok{border-left-color:var(--success)}
+.box .t{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold3);margin-bottom:7px}
+.box.warn .t{color:var(--warn)}
+.box.ok .t{color:var(--success)}
+.box p:last-child{margin-bottom:0}
+
+/* ---------- tableaux ---------- */
+.tw{overflow-x:auto;margin:20px 0;border:1px solid var(--border);border-radius:12px;background:var(--bg2)}
+table{width:100%;border-collapse:collapse;min-width:560px;font-size:.92rem}
+th,td{padding:11px 15px;text-align:left;vertical-align:top;border-bottom:1px solid rgba(245,200,66,.08)}
+th{font-family:var(--mono);font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;color:var(--gold3);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td strong{color:var(--gold2)}
+
+/* ---------- etapes ---------- */
+ol.steps{list-style:none;padding:0;counter-reset:s;margin:22px 0}
+ol.steps li{counter-increment:s;position:relative;padding:0 0 20px 46px;border-left:1px solid rgba(245,200,66,.16);margin-left:13px}
+ol.steps li:last-child{border-left-color:transparent;padding-bottom:0}
+ol.steps li::before{
+  content:counter(s);position:absolute;left:-13px;top:-2px;width:26px;height:26px;border-radius:50%;
+  display:grid;place-items:center;background:var(--bg3);border:1px solid var(--border);
+  font-family:var(--mono);font-size:.72rem;color:var(--gold)
+}
+ol.steps b{color:var(--gold2)}
+
+figure{margin:26px 0}
+figure svg{width:100%;height:auto;display:block;border:1px solid var(--border);border-radius:12px;background:var(--bg2)}
+figcaption{font-size:.83rem;color:var(--muted);margin-top:9px;text-align:center}
+
+footer{padding:44px 0 60px;border-top:1px solid rgba(245,200,66,.08);color:var(--muted);font-size:.85rem}
+footer a{color:var(--muted)}
+@media(max-width:640px){ header{padding-top:44px} section{padding:34px 0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="lang"><a href="protocol-fr.html" class="on">FR</a><a href="protocol-en.html">EN</a></div>
+  <div class="eyebrow" style="margin-top:22px">Reference technique</div>
+  <h1>Comment <span class="accent">$RMHT</span> fonctionne</h1>
+  <p class="lede">Le fonctionnement reel du protocole, ecrit depuis le code source gele — mecanismes, chiffres, pouvoirs residuels et limites assumees. Sans marketing.</p>
+  <div class="stamp">Synchronise avec le code gele du <b>29/08/2026</b> &nbsp;·&nbsp; 311/311 tests &nbsp;·&nbsp; Robinhood Chain (4663)</div>
+</header>
+
+<nav class="toc">
+  <p>Sommaire</p>
+  <ol>
+    <li><a href="#chiffres">Les chiffres immuables</a></li>
+    <li><a href="#vault">Le vault et les paliers</a></li>
+    <li><a href="#declencheur">Qui declenche un palier</a></li>
+    <li><a href="#prix">Comment le prix est calcule</a></li>
+    <li><a href="#rewards">Comment les rewards arrivent</a></li>
+    <li><a href="#custodians">Les trois custodians</a></li>
+    <li><a href="#gouvernance">Gouvernance et pouvoirs residuels</a></li>
+    <li><a href="#limites">Limites connues et assumees</a></li>
+    <li><a href="#verifier">Verifier par vous-meme</a></li>
+  </ol>
+</nav>
+
+<!-- 1 --------------------------------------------------------------- -->
+<section id="chiffres">
+  <h2><span class="num">01</span>Les chiffres immuables</h2>
+  <p class="sub">Fixes dans le code au deploiement. Aucune fonction ne permet de les changer, pas meme au proprietaire.</p>
+
+  <div class="grid">
+    <div class="card"><div class="k">Supply totale</div><div class="v">1 000 000 000</div><div class="n">Frappee une seule fois, au constructeur</div></div>
+    <div class="card"><div class="k">Smart-Vault</div><div class="v">500 000 000</div><div class="n">50% — libere par paliers</div></div>
+    <div class="card"><div class="k">Palier</div><div class="v">500 000 $</div><div class="n">de capitalisation, cumulatif</div></div>
+    <div class="card"><div class="k">Liberation</div><div class="v">1,5%</div><div class="n">du vault restant, a chaque palier</div></div>
+    <div class="card"><div class="k">Taxe achat / vente</div><div class="v">0%</div><div class="n">Aucune. Les frais viennent de la LP</div></div>
+    <div class="card"><div class="k">Delai entre paliers</div><div class="v">24 h</div><div class="n">Cooldown anti-manipulation</div></div>
+  </div>
+
+  <h3>Repartition au deploiement</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Poste</th><th>Montant</th><th>Part</th><th>Ou vont les jetons</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Smart-Vault</strong></td><td>500 000 000</td><td>50,00%</td><td>Detenu par le contrat $RMHT lui-meme, libere uniquement par paliers</td></tr>
+      <tr><td><strong>Liquidite (LP)</strong></td><td>433 001 104</td><td>43,30%</td><td>Position Uniswap v3 single-sided, verrouillee a vie dans le LiquidityCustodian</td></tr>
+      <tr><td><strong>Fondateur</strong></td><td>50 000 000</td><td>5,00%</td><td>FounderCustodian, verrou temporel d'un an, immuable</td></tr>
+      <tr><td><strong>Airdrop communaute</strong></td><td>16 998 896</td><td>1,70%</td><td>AirdropCustodian, 18 adresses, reclamables individuellement</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="box">
+    <div class="t">Sur l'airdrop</div>
+    <p>Il s'agit d'un airdrop <strong>1 pour 1</strong> : chaque $MHT-BSC detenu au snapshot donne droit a 1 $RMHT. Ce n'est pas un prorata sur une enveloppe fixe — le total de 16 998 896 est simplement la somme des soldes reels des 18 adresses retenues, tronques a l'entier inferieur. Le snapshot a ete fige le <strong>29/08/2026</strong> et la table est verrouillee dans le contrat au deploiement, en une seule transaction, sans possibilite d'ajout ulterieur.</p>
+  </div>
+</section>
+
+<!-- 2 --------------------------------------------------------------- -->
+<section id="vault">
+  <h2><span class="num">02</span>Le vault et les paliers</h2>
+  <p class="sub">La moitie de la supply est enfermee dans le contrat et n'en sort que quand la capitalisation franchit un palier — durablement, pas l'espace d'un bloc.</p>
+
+  <p>Un palier n'est pas franchi parce que le prix a touche un seuil une fois. Il l'est parce que la capitalisation est restee au-dessus du seuil pendant plusieurs mesures espacees dans le temps. C'est ce qui rend un pump artificiel inoperant : il faudrait tenir le prix eleve pendant au moins <strong>trente minutes de moyenne pondere, puis vingt minutes de confirmations</strong>, ce qu'un flash loan ne permet structurellement pas.</p>
+
+  <figure>
+    <svg viewBox="0 0 880 250" role="img" aria-label="Machine a etats du franchissement de palier">
+      <defs>
+        <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="#c8971a"/>
+        </marker>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M0 0 L10 5 L0 10 z" fill="#e8501a"/>
+        </marker>
+      </defs>
+      <g font-family="'Space Mono',monospace" font-size="12">
+        <!-- etat 1 -->
+        <rect x="18" y="86" width="150" height="58" rx="10" fill="rgba(21,38,14,.9)" stroke="rgba(245,200,66,.35)"/>
+        <text x="93" y="110" fill="#e8ecf4" text-anchor="middle" font-size="13">AU REPOS</text>
+        <text x="93" y="128" fill="#9aa6ba" text-anchor="middle" font-size="10.5">mcap &lt; palier</text>
+        <!-- etat 2 -->
+        <rect x="250" y="86" width="160" height="58" rx="10" fill="rgba(21,38,14,.9)" stroke="rgba(245,200,66,.55)"/>
+        <text x="330" y="110" fill="#f5c842" text-anchor="middle" font-size="13">ARME</text>
+        <text x="330" y="128" fill="#9aa6ba" text-anchor="middle" font-size="10.5">confirmation 1 / 3</text>
+        <!-- etat 3 -->
+        <rect x="492" y="86" width="160" height="58" rx="10" fill="rgba(21,38,14,.9)" stroke="rgba(245,200,66,.55)"/>
+        <text x="572" y="110" fill="#f5c842" text-anchor="middle" font-size="13">CONFIRME</text>
+        <text x="572" y="128" fill="#9aa6ba" text-anchor="middle" font-size="10.5">3 / 3 atteintes</text>
+        <!-- etat 4 -->
+        <rect x="734" y="86" width="128" height="58" rx="10" fill="rgba(0,224,150,.10)" stroke="rgba(0,224,150,.5)"/>
+        <text x="798" y="110" fill="#00e096" text-anchor="middle" font-size="13">LIBERE</text>
+        <text x="798" y="128" fill="#9aa6ba" text-anchor="middle" font-size="10.5">1,5% du vault</text>
+        <!-- fleches -->
+        <line x1="170" y1="115" x2="242" y2="115" stroke="#c8971a" stroke-width="1.6" marker-end="url(#a)"/>
+        <line x1="412" y1="115" x2="484" y2="115" stroke="#c8971a" stroke-width="1.6" marker-end="url(#a)"/>
+        <line x1="654" y1="115" x2="726" y2="115" stroke="#c8971a" stroke-width="1.6" marker-end="url(#a)"/>
+        <text x="206" y="105" fill="#c8971a" text-anchor="middle" font-size="10">mcap ≥ palier</text>
+        <text x="448" y="99" fill="#c8971a" text-anchor="middle" font-size="10">+2 confirmations</text>
+        <text x="448" y="112" fill="#c8971a" text-anchor="middle" font-size="10">espacees de 10 min</text>
+        <text x="690" y="105" fill="#c8971a" text-anchor="middle" font-size="10">cooldown 24 h</text>
+        <!-- retour desarmement -->
+        <path d="M330 150 C330 200 172 200 100 200 L100 152" fill="none" stroke="#e8501a" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#ar)"/>
+        <path d="M572 150 C572 218 200 222 100 214" fill="none" stroke="#e8501a" stroke-width="1.5" stroke-dasharray="5 4" opacity=".65"/>
+        <text x="360" y="196" fill="#e8501a" font-size="10">desarme si le prix retombe sous le palier</text>
+        <text x="360" y="234" fill="#e8501a" font-size="10" opacity=".8">ou si la fenetre de 2 h expire</text>
+      </g>
+    </svg>
+    <figcaption>Le chemin complet d'un palier. Tout retour en arriere remet le compteur de confirmations a zero.</figcaption>
+  </figure>
+
+  <h3>Le detail des quatre etapes</h3>
+  <ol class="steps">
+    <li><b>Armement.</b> La capitalisation atteint le prochain palier. Le contrat enregistre l'instant, compte une premiere confirmation, et ouvre une fenetre de <strong>2 heures</strong>.</li>
+    <li><b>Confirmations.</b> Il faut <strong>3 confirmations au total</strong>, espacees d'au moins <strong>10 minutes</strong> chacune. Une lecture trop rapprochee de la precedente ne compte pas.</li>
+    <li><b>Desarmement.</b> Si a n'importe quel moment la capitalisation repasse sous le palier, ou si les 2 heures s'ecoulent sans les 3 confirmations, tout est annule et le compteur repart de zero.</li>
+    <li><b>Liberation.</b> Une fois les 3 confirmations reunies et le cooldown de 24 h depuis le palier precedent ecoule, <strong>1,5% du vault restant</strong> sort et devient reclamable par les detenteurs. Le prochain palier est fixe 500 000 $ plus haut.</li>
+  </ol>
+
+  <div class="box">
+    <div class="t">Pourquoi 1,5% du restant, et pas du total</div>
+    <p>Le calcul porte sur le solde <em>restant</em> du vault, jamais sur les 500 millions initiaux. La quantite liberee diminue donc a chaque palier. Le vault se vide asymptotiquement : il n'y a pas de date d'epuisement, et aucun palier ne peut le vider d'un coup.</p>
+  </div>
+</section>
+
+<!-- 3 --------------------------------------------------------------- -->
+<section id="declencheur">
+  <h2><span class="num">03</span>Qui declenche un palier</h2>
+  <p class="sub">Personne en particulier. Et c'est voulu.</p>
+
+  <p>Le contrat expose une fonction publique, <code>pokeMilestone()</code>, que <strong>n'importe qui peut appeler</strong>, a tout moment, sans permission. Elle lit le prix, compare a la cible, et fait avancer la machine d'un cran si les conditions sont reunies. Si elles ne le sont pas, elle ne fait rien et ne coute qu'un peu de gaz a celui qui l'a appelee.</p>
+
+  <p>Il n'y a <strong>ni keeper tiers, ni bot proprietaire, ni abonnement a financer</strong>. Le protocole ne depend d'aucun service exterieur pour avancer : si un seul detenteur dans le monde appelle la fonction trois fois a dix minutes d'intervalle pendant que le prix tient, le palier tombe. C'est un choix d'architecture delibere, pris apres l'experience de $MHT V2 sur BSC, ou une automatisation tierce mise en pause avait fige durablement le mecanisme.</p>
+
+  <div class="box ok">
+    <div class="t">Ce que cela change concretement</div>
+    <p>Un palier ne peut pas etre « oublie ». Il ne peut pas non plus etre declenche en avance ou en douce : la fonction ne fait qu'evaluer des conditions publiques et verifiables. Celui qui l'appelle ne recoit aucun privilege, aucune part, aucun avantage — il paie le gaz, c'est tout.</p>
+  </div>
+</section>
+
+<!-- 4 --------------------------------------------------------------- -->
+<section id="prix">
+  <h2><span class="num">04</span>Comment le prix est calcule</h2>
+  <p class="sub">Deux sources, jamais une seule, et jamais un prix instantane.</p>
+
+  <p>La capitalisation se calcule en deux temps : le prix du $RMHT en ETH, puis le prix de l'ETH en dollars. Chaque etape a sa protection.</p>
+
+  <h3>Le prix RMHT / ETH — une moyenne, pas un instantane</h3>
+  <p>Le protocole ne lit jamais le prix spot de la pool. Il utilise une <strong>moyenne ponderee dans le temps sur 30 minutes pleines</strong> (TWAP Uniswap v3). Deux consequences directes :</p>
+  <ul>
+    <li>Un achat massif isole ne deplace la moyenne que d'une fraction de son effet instantane. Pour faire bouger reellement le chiffre, il faut tenir la position une demi-heure.</li>
+    <li>Le mecanisme est <strong>fail-closed</strong> : tant que la pool n'a pas accumule 30 minutes complètes d'historique, aucun prix n'est produit du tout, et <code>pokeMilestone()</code> ne fait rien. Le protocole prefere ne rien faire plutot que travailler sur une donnee partielle.</li>
+  </ul>
+  <p>Pour que cette fenetre ne puisse pas etre videe par du spam de transactions, la pool est dimensionnee au deploiement pour memoriser <strong>1801 observations</strong>, soit la fenetre complete a la seconde pres. Le contrat refuse d'etre configure sur une pool qui n'a pas cette capacite.</p>
+
+  <h3>Le prix ETH / USD — Chainlink, avec controle de fraicheur</h3>
+  <p>La conversion en dollars vient du feed Chainlink ETH/USD officiel de Robinhood Chain. Le contrat rejette une donnee dont l'horodatage depasse <strong>26 heures</strong>, refuse un prix nul ou negatif, et verifie que le round de reponse n'est pas anterieur au round demande. Le seuil de 26 heures n'est pas arbitraire : le feed annonce un heartbeat de 24 heures, auquel s'ajoutent 2 heures de marge de gigue.</p>
+
+  <div class="box">
+    <div class="t">Trois etages, pas un</div>
+    <p>Manipuler un palier suppose de franchir les trois en meme temps : deplacer une moyenne sur 30 minutes, la maintenir sur trois confirmations espacees de 10 minutes dans une fenetre de 2 heures, et le faire avec un prix ETH/USD frais fourni par un oracle qu'on ne controle pas. Chaque etage seul serait contournable. Les trois ensemble sortent du domaine du flash loan.</p>
+  </div>
+</section>
+
+<!-- 5 --------------------------------------------------------------- -->
+<section id="rewards">
+  <h2><span class="num">05</span>Comment les rewards arrivent</h2>
+  <p class="sub">Au prorata de ce que vous detenez, sans inscription et sans action de votre part pour y avoir droit.</p>
+
+  <p>Quand un palier se declenche, les jetons liberes ne sont pas envoyes un par un a chaque adresse — ce serait impraticable. Le contrat incremente un compteur global de « reward par jeton ». Votre part se deduit a tout moment de votre solde, et vous la recuperez quand vous voulez en appelant <code>claimRewards()</code>.</p>
+
+  <p>Consequence importante : <strong>vous n'avez rien a faire pour accumuler</strong>. Vos droits grandissent tant que vous detenez. Vous ne perdez rien en attendant, et rien n'expire.</p>
+
+  <h3>Qui compte dans le calcul</h3>
+  <p>La part de chacun se calcule sur la « supply eligible », c'est-a-dire la supply totale moins ce qui ne doit pas diluer les detenteurs :</p>
+  <div class="tw"><table>
+    <thead><tr><th>Exclu du calcul</th><th>Pourquoi</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Le vault</strong> (jetons encore dans le contrat)</td><td>Ils ne sont detenus par personne — les compter reviendrait a se verser des rewards a soi-meme</td></tr>
+      <tr><td><strong>La pool Uniswap</strong></td><td>La liquidite n'est pas un detenteur ; l'inclure diluerait tout le monde au profit du pool</td></tr>
+      <tr><td><strong>L'adresse de burn</strong></td><td>Jetons detruits, sans proprietaire</td></tr>
+    </tbody>
+  </table></div>
+  <p>Tout le reste compte, sans exception et sans liste blanche.</p>
+</section>
+
+<!-- 6 --------------------------------------------------------------- -->
+<section id="custodians">
+  <h2><span class="num">06</span>Les trois custodians</h2>
+  <p class="sub">Trois contrats separes, aux regles differentes, tous deployes en meme temps que le jeton.</p>
+
+  <div class="tw"><table>
+    <thead><tr><th>Contrat</th><th>Ce qu'il detient</th><th>Regle de sortie</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>LiquidityCustodian</strong></td>
+        <td>Le NFT de la position Uniswap v3</td>
+        <td>Aucune. Il n'existe <em>aucune</em> fonction pour retirer la liquidite ou transferer le NFT. La position est verrouillee definitivement. Seule sortie possible : les frais de trading, via <code>collect()</code>, appelable par n'importe qui, et qui verse toujours au destinataire configure — jamais a l'appelant.</td>
+      </tr>
+      <tr>
+        <td><strong>FounderCustodian</strong></td>
+        <td>Les 50 000 000 du fondateur</td>
+        <td>Verrou temporel d'<strong>un an</strong>, fixe a la construction et <strong>immuable</strong> — aucune fonction ne permet de l'avancer. Les rewards de palier accumules par ces jetons sont, eux, reclamables a tout moment.</td>
+      </tr>
+      <tr>
+        <td><strong>AirdropCustodian</strong></td>
+        <td>Les 16 998 896 de l'airdrop</td>
+        <td>Reclamable par chaque beneficiaire des que l'une des deux conditions est remplie : <strong>un an ecoule</strong>, ou <strong>le 10<sup>e</sup> palier atteint</strong>. Les rewards de palier sont reclamables separement, sans attendre le deblocage du principal.</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <div class="box">
+    <div class="t">Sur les frais de liquidite</div>
+    <p>Il n'y a pas de taxe sur les transactions. Les revenus viennent des frais de swap de la pool Uniswap v3, captures par le LiquidityCustodian. La fonction qui les collecte est ouverte a tous — ce n'est pas une faiblesse, c'est ce qui garantit que la collecte continuera de fonctionner meme si plus personne ne s'en occupe.</p>
+  </div>
+</section>
+
+<!-- 7 --------------------------------------------------------------- -->
+<section id="gouvernance">
+  <h2><span class="num">07</span>Gouvernance et pouvoirs residuels</h2>
+  <p class="sub">Ce qui disparait apres le lancement, et ce qui reste. La partie qu'on ne peut pas resumer par « renonce ».</p>
+
+  <p>Apres le deploiement, la configuration est verrouillee (<code>lockConfig()</code>) puis la propriete est renoncee sur les quatre contrats. A partir de la, la pool est figee pour toujours, les allocations ne peuvent plus etre modifiees, aucun jeton ne peut etre gele ni mis en liste noire, et il n'existe aucune fonction de pause.</p>
+
+  <p><strong>Un role subsiste volontairement</strong>, et il faut le dire clairement plutot que le decouvrir dans le code.</p>
+
+  <div class="box warn">
+    <div class="t">Le role feedGovernor — le seul pouvoir residuel</div>
+    <p>Ce role, entierement separe de la propriete, <strong>survit au renoncement</strong>. Il permet une seule chose : remplacer les <em>adresses</em> des deux oracles Chainlink — le feed ETH/USD et le feed d'uptime du sequenceur. Il ne peut pas toucher a la pool, aux allocations, au vault, aux soldes, ni a aucun seuil ou constante du protocole. Toutes les autres fonctions administratives lui sont inaccessibles, et c'est verifie par test.</p>
+    <p>Pourquoi il existe : sur $MHT V2, sur BSC, une dependance oracle est tombee apres que la propriete du contrat eut ete renoncee. Il n'existait alors plus aucun moyen de reparer, et environ 76% de la supply s'est retrouvee gelee definitivement. <code>feedGovernor</code> est la reponse a cet echec precis — la capacite minimale de reparer un oracle casse, et rien d'autre.</p>
+    <p>Il est detenu par un <strong>portefeuille materiel distinct de la cle de deploiement</strong>, transferable en deux etapes vers un multisig, et <strong>eteignable definitivement</strong> par son detenteur via <code>renounceFeedGovernor()</code> le jour ou les feeds seront juges stables. Ce jour-la, le protocole n'aura plus aucun pouvoir residuel d'aucune sorte.</p>
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Apres le lancement</th><th>Etat</th></tr></thead>
+    <tbody>
+      <tr><td>Modifier la pool, les paliers, la supply, les seuils</td><td><strong>Impossible</strong> — constantes ou config verrouillee</td></tr>
+      <tr><td>Ajouter ou modifier une allocation d'airdrop</td><td><strong>Impossible</strong> — one-shot, puis propriete renoncee</td></tr>
+      <tr><td>Geler, blacklister ou saisir des jetons</td><td><strong>Impossible</strong> — la fonction n'existe pas</td></tr>
+      <tr><td>Mettre le protocole en pause</td><td><strong>Impossible</strong> — la fonction n'existe pas</td></tr>
+      <tr><td>Retirer la liquidite</td><td><strong>Impossible</strong> — la fonction n'existe pas dans le custodian</td></tr>
+      <tr><td>Remplacer l'adresse d'un oracle Chainlink</td><td><strong>Possible</strong>, par <code>feedGovernor</code> uniquement</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- 8 --------------------------------------------------------------- -->
+<section id="limites">
+  <h2><span class="num">08</span>Limites connues et assumees</h2>
+  <p class="sub">Ce qui n'est pas parfait, et pourquoi ce compromis a ete choisi plutot qu'un autre.</p>
+
+  <h3>Le controle d'uptime du sequenceur sera inactif</h3>
+  <p>Le code sait verifier qu'un sequenceur L2 fonctionne avant d'accepter un prix, et c'est teste. Mais Chainlink ne publie pas de feed d'uptime pour Robinhood Chain, et a annonce ne plus en deployer sur de nouveaux reseaux. Rendre ce controle obligatoire aurait bloque toute lecture de prix a vie, donc gele la moitie de la supply. Le controle est donc <strong>desactive au deploiement</strong>, et <code>feedGovernor</code> pourra l'activer sans redeploiement le jour ou un feed existera. En attendant, le controle de fraicheur Chainlink, la moyenne sur 30 minutes et les trois confirmations restent actifs.</p>
+
+  <h3>Une allocation d'airdrop ne pourra probablement jamais etre reclamee</h3>
+  <p>Une des 18 adresses du snapshot est un portefeuille de garde dont le detenteur n'a pas les cles. Ses 150 000 jetons — <strong>0,88% de l'airdrop</strong> — ont malgre tout ete credites, pour appliquer la regle annoncee sans exception dans un sens ni dans l'autre. Consequence mecanique, dite ici plutot que cachee : cette part restera comptee comme active et ponctionnera en permanence 0,88% des rewards de palier des 17 autres beneficiaires.</p>
+
+  <h3>Le vault ne se vide jamais completement</h3>
+  <p>Puisque chaque palier libere 1,5% du <em>restant</em>, la suite converge vers zero sans l'atteindre. C'est une propriete du modele, pas un defaut : elle garantit qu'il y aura toujours quelque chose a distribuer, mais elle signifie aussi qu'une fraction residuelle restera indefiniment dans le contrat.</p>
+
+  <h3>La fenetre entre le deploiement et le verrouillage</h3>
+  <p>Le TWAP a besoin de 30 minutes d'observations avant d'etre exploitable. Le verrouillage final de la configuration ne peut donc pas etre execute dans la meme foulee que le deploiement : il existe une courte periode pendant laquelle le jeton est echangeable alors que la configuration n'est pas encore figee. Cette fenetre est connue, courte, et sera documentee publiquement au moment du lancement.</p>
+</section>
+
+<!-- 9 --------------------------------------------------------------- -->
+<section id="verifier">
+  <h2><span class="num">09</span>Verifier par vous-meme</h2>
+  <p class="sub">Rien de ce qui precede ne demande de nous faire confiance.</p>
+
+  <p>Toutes les constantes citees sur cette page sont des variables publiques du contrat, lisibles depuis n'importe quel explorateur ou en ligne de commande. Les plus utiles :</p>
+  <ul>
+    <li><code>vaultBalance</code> — ce qui reste dans le vault, en temps reel</li>
+    <li><code>milestonesReached</code> / <code>nextMilestoneUSD</code> — combien de paliers sont tombes, et la cible suivante</li>
+    <li><code>milestoneStatus()</code> — l'etat courant de la machine : arme ou non, confirmations acquises, capitalisation mesuree</li>
+    <li><code>getMarketCap()</code> — la capitalisation telle que le contrat la calcule, pas telle qu'un agregateur l'estime</li>
+    <li><code>isTwapReady()</code> — si la pool couvre deja la fenetre de 30 minutes</li>
+    <li><code>owner()</code> et <code>feedGovernor()</code> — pour verifier vous-meme l'etat de la gouvernance</li>
+    <li><code>pendingRewardsOf(votre_adresse)</code> — ce que vous pouvez reclamer maintenant</li>
+  </ul>
+
+  <div class="box ok">
+    <div class="t">Etat de la revue au 29/08/2026</div>
+    <p>311 tests automatises, dont des invariants executes sur 128 000 appels aleatoires sans aucune violation. Huit outils d'analyse independants passes sur le code : Slither, Solhint, Mythril, Wake, Aderyn, Surya, SolidityScan et la suite Foundry. Couverture de lignes de 98,4% a 100% selon le contrat. Checklist SCSVS/SCSTG : aucun point Critical, High ou Medium ouvert. Les findings restants sont des faux positifs documentes un par un, avec la raison de leur classement.</p>
+  </div>
+
+  <p style="margin-top:24px">Les adresses des contrats deployes, les liens d'explorateur et les rapports d'audit complets seront publies ici au lancement.</p>
+</section>
+
+<footer>
+  <p><strong>$RMHT — R Milestone HODL Token</strong> · Robinhood Chain (chain 4663)<br />
+  Page de reference technique, generee depuis le code source gele du 29/08/2026. En cas de divergence entre cette page et le code deploye, <strong>c'est le code qui fait foi</strong>.</p>
+  <p style="margin-top:14px"><a href="index.html">Retour au site</a> · <a href="legal.html">Mentions legales</a></p>
+  <p style="margin-top:14px;font-size:.78rem;opacity:.75">Ce document decrit un mecanisme technique. Il ne constitue ni un conseil en investissement, ni une promesse de rendement. La detention d'actifs numeriques comporte un risque de perte totale.</p>
+</footer>
+
+</div>
+</body>
+</html>
