@@ -982,7 +982,7 @@
   <div class="trust-bar">
     <div class="trust-item">
       <span>SOLIDITYSCAN</span>
-      <span class="badge badge-gold">93.13/100</span>
+      <span class="badge badge-gold">8 tools · 0 critical</span>
     </div>
     <span class="trust-divider">|</span>
     <div class="trust-item">
@@ -1044,8 +1044,10 @@
     <a href="pages/contact.html" class="ql">📩 CONTACT</a>
     -->
 
-    <a href="docs/RMHT_Whitepaper_EN.pdf" target="_blank" class="ql">📄 WHITEPAPER EN</a>
-    <a href="docs/RMHT_Whitepaper_FR.pdf" target="_blank" class="ql">📄 WHITEPAPER FR</a>
+    <a href="protocol-en.html" class="ql">⚙️ HOW IT WORKS (EN)</a>
+                    <a href="protocol-fr.html" class="ql">⚙️ COMMENT ÇA MARCHE (FR)</a>
+                    <a href="docs/RMHT_Whitepaper_EN.pdf" target="_blank" class="ql">📄 WHITEPAPER EN (31/07)</a>
+    <a href="docs/RMHT_Whitepaper_FR.pdf" target="_blank" class="ql">📄 WHITEPAPER FR (31/07)</a>
 
     <a href="https://t.me/Community_Milestone_hodl" target="_blank" class="ql">💬 TELEGRAM</a>
     <a href="legal.html" class="ql">⚖️ LEGAL NOTICE</a>
@@ -1112,8 +1114,8 @@
         </div>
         <div class="stat-div"></div>
         <div class="stat">
-          <div class="stat-val">93.13</div>
-          <div class="stat-label">Security Scan</div>
+          <div class="stat-val">311</div>
+          <div class="stat-label">Tests Passing</div>
         </div>
         <div class="stat-div"></div>
         <div class="stat">
@@ -1142,15 +1144,15 @@
         <div class="donut-wrap">
           <div class="donut-container">
             <svg class="donut-svg" viewBox="0 0 100 100">
-              <!-- Répartition estimée au snapshot MHT-BSC du 31/07/2026 — airdrop 1-for-1 réel (pas un prorata sur un pool fixe) — sera figée au snapshot officiel pré-déploiement -->
+              <!-- Repartition du snapshot MHT-BSC FINAL du 29/08/2026 — airdrop 1-for-1 reel (pas un prorata sur un pool fixe) — table figee, ecrite dans le contrat au deploiement -->
               <circle cx="50" cy="50" r="38" fill="none" stroke="#f5c842" stroke-width="12"
                 stroke-dasharray="119.38 238.8" stroke-dashoffset="0" opacity="0.9"/>
               <circle cx="50" cy="50" r="38" fill="none" stroke="#00e096" stroke-width="12"
                 stroke-dasharray="11.94 238.8" stroke-dashoffset="-119.38"/>
               <circle cx="50" cy="50" r="38" fill="none" stroke="#7cf7cf" stroke-width="12"
-                stroke-dasharray="4.32 238.8" stroke-dashoffset="-131.32"/>
+                stroke-dasharray="4.06 238.8" stroke-dashoffset="-131.32"/>
               <circle cx="50" cy="50" r="38" fill="none" stroke="#5a6478" stroke-width="12"
-                stroke-dasharray="103.13 238.8" stroke-dashoffset="-135.64" opacity="0.7"/>
+                stroke-dasharray="103.38 238.8" stroke-dashoffset="-135.38" opacity="0.7"/>
             </svg>
             <div class="donut-center">
               <img src="piece_rmht.png" alt="RMHT" style="width:168px;height:168px;object-fit:contain;border-radius:50%;border:2px solid rgba(245,200,66,0.35);box-shadow:0 0 28px rgba(245,200,66,0.25);background:rgba(14,26,10,0.9);">
@@ -1175,19 +1177,19 @@
               <div class="legend-dot" style="background:#7cf7cf"></div>
               <div>
                 <div class="legend-label">Airdrop — Holders</div>
-                <div class="legend-pct">18,086,027 RMHT</div>
+                <div class="legend-pct">16,998,896 RMHT</div>
               </div>
             </div>
             <div class="legend-item">
               <div class="legend-dot" style="background:#5a6478"></div>
               <div>
                 <div class="legend-label">Marché (LP)</div>
-                <div class="legend-pct">431,913,973 RMHT</div>
+                <div class="legend-pct">433,001,104 RMHT</div>
               </div>
             </div>
           </div>
           <p style="font-size:0.75rem;color:var(--text-dim,#8a94a8);margin-top:8px;line-height:1.5;">
-            True 1-for-1 airdrop: each $MHT-BSC token held converts to 1 $RMHT — no fixed pool, no scaling. Amounts estimated from the snapshot as of 31/07/2026. Final allocation will be locked at the official pre-deployment snapshot — individual positions may still shift until then.
+            True 1-for-1 airdrop: each $MHT-BSC token held converts to 1 $RMHT — no fixed pool, no scaling. Amounts taken from the final snapshot of 29/08/2026 — 18 addresses, balances truncated down to a whole token. The allocation table is now frozen: it is written into the contract in a single transaction at deployment and cannot be added to afterwards.
           </p>
 
           <div class="tax-grid" style="width:100%">
@@ -1214,11 +1216,11 @@
           </div>
           <div class="tstat-card">
             <span class="tstat-label">Owner Holdings</span>
-            <span class="tstat-val green">0.00% — RENOUNCED ✓</span>
+            <span class="tstat-val">0.00% — renounce planned at launch</span>
           </div>
           <div class="tstat-card">
             <span class="tstat-label">Security Scan</span>
-            <span class="tstat-val">SolidityScan 93.13/100</span>
+            <span class="tstat-val">8 tools · 0 Critical / High</span>
           </div>
 
           <div style="margin-top:8px">
@@ -1237,7 +1239,7 @@
                 <div class="tranche-name">Fees de trading</div>
                 <div class="tranche-mcap">1% par swap, collect() permissionless</div>
               </div>
-              <span class="tranche-amount">⚠️ destinataire à préciser</span>
+              <span class="tranche-amount">Fixed recipient, owner-set before renounce</span>
             </div>
           </div>
         </div>
@@ -1407,8 +1409,8 @@
           <div class="how-num">3</div>
           <div class="how-icon">⚡</div>
           <div class="how-step">STEP 03</div>
-          <div class="how-title">Chainlink Executes</div>
-          <div class="how-desc">1.5% of vault auto-released every $500K MCap, 100% to holders — tamper-proof, zero human action. The math runs itself.</div>
+          <div class="how-title">The Vault Opens</div>
+          <div class="how-desc">1.5% of the vault released at every $500K MCap — but only once the price has held across three confirmations. Triggered by a public function anyone can call. No keeper, no permission.</div>
         </div>
         <div class="how-card">
           <div class="how-num">4</div>
@@ -1435,8 +1437,8 @@
           <div class="phase-title">Testnet & Security</div>
           <ul class="phase-items">
             <li class="phase-item done"><span class="icon">✅</span> RMHTLiquidityCustodian + NonfungiblePositionManager deployed on Robinhood Chain Testnet</li>
-            <li class="phase-item done"><span class="icon">✅</span> Foundry test suite — 56/56 passing (unit, fuzzing, invariants)</li>
-            <li class="phase-item done"><span class="icon">✅</span> SolidityScan security scan — 93.13/100</li>
+            <li class="phase-item done"><span class="icon">✅</span> Foundry test suite — 311/311 passing (unit, fuzzing, invariants on 128k calls)</li>
+            <li class="phase-item done"><span class="icon">✅</span> Full audit suite — 8 independent tools, 0 Critical / High / Medium</li>
             <li class="phase-item done"><span class="icon">✅</span> No owner freeze/blacklist function — removed by design</li>
           </ul>
         </div>
@@ -1458,7 +1460,7 @@
           <div class="phase-label">PHASE 3</div>
           <div class="phase-title">Launch & First Milestone</div>
           <ul class="phase-items">
-            <li class="phase-item future"><span class="icon">◦</span> 1-for-1 airdrop to $MHT-BSC holders (~6.5% supply)</li>
+            <li class="phase-item future"><span class="icon">◦</span> 1-for-1 airdrop to $MHT-BSC holders (1.70% of supply, 18 addresses)</li>
             <li class="phase-item future"><span class="icon">◦</span> Public dashboard live — MCap, Vault, Claim</li>
             <li class="phase-item future"><span class="icon">◦</span> First Smart-Vault milestone at $500K MCap</li>
             <li class="phase-item future"><span class="icon">◦</span> CoinGecko / CMC listing — ⚠️ à initier post-lancement</li>
@@ -1488,21 +1490,29 @@
 
       <div class="docs-grid reveal">
         <div>
-          <a href="docs/RMHT_Whitepaper_FR.pdf" target="_blank" class="doc-card" style="margin-bottom:16px;">
+          <a href="protocol-en.html" class="doc-card" style="margin-bottom:16px;">
+<span class="doc-icon">&#9881;&#65039;</span>
+<div class="doc-title">HOW IT WORKS &mdash; TECHNICAL REFERENCE</div>
+<div class="doc-desc">The protocol as the frozen code actually implements it: milestone state machine, TWAP oracle, custodians, residual powers and accepted limitations. <strong>Also in French.</strong></div>
+<div class="doc-cta">Read the page</div>
+</a>
+<a href="docs/RMHT_Whitepaper_FR.pdf" target="_blank" class="doc-card" style="margin-bottom:16px;">
             <span class="doc-icon">🇫🇷</span>
             <div class="doc-title">WHITEPAPER FR</div>
-            <div class="doc-desc">La mécanique complète du Smart-Vault RMHT, adaptée de $MHT pour Robinhood Chain.</div>
+            <div class="doc-desc">La mécanique complète du Smart-Vault RMHT, adaptée de $MHT pour Robinhood Chain. <em style="opacity:.72">Édition du 31/07/2026. L'architecture a évolué depuis — pour le détail technique à jour, voir la page ci-dessus.</em></div>
             <div class="doc-cta">Download PDF</div>
           </a>
           <a href="docs/RMHT_Whitepaper_EN.pdf" target="_blank" class="doc-card">
             <span class="doc-icon">🇬🇧</span>
             <div class="doc-title">WHITEPAPER EN</div>
-            <div class="doc-desc">Full Smart-Vault mechanics for $RMHT on Robinhood Chain.</div>
+            <div class="doc-desc">Full Smart-Vault mechanics for $RMHT on Robinhood Chain. <em style="opacity:.72">31/07/2026 edition. The architecture has evolved since — for the current technical detail, see the page above.</em></div>
             <div class="doc-cta">Download PDF</div>
           </a>
         </div>
 
-        <div class="exec-box">
+        <div style="margin:14px 0 0;padding:12px 15px;border:1px solid rgba(245,200,66,.18);border-left:3px solid #ffb020;border-radius:9px;background:rgba(14,26,10,.86);font-size:.82rem;line-height:1.55"><strong style="color:#ffb020">Note on the whitepapers.</strong> Both PDFs date from 31 July 2026 and are being rewritten. Three things changed after they were written: milestone releases are now triggered by a public function anyone can call, not by a third-party automation service; the price is read as a 30-minute time-weighted average instead of spot; and the allocation figures come from the final snapshot of 29 August 2026. Where the PDFs and the technical reference page disagree, <strong>the page is current and the PDFs are not</strong>.</div>
+
+                    <div class="exec-box">
           <div class="exec-title">Executive Summary</div>
           <div class="exec-items">
             <div class="exec-item">
@@ -1511,7 +1521,7 @@
             </div>
             <div class="exec-item">
               <i class="bi bi-check-circle-fill"></i>
-              <span><strong>Chainlink</strong> MCap on (TOTAL_SUPPLY − burned) × price — tamper-proof.</span>
+              <span><strong>Manipulation-resistant MCap</strong> — 30-minute Uniswap v3 TWAP for the RMHT price, Chainlink for ETH/USD, computed on supply excluding the vault, the pool and burned tokens.</span>
             </div>
             <div class="exec-item">
               <i class="bi bi-check-circle-fill"></i>
@@ -1527,13 +1537,13 @@
             </div>
             <div class="exec-item">
               <i class="bi bi-check-circle-fill"></i>
-              <span>⚠️ <em>Ownership renouncement at launch — à confirmer avant mise en prod.</em></span>
+              <span>Ownership renounced on all four contracts at launch — <code>feedGovernor</code> excepted, see the protocol page</span>
             </div>
           </div>
           <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:20px;flex-wrap:wrap">
             <!-- ⚠️ Pas de badge SolidProof pour RMHT — lien à ajouter dès que le rapport SolidityScan public est disponible -->
             <a href="#" style="display:inline-flex;align-items:center;gap:10px;padding:12px 20px;border:1px solid rgba(245,200,66,0.3);border-radius:10px;text-decoration:none;color:var(--gold);font-size:13px;font-weight:700;transition:all 0.2s" onmouseover="this.style.background='rgba(245,200,66,0.06)'" onmouseout="this.style.background='transparent'">
-              🛡️ SolidityScan <strong>93.13/100</strong> · Foundry 56/56 tests <i class="bi bi-box-arrow-up-right"></i>
+              🛡️ 8 audit tools · <strong>0 Critical / High</strong> · Foundry 311/311 tests <i class="bi bi-box-arrow-up-right"></i>
             </a>
           </div>
         </div>
@@ -1550,7 +1560,7 @@
       <div class="faq-list reveal" style="max-width:760px">
         <details class="faq-item">
           <summary class="faq-q">How does the $500K Milestone system work? <span class="faq-arrow"><i class="bi bi-plus"></i></span></summary>
-          <div class="faq-a">Every time the Market Cap grows by $500,000, Chainlink Automation automatically triggers a release of 1.5% of the remaining vault. 100% goes to eligible holders pro-rata — no marketing split, no auto-liquidity split. Zero human action required — ever.</div>
+          <div class="faq-a">Every time the Market Cap grows by $500,000 <em>and holds</em>, 1.5% of the remaining vault is released. Holding matters: the contract reads a 30-minute time-weighted average price, then requires three confirmations ten minutes apart inside a two-hour window. Any drop back below the milestone resets the count. The release is triggered by <code>pokeMilestone()</code>, a public function <strong>anyone can call</strong> — there is no keeper, no bot and no subscription to fund, so no third party can ever stall the mechanism. 100% goes to eligible holders pro-rata — no marketing split, no auto-liquidity split.</div>
         </details>
         <details class="faq-item">
           <summary class="faq-q">What happens if the Market Cap drops after a payout? <span class="faq-arrow"><i class="bi bi-plus"></i></span></summary>
@@ -1558,7 +1568,7 @@
         </details>
         <details class="faq-item">
           <summary class="faq-q">Is the Milestone Vault secure? <span class="faq-arrow"><i class="bi bi-plus"></i></span></summary>
-          <div class="faq-a">Yes. The Vault is governed entirely by the Smart Contract, scanned by SolidityScan (93.13/100) — <a href="#" style="color:var(--gold)">⚠️ lien vers le rapport public à ajouter une fois publié</a>. Releases are restricted to the Chainlink Automation trigger only. The founder has renounced ownership — there is no admin key, no backdoor, no override possible.</div>
+          <div class="faq-a">Yes. The Vault is governed entirely by the Smart Contract, scanned by SolidityScan, Slither, Mythril, Wake, Aderyn, Solhint, Surya and 311 Foundry tests — no Critical, High or Medium item left open. <a href="protocol-en.html#verify" style="color:var(--gold)">Review status</a>. Releases can only happen through the milestone state machine — three confirmations, ten minutes apart, on a 30-minute time-weighted average price. Ownership will be renounced on all four contracts right after launch. One role is deliberately kept and survives that renouncement: <strong>feedGovernor</strong>, which can replace the address of a Chainlink oracle and nothing else — it cannot touch the pool, the allocations, the vault or any balance. It exists because on $MHT V2 an oracle failed after ownership had been renounced, with no way left to repair it. It is held by a hardware wallet and can be destroyed permanently once the feeds are settled. <a href="protocol-en.html#governance" style="color:var(--gold)">Full detail on the protocol page</a>.</div>
         </details>
         <details class="faq-item">
           <summary class="faq-q">How do I receive my rewards? <span class="faq-arrow"><i class="bi bi-plus"></i></span></summary>
