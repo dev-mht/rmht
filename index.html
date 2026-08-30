@@ -1114,7 +1114,7 @@
         </div>
         <div class="stat-div"></div>
         <div class="stat">
-          <div class="stat-val">311</div>
+          <div class="stat-val">322</div>
           <div class="stat-label">Tests Passing</div>
         </div>
         <div class="stat-div"></div>
@@ -1437,7 +1437,7 @@
           <div class="phase-title">Testnet & Security</div>
           <ul class="phase-items">
             <li class="phase-item done"><span class="icon">✅</span> RMHTLiquidityCustodian + NonfungiblePositionManager deployed on Robinhood Chain Testnet</li>
-            <li class="phase-item done"><span class="icon">✅</span> Foundry test suite — 311/311 passing (unit, fuzzing, invariants on 128k calls)</li>
+            <li class="phase-item done"><span class="icon">✅</span> Foundry test suite — 322/322 passing (unit, fuzzing, invariants on 128k calls)</li>
             <li class="phase-item done"><span class="icon">✅</span> Full audit suite — 8 independent tools, 0 Critical / High / Medium</li>
             <li class="phase-item done"><span class="icon">✅</span> No owner freeze/blacklist function — removed by design</li>
           </ul>
@@ -1542,8 +1542,8 @@
           </div>
           <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:20px;flex-wrap:wrap">
             <!-- ⚠️ Pas de badge SolidProof pour RMHT — lien à ajouter dès que le rapport SolidityScan public est disponible -->
-            <a href="#" style="display:inline-flex;align-items:center;gap:10px;padding:12px 20px;border:1px solid rgba(245,200,66,0.3);border-radius:10px;text-decoration:none;color:var(--gold);font-size:13px;font-weight:700;transition:all 0.2s" onmouseover="this.style.background='rgba(245,200,66,0.06)'" onmouseout="this.style.background='transparent'">
-              🛡️ 8 audit tools · <strong>0 Critical / High</strong> · Foundry 311/311 tests <i class="bi bi-box-arrow-up-right"></i>
+            <a href="protocol-en.html#verify" style="display:inline-flex;align-items:center;gap:10px;padding:12px 20px;border:1px solid rgba(245,200,66,0.3);border-radius:10px;text-decoration:none;color:var(--gold);font-size:13px;font-weight:700;transition:all 0.2s" onmouseover="this.style.background='rgba(245,200,66,0.06)'" onmouseout="this.style.background='transparent'">
+              🛡️ 8 audit tools · <strong>3 findings, all documented false positives</strong> · Foundry 322/322 tests <i class="bi bi-box-arrow-up-right"></i>
             </a>
           </div>
         </div>
@@ -1568,7 +1568,7 @@
         </details>
         <details class="faq-item">
           <summary class="faq-q">Is the Milestone Vault secure? <span class="faq-arrow"><i class="bi bi-plus"></i></span></summary>
-          <div class="faq-a">Yes. The Vault is governed entirely by the Smart Contract, scanned by SolidityScan, Slither, Mythril, Wake, Aderyn, Solhint, Surya and 311 Foundry tests — no Critical, High or Medium item left open. <a href="protocol-en.html#verify" style="color:var(--gold)">Review status</a>. Releases can only happen through the milestone state machine — three confirmations, ten minutes apart, on a 30-minute time-weighted average price. Ownership will be renounced on all four contracts right after launch. One role is deliberately kept and survives that renouncement: <strong>feedGovernor</strong>, which can replace the address of a Chainlink oracle and nothing else — it cannot touch the pool, the allocations, the vault or any balance. It exists because on $MHT V2 an oracle failed after ownership had been renounced, with no way left to repair it. It is held by a hardware wallet and can be destroyed permanently once the feeds are settled. <a href="protocol-en.html#governance" style="color:var(--gold)">Full detail on the protocol page</a>.</div>
+          <div class="faq-a">Yes. The Vault is governed entirely by the Smart Contract, scanned by SolidityScan, Slither, Mythril, Wake, Aderyn, Solhint, Surya and 322 Foundry tests — no Critical, High or Medium item left open on the SCSVS/SCSTG checklist. The scanners still raise three findings (two Critical, one High); all three are analysed as false positives and the reasoning is written into the source code. <a href="protocol-en.html#verify" style="color:var(--gold)">Review status</a>. Releases can only happen through the milestone state machine — three confirmations, ten minutes apart, on a 30-minute time-weighted average price. Ownership will be renounced on all four contracts right after launch. One role is deliberately kept and survives that renouncement: <strong>feedGovernor</strong>, which can replace the address of a Chainlink oracle and nothing else — it cannot touch the pool, the allocations, the vault or any balance. It exists because on $MHT V2 an oracle failed after ownership had been renounced, with no way left to repair it. It is held by a hardware wallet and can be destroyed permanently once the feeds are settled. <a href="protocol-en.html#governance" style="color:var(--gold)">Full detail on the protocol page</a>.</div>
         </details>
         <details class="faq-item">
           <summary class="faq-q">How do I receive my rewards? <span class="faq-arrow"><i class="bi bi-plus"></i></span></summary>

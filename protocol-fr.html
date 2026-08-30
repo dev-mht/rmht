@@ -126,7 +126,7 @@ footer a{color:var(--muted)}
   <div class="eyebrow" style="margin-top:22px">Reference technique</div>
   <h1>Comment <span class="accent">$RMHT</span> fonctionne</h1>
   <p class="lede">Le fonctionnement reel du protocole, ecrit depuis le code source gele — mecanismes, chiffres, pouvoirs residuels et limites assumees. Sans marketing.</p>
-  <div class="stamp">Synchronise avec le code gele du <b>29/08/2026</b> &nbsp;·&nbsp; 311/311 tests &nbsp;·&nbsp; Robinhood Chain (4663)</div>
+  <div class="stamp">Synchronise avec le code gele du <b>30/08/2026</b> &nbsp;·&nbsp; 322/322 tests &nbsp;·&nbsp; Robinhood Chain (4663)</div>
 </header>
 
 <nav class="toc">
@@ -323,7 +323,7 @@ footer a{color:var(--muted)}
       <tr>
         <td><strong>AirdropCustodian</strong></td>
         <td>Les 16 998 896 de l'airdrop</td>
-        <td>Reclamable par chaque beneficiaire des que l'une des deux conditions est remplie : <strong>un an ecoule</strong>, ou <strong>le 10<sup>e</sup> palier atteint</strong>. Les rewards de palier sont reclamables separement, sans attendre le deblocage du principal.</td>
+        <td>Reclamable par chaque beneficiaire des que l'une des deux conditions est remplie : <strong>un an ecoule</strong>, ou <strong>le 5<sup>e</sup> palier atteint</strong>. Les rewards de palier sont reclamables separement, sans attendre le deblocage du principal.</td>
       </tr>
     </tbody>
   </table></div>
@@ -398,8 +398,15 @@ footer a{color:var(--muted)}
   </ul>
 
   <div class="box ok">
-    <div class="t">Etat de la revue au 29/08/2026</div>
-    <p>311 tests automatises, dont des invariants executes sur 128 000 appels aleatoires sans aucune violation. Huit outils d'analyse independants passes sur le code : Slither, Solhint, Mythril, Wake, Aderyn, Surya, SolidityScan et la suite Foundry. Couverture de lignes de 98,4% a 100% selon le contrat. Checklist SCSVS/SCSTG : aucun point Critical, High ou Medium ouvert. Les findings restants sont des faux positifs documentes un par un, avec la raison de leur classement.</p>
+    <div class="t">Etat de la revue au 30/08/2026</div>
+    <p>322 tests automatises, dont des invariants executes sur 128 000 appels aleatoires sans aucune violation. Huit outils d'analyse independants passes sur le code : Slither, Solhint, Mythril, Wake, Aderyn, Surya, SolidityScan et la suite Foundry. Couverture de lignes de 98,4% a 100% selon le contrat. Checklist SCSVS/SCSTG : 227 items revus, <strong>aucun point Critical, High ou Medium ouvert</strong>.</p>
+    <p>L'analyse automatisee remonte en plus <strong>deux Critical et un High</strong>. Les trois sont analyses comme faux positifs, et le raisonnement est ecrit dans le code source plutot que garde pour nous :</p>
+    <ul>
+      <li>le <code>collect()</code> permissionless du custodian de liquidite — les frais qu'il deplace ne peuvent aller qu'au destinataire configure, jamais a une adresse choisie par l'appelant ;</li>
+      <li>le seuil de deblocage de l'airdrop — le scanner le signale des que la valeur passe sous 10. En compilant le contrat a 10 puis a 5 et en comparant le bytecode runtime, on obtient la meme longueur et deux octets de constante qui changent, sans aucune instruction de controle d'acces modifiee ;</li>
+      <li>une reentrance en lecture seule sur la lecture de prix — fermee par <code>require(slot0().unlocked)</code> et couverte par un test dedie.</li>
+    </ul>
+    <p>Un scan relance par n'importe qui fera apparaitre ces trois points. Ils sont listes ici pour que les chiffres correspondent a ce qu'une verification independante renvoie.</p>
   </div>
 
   <p style="margin-top:24px">Les adresses des contrats deployes, les liens d'explorateur et les rapports d'audit complets seront publies ici au lancement.</p>
@@ -407,7 +414,7 @@ footer a{color:var(--muted)}
 
 <footer>
   <p><strong>$RMHT — R Milestone HODL Token</strong> · Robinhood Chain (chain 4663)<br />
-  Page de reference technique, generee depuis le code source gele du 29/08/2026. En cas de divergence entre cette page et le code deploye, <strong>c'est le code qui fait foi</strong>.</p>
+  Page de reference technique, generee depuis le code source gele du 30/08/2026. En cas de divergence entre cette page et le code deploye, <strong>c'est le code qui fait foi</strong>.</p>
   <p style="margin-top:14px"><a href="index.html">Retour au site</a> · <a href="legal.html">Mentions legales</a></p>
   <p style="margin-top:14px;font-size:.78rem;opacity:.75">Ce document decrit un mecanisme technique. Il ne constitue ni un conseil en investissement, ni une promesse de rendement. La detention d'actifs numeriques comporte un risque de perte totale.</p>
 </footer>

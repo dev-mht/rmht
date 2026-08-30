@@ -119,7 +119,7 @@ footer a{color:var(--muted)}
   <div class="eyebrow" style="margin-top:22px">Technical reference</div>
   <h1>How <span class="accent">$RMHT</span> works</h1>
   <p class="lede">What the protocol actually does, written from the frozen source code — mechanisms, figures, residual powers and accepted limitations. No marketing.</p>
-  <div class="stamp">In sync with the code frozen on <b>29 Aug 2026</b> &nbsp;·&nbsp; 311/311 tests &nbsp;·&nbsp; Robinhood Chain (4663)</div>
+  <div class="stamp">In sync with the code frozen on <b>30 Aug 2026</b> &nbsp;·&nbsp; 322/322 tests &nbsp;·&nbsp; Robinhood Chain (4663)</div>
 </header>
 
 <nav class="toc">
@@ -315,7 +315,7 @@ footer a{color:var(--muted)}
       <tr>
         <td><strong>AirdropCustodian</strong></td>
         <td>The airdrop's 16,998,896</td>
-        <td>Claimable by each beneficiary as soon as either condition is met: <strong>one year elapsed</strong>, or <strong>the 10<sup>th</sup> milestone reached</strong>. Milestone rewards are claimable separately, without waiting for the principal to unlock.</td>
+        <td>Claimable by each beneficiary as soon as either condition is met: <strong>one year elapsed</strong>, or <strong>the 5<sup>th</sup> milestone reached</strong>. Milestone rewards are claimable separately, without waiting for the principal to unlock.</td>
       </tr>
     </tbody>
   </table></div>
@@ -390,8 +390,15 @@ footer a{color:var(--muted)}
   </ul>
 
   <div class="box ok">
-    <div class="t">Review status as of 29 August 2026</div>
-    <p>311 automated tests, including invariants run across 128,000 random calls with no violation. Eight independent analysis tools run against the code: Slither, Solhint, Mythril, Wake, Aderyn, Surya, SolidityScan and the Foundry suite. Line coverage between 98.4% and 100% depending on the contract. SCSVS/SCSTG checklist: no Critical, High or Medium item left open. The remaining findings are documented false positives, each with the reason for its classification.</p>
+    <div class="t">Review status as of 30 August 2026</div>
+    <p>322 automated tests, including invariants run across 128,000 random calls with no violation. Eight independent analysis tools run against the code: Slither, Solhint, Mythril, Wake, Aderyn, Surya, SolidityScan and the Foundry suite. Line coverage between 98.4% and 100% depending on the contract. SCSVS/SCSTG checklist: 227 items reviewed, <strong>no Critical, High or Medium item left open</strong>.</p>
+    <p>Automated scanning additionally raises <strong>two Critical and one High</strong>. All three are analysed as false positives, and the reasoning is written into the source rather than kept private:</p>
+    <ul>
+      <li>the liquidity custodian's permissionless <code>collect()</code> — the fees it moves can only reach the configured recipient, never a caller-chosen address;</li>
+      <li>the airdrop unlock threshold — the scanner flags it as soon as the value drops below 10. Compiling the contract at 10 and at 5 and comparing the runtime bytecode shows the same length and two changed constant bytes, with no access-control instruction touched;</li>
+      <li>a read-only reentrancy on the price read — closed by <code>require(slot0().unlocked)</code> and covered by a dedicated test.</li>
+    </ul>
+    <p>A scan re-run by anyone will show those three. They are listed here so the numbers match what an independent check returns.</p>
   </div>
 
   <p style="margin-top:24px">Deployed contract addresses, explorer links and full audit reports will be published here at launch.</p>
@@ -399,7 +406,7 @@ footer a{color:var(--muted)}
 
 <footer>
   <p><strong>$RMHT — R Milestone HODL Token</strong> · Robinhood Chain (chain 4663)<br />
-  Technical reference page, generated from the source code frozen on 29 August 2026. Where this page and the deployed code disagree, <strong>the code is authoritative</strong>.</p>
+  Technical reference page, generated from the source code frozen on 30 August 2026. Where this page and the deployed code disagree, <strong>the code is authoritative</strong>.</p>
   <p style="margin-top:14px"><a href="index.html">Back to the site</a> · <a href="legal.html">Legal notice</a></p>
   <p style="margin-top:14px;font-size:.78rem;opacity:.75">This document describes a technical mechanism. It is neither investment advice nor a promise of returns. Holding digital assets carries a risk of total loss.</p>
 </footer>
