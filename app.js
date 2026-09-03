@@ -17,25 +17,26 @@
 //      vers RMHTLiquidityCustodian pour la transparence sur les fees LP
 // ─────────────────────────────────────────────────────────────────────────────
 
-// ⚠️⚠️⚠️ MODE TESTNET TEMPORAIRE ⚠️⚠️⚠️
-// Ce CONFIG pointe actuellement sur Robinhood Chain TESTNET (contrat réellement déployé,
-// vérifié le 11/07/2026), pour permettre au dashboard d'afficher de vraies données pendant
-// la Phase 2 (mainnet en préparation). Les tokens/adresses ci-dessous n'ont AUCUNE valeur
-// réelle. À la bascule mainnet : remplacer contractAddress/custodianAddress par les
-// adresses mainnet réelles, chainId par 4663, chainIdHex par "0x1237", rpcUrl par
-// "https://rpc.mainnet.chain.robinhood.com", et les explorerUrl/explorerAddressUrl par
-// robinhoodchain.blockscout.com (sans "testnet.").
+// ═════════════════════════════════════════════════════════════════════════════
+//  BASCULE MAINNET — une seule chose à faire ici : renseigner les deux adresses
+//  ci-dessous après le déploiement. Tant qu'elles sont vides, le dashboard
+//  refuse de se connecter à un contrat plutôt que d'afficher des données fausses.
+//  Le reste (chaîne, RPC, explorateur) est déjà réglé sur le MAINNET.
+// ═════════════════════════════════════════════════════════════════════════════
 const CONFIG = {
-    contractAddress   : "0xf9B7353a386E9fad8bf39a23dbCDb7dff67638C0", // Contrat RMHT — TESTNET
-    custodianAddress  : "0xd81AD39405579656f3E529195cfDf06cdE8b1DA3", // RMHTLiquidityCustodian — TESTNET (vérifié 11/07/2026)
-    chainId           : 46630, // Robinhood Chain TESTNET (confirmé docs.robinhood.com/chain + chainid.network)
-    chainIdHex        : "0xB626", // 46630 en hexadécimal
-    chainName         : "Robinhood Chain Testnet",
-    rpcUrl            : "https://rpc.testnet.chain.robinhood.com", // RPC public testnet officiel, gratuit, sans clé API
-    explorerUrl       : "https://explorer.testnet.chain.robinhood.com/tx/",
-    explorerAddressUrl: "https://explorer.testnet.chain.robinhood.com/address/",
+    contractAddress   : "", // <<< adresse RMHT mainnet
+    custodianAddress  : "", // <<< adresse RMHTLiquidityCustodian mainnet
+    chainId           : 4663, // Robinhood Chain MAINNET
+    chainIdHex        : "0x1237", // 4663 en hexadécimal
+    chainName         : "Robinhood Chain",
+    rpcUrl            : "https://rpc.mainnet.chain.robinhood.com",
+    explorerUrl       : "https://robinhoodchain.blockscout.com/tx/",
+    explorerAddressUrl: "https://robinhoodchain.blockscout.com/address/",
     nativeCurrency    : { name: "Ether", symbol: "ETH", decimals: 18 },
 };
+
+// true seulement quand une vraie adresse a été renseignée ci-dessus
+const CONFIG_READY = /^0x[a-fA-F0-9]{40}$/.test(CONFIG.contractAddress);
 
 const ABI = [
     // ── View ──────────────────────────────────────────────────────────────────
@@ -124,6 +125,10 @@ async function ensureRobinhoodChain(provider) {
 
 // ── Appelée par le modal après connexion ──────────────────────────────────────
 window.initRMHT = async function(provider, signer, address) {
+    if (!CONFIG_READY) {
+        alert("The $RMHT contract is not live yet.\n\nThe official address is published on this page at launch — do not trust any address circulating before then.");
+        return;
+    }
     const onRightChain = await ensureRobinhoodChain(provider);
     if (!onRightChain) return;
 

@@ -201,7 +201,7 @@
     .hero-title-top {
       text-align: center;
       font-family: var(--display);
-      font-size: clamp(3rem, 7vw, 6.5rem);
+      font-size: clamp(2.4rem, 5.6vw, 5rem);
       line-height: 1;
       letter-spacing: 0.02em;
       color: var(--text);
@@ -209,6 +209,12 @@
       animation: fadeUp 0.8s ease 0.1s both;
     }
     .hero-title-top .gold { color: var(--gold); }
+    .hero-title-top .rh {
+      font-size: 0.46em;
+      letter-spacing: 0.10em;
+      color: var(--muted);
+      vertical-align: 0.32em;
+    }
     .hero-title-top .dim  { color: var(--muted); font-size: 0.6em; letter-spacing: 0.08em; }
 
     .mht-ticker {
@@ -885,6 +891,12 @@
     }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
+    /* garde-fou : le titre est plus long qu'avant, on autorise le retour a la ligne
+       avant que le nowrap ne le fasse deborder sur les ecrans intermediaires */
+    @media (max-width: 1280px) {
+      .hero-title-top { white-space: normal; }
+    }
+
     @media (max-width: 900px) {
       .hero { grid-template-columns: 1fr; grid-template-rows: auto auto auto; padding: 40px 20px; min-height: auto; gap: 40px; }
       .hero-video-left, .hero-video-right { display: none; }
@@ -989,11 +1001,11 @@
   <div class="trust-bar">
     <div class="trust-item">
       <span>AUDIT</span>
-      <span class="badge badge-gold">8 tools · 0 critical</span>
+      <a href="protocol-en.html#verify" class="badge badge-gold" style="text-decoration:none">8 tools · 0 critical ↗</a>
     </div>
     <span class="trust-divider">|</span>
     <div class="trust-item">
-      <span class="badge badge-green">✓ KYC VERIFIED (same KYC as $MHT)</span>
+      <a href="https://app.solidproof.io/projects/milestone-hodl-token" target="_blank" rel="noopener" class="badge badge-green" style="text-decoration:none" title="SolidProof identity verification — held on the $MHT project record, same team behind $RMHT">✓ KYC VERIFIED by SolidProof (same team as $MHT) ↗</a>
     </div>
     <span class="trust-divider">|</span>
     <div class="trust-item">
@@ -1071,7 +1083,7 @@
     <div class="hero-line"></div>
 
     <div class="hero-head">
-      <h1 class="hero-title-top">🔥ROBINHOOD MILESTONE <span class="gold">HODL</span> TOKEN🔥</h1>
+      <h1 class="hero-title-top">🔥<span class="rh">ROBINHOOD</span> MILESTONE <span class="gold">HODL</span> TOKEN🔥</h1>
       <div class="mht-ticker">$RMHT</div>
       <p class="hero-sub">
         The first token where <strong>Market Cap growth = automatic rewards</strong>.<br>
@@ -1189,7 +1201,7 @@
             <div class="legend-item">
               <div class="legend-dot" style="background:#5a6478"></div>
               <div>
-                <div class="legend-label">Marché (LP)</div>
+                <div class="legend-label">Market (LP)</div>
                 <div class="legend-pct">433,001,104 RMHT</div>
               </div>
             </div>
@@ -1235,15 +1247,15 @@
               <span class="tranche-lock">🔒</span>
               <div class="tranche-info">
                 <div class="tranche-name">Position LP</div>
-                <div class="tranche-mcap">Single-sided, verrouillée à vie</div>
+                <div class="tranche-mcap">Single-sided, locked for life</div>
               </div>
-              <span class="tranche-amount">Non-retirable</span>
+              <span class="tranche-amount">Non-withdrawable</span>
             </div>
             <div class="tranche-row">
               <span class="tranche-lock">🔓</span>
               <div class="tranche-info">
-                <div class="tranche-name">Fees de trading</div>
-                <div class="tranche-mcap">1% par swap, collect() permissionless</div>
+                <div class="tranche-name">Trading fees</div>
+                <div class="tranche-mcap">1% per swap, permissionless collect()</div>
               </div>
               <span class="tranche-amount">Fixed recipient, owner-set before renounce</span>
             </div>
@@ -1272,7 +1284,7 @@
           </div>
           <div class="field">
             <label>Current Price ($) <span style="color:var(--success);font-size:10px">● LIVE</span></label>
-            <input type="number" id="buyCurrentPrice" step="0.000001" min="0" oninput="this.dataset.userModified='1'; calcBuy()" placeholder="Loading..." />
+            <input type="number" id="buyCurrentPrice" step="0.000001" min="0" oninput="this.dataset.userModified='1'; calcBuy()" placeholder="Available at launch" />
           </div>
           <div class="field">
             <label>Target Price ($) <span style="color:var(--muted);font-size:10px">optional</span></label>
@@ -1373,7 +1385,7 @@
           <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
             <div class="reward-info">
               <div class="reward-info-label">Current Market Cap</div>
-              <div class="reward-info-val" id="mcapInfo"><span id="market-cap">Loading...</span></div>
+              <div class="reward-info-val" id="mcapInfo"><span id="market-cap">&mdash;</span></div>
             </div>
             <div class="reward-info">
               <div class="reward-info-label">Smart-Vault Balance</div>
@@ -1619,9 +1631,20 @@
   <script>
   // ── CHARGEMENT PUBLIC MCap + Holders (sans wallet) ──────────────────────────
   (async function loadPublicStats() {
-    // >>> LAUNCH TODO: replace the testnet address/RPC below with the mainnet values <<<
-    const CONTRACT = "0xf9B7353a386E9fad8bf39a23dbCDb7dff67638C0"; // RMHT contract — TESTNET (replace at launch)
-    const RPC      = "https://rpc.testnet.chain.robinhood.com"; // RPC public testnet officiel (chainId 46630)
+    // ═══════════════════════════════════════════════════════════════════════
+    //  BASCULE MAINNET — les 3 lignes ci-dessous sont les SEULES à changer.
+    //  Tant que LAUNCHED vaut false, la page n'interroge AUCUN contrat et
+    //  tous les compteurs restent sur "—". Aucune donnée testnet affichée.
+    // ═══════════════════════════════════════════════════════════════════════
+    const LAUNCHED  = false;                                        // <<< true après le déploiement mainnet
+    const CONTRACT  = "";                                           // <<< adresse RMHT mainnet
+    const EXPLORER  = "https://robinhoodchain.blockscout.com";       // explorateur mainnet
+    const RPC       = "https://rpc.mainnet.chain.robinhood.com";     // RPC mainnet (chainId 4663)
+
+    window.RMHT_CFG = { LAUNCHED, CONTRACT, EXPLORER, RPC,
+      ready: LAUNCHED && /^0x[a-fA-F0-9]{40}$/.test(CONTRACT) };
+
+    if (!window.RMHT_CFG.ready) return;  // pré-lancement : on n'affiche rien plutôt que du faux
     const ABI_MIN  = [
       "function getMarketCap() view returns (uint256)",
       "function nextMilestoneUSD() view returns (uint256)",
@@ -1677,10 +1700,7 @@
       }
 
       try {
-        // ⚠️ MODE TESTNET TEMPORAIRE — à remplacer par robinhoodchain.blockscout.com (sans "testnet.") à la bascule mainnet
-        const res = await fetch(
-          "https://explorer.testnet.chain.robinhood.com/api/v2/tokens/" + CONTRACT
-        );
+        const res = await fetch(EXPLORER + "/api/v2/tokens/" + CONTRACT);
         const data = await res.json();
         const holders = data?.holders_count ?? data?.result?.[0]?.holdersCount;
         const statHoldersEl = document.getElementById("statHolders");
@@ -1726,10 +1746,11 @@
 
     let currentMilestone = 1;
     const MAX_MILESTONE  = 20;
-    // >>> LAUNCH TODO: replace the testnet address/RPC below with the mainnet values <<<
-    const MHT_CONTRACT_ADDR = '0xf9B7353a386E9fad8bf39a23dbCDb7dff67638C0'; // RMHT contract — TESTNET (replace at launch)
-    const BSC_RPC_URL       = 'https://rpc.testnet.chain.robinhood.com'; // RPC public testnet (chainId 46630) — nom de variable hérité de $MHT, PAS BSC
+    // Config unique : voir le bloc "BASCULE MAINNET" plus haut. Rien à changer ici.
+    const MHT_CONTRACT_ADDR = (window.RMHT_CFG && window.RMHT_CFG.CONTRACT) || '';
+    const BSC_RPC_URL       = (window.RMHT_CFG && window.RMHT_CFG.RPC) || '';
     async function fetchEligibleSupplyOnChain() {
+        if (!window.RMHT_CFG || !window.RMHT_CFG.ready) return 500000000; // pré-lancement
         try {
             const payload = { jsonrpc:'2.0', id:1, method:'eth_call', params:[{ to: MHT_CONTRACT_ADDR, data:'0xcd415c4a' }, 'latest'] };
             const res  = await fetch(BSC_RPC_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
