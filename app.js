@@ -72,8 +72,9 @@ const fmt = (v, d = 2) =>
         maximumFractionDigits: d,
     });
 
+// getMarketCap() / nextMilestoneUSD() renvoient des DOLLARS ENTIERS (0 decimale)
 const fmtUSD = (v) =>
-    "$" + parseFloat(ethers.formatUnits(v, 18)).toLocaleString("en-US", {
+    "$" + Number(v).toLocaleString("en-US", {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
     });
@@ -230,7 +231,7 @@ async function updateUI() {
         const progressBar = document.getElementById("milestoneBar");
         if (progressBar) {
             if (marketCap !== null && nextMilestone !== null) {
-                const STEP = ethers.parseUnits(MILESTONE_STEP_USD.toString(), 18);
+                const STEP = BigInt(MILESTONE_STEP_USD); // dollars entiers, pas de 1e18
                 const prevMilestone = nextMilestone - STEP;
                 let progress = 0;
                 if (marketCap >= nextMilestone) {

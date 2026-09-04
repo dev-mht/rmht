@@ -1003,7 +1003,7 @@
     🏛️ <strong>Official ecosystem notice:</strong> $RMHT is developed and maintained by the same team as <a href="https://milestonehodl.apexpad.io" target="_blank" rel="noopener" style="color:#f5c842;font-weight:700;text-decoration:underline;">$MHT — Milestone HODL Token</a> (original deployment on BNB Chain).
   </div>
 
-  <!-- ===== LAUNCH NOTICE — TO REMOVE ONCE THE MAINNET ADDRESS IS PUBLISHED ===== -->
+  <!-- ===== LAUNCH NOTICE ===== -->
   <div id="launch" style="background:linear-gradient(90deg,rgba(60,32,6,0.95),rgba(92,52,8,0.95),rgba(60,32,6,0.95));border-bottom:1px solid rgba(245,200,66,0.45);padding:12px 20px;text-align:center;font-family:'Space Mono',monospace;font-size:13px;color:#f6e7c4;line-height:1.7;">
     🟢 <strong style="color:#f5c842;">$RMHT is live on Robinhood Chain.</strong><br>
     Official contract: <a href="https://robinhoodchain.blockscout.com/token/0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4" target="_blank" rel="noopener" style="color:#f5c842;font-weight:700;word-break:break-all;">0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4</a><br>
@@ -1690,8 +1690,10 @@
         getETHPriceUSD(),
       ]);
 
-      const mcap     = mcapRaw     != null ? parseFloat(ethers.formatUnits(mcapRaw, 18))     : NaN;
-      const next     = nextRaw     != null ? parseFloat(ethers.formatUnits(nextRaw, 18))     : NaN;
+      // getMarketCap() et nextMilestoneUSD() renvoient des DOLLARS ENTIERS (0 decimale),
+      // pas des valeurs 18 decimales : ne pas diviser par 1e18.
+      const mcap     = mcapRaw     != null ? Number(mcapRaw)                                  : NaN;
+      const next     = nextRaw     != null ? Number(nextRaw)                                  : NaN;
       const priceEth = priceEthRaw != null ? parseFloat(ethers.formatUnits(priceEthRaw, 18)) : NaN;
       const price    = (Number.isFinite(priceEth) && ethUsd) ? priceEth * ethUsd : NaN;
       const vault    = vaultRaw    != null ? parseFloat(ethers.formatUnits(vaultRaw, 18))    : NaN;
@@ -1708,6 +1710,14 @@
         const vaultWalEl = document.getElementById("vault-balance");
         if (vaultTokEl) vaultTokEl.textContent = vaultFmt;
         if (vaultWalEl) vaultWalEl.textContent = vaultFmt;
+      }
+
+      // Affichage public du market cap, sans portefeuille connecte : on ecrit
+      // #market-cap, et reconcileDisplays() propage vers le hero (#mcapDisplay,
+      // #statMcap, #milestoneBar) toutes les 3 s.
+      const mcElPub = document.getElementById("market-cap");
+      if (mcElPub && Number.isFinite(mcap) && mcap > 0) {
+        mcElPub.textContent = "$" + Math.round(mcap).toLocaleString("en-US");
       }
 
       const simPriceEl = document.getElementById("buyCurrentPrice");

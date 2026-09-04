@@ -267,7 +267,7 @@ footer a{color:var(--muted)}
   <p>Le protocole ne lit jamais le prix spot de la pool. Il utilise une <strong>moyenne ponderee dans le temps sur 30 minutes pleines</strong> (TWAP Uniswap v3). Deux consequences directes :</p>
   <ul>
     <li>Un achat massif isole ne deplace la moyenne que d'une fraction de son effet instantane. Pour faire bouger reellement le chiffre, il faut tenir la position une demi-heure.</li>
-    <li>Le mecanisme est <strong>fail-closed</strong> : tant que la pool n'a pas accumule 30 minutes complètes d'historique, aucun prix n'est produit du tout, et <code>pokeMilestone()</code> ne fait rien. Le protocole prefere ne rien faire plutot que travailler sur une donnee partielle.</li>
+    <li>Le mecanisme est <strong>fail-closed</strong> : tant que la pool n'a pas accumule 30 minutes completes d'historique, aucun prix n'est produit du tout, et <code>pokeMilestone()</code> ne fait rien. Le protocole prefere ne rien faire plutot que travailler sur une donnee partielle.</li>
   </ul>
   <p>Pour que cette fenetre ne puisse pas etre videe par du spam de transactions, la pool est dimensionnee au deploiement pour memoriser <strong>1801 observations</strong>, soit la fenetre complete a la seconde pres. Le contrat refuse d'etre configure sur une pool qui n'a pas cette capacite.</p>
 
@@ -378,7 +378,7 @@ footer a{color:var(--muted)}
   <p>Puisque chaque palier libere 1,5% du <em>restant</em>, la suite converge vers zero sans l'atteindre. C'est une propriete du modele, pas un defaut : elle garantit qu'il y aura toujours quelque chose a distribuer, mais elle signifie aussi qu'une fraction residuelle restera indefiniment dans le contrat.</p>
 
   <h3>La fenetre entre le deploiement et le verrouillage</h3>
-  <p>Le TWAP a besoin de 30 minutes d'observations avant d'etre exploitable. Le verrouillage final de la configuration ne peut donc pas etre execute dans la meme foulee que le deploiement : il existe une courte periode pendant laquelle le jeton est echangeable alors que la configuration n'est pas encore figee. Cette fenetre est connue, courte, et sera documentee publiquement au moment du lancement.</p>
+  <p>Le TWAP a besoin de 30 minutes d'observations avant d'etre exploitable. Le verrouillage final de la configuration ne peut donc pas etre execute dans la meme foulee que le deploiement : il existe une courte periode pendant laquelle le jeton est echangeable alors que la configuration n'est pas encore figee. Cette fenetre est allee du deploiement au verrouillage de la configuration, tous deux le 04/09/2026 ; ce qui s'y est passe, et ce que le lancement a coute au wei pres, est detaille sur la <a href="transparency-fr.html#couts">page de transparence</a>.</p>
 </section>
 
 <!-- 9 --------------------------------------------------------------- -->
@@ -409,7 +409,19 @@ footer a{color:var(--muted)}
     <p>Un scan relance par n'importe qui fera apparaitre ces trois points. Ils sont listes ici pour que les chiffres correspondent a ce qu'une verification independante renvoie.</p>
   </div>
 
-  <p style="margin-top:24px">Les adresses des contrats deployes, les liens d'explorateur et les rapports d'audit complets seront publies ici au lancement.</p>
+  <h3>Adresses des contrats deployes</h3>
+  <p>Deployes sur Robinhood Chain (chain 4663) le <strong>04/09/2026</strong>. Les quatre contrats que nous avons ecrits sont verifies sur Blockscout — source lisible, <em>exact match</em> avec le bytecode deploye — et la propriete a ete renoncee sur les quatre.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Contrat</th><th>Adresse</th><th>Etat</th></tr></thead>
+    <tbody>
+      <tr><td><strong>$RMHT</strong><br /><span style="color:var(--muted);font-size:.86rem">jeton et vault</span></td><td><a href="https://robinhoodchain.blockscout.com/address/0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4" target="_blank" rel="noopener"><code>0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4</code></a></td><td>Verifie · <code>owner() = address(0)</code> · configuration verrouillee</td></tr>
+      <tr><td><strong>RMHTAirdropCustodian</strong><br /><span style="color:var(--muted);font-size:.86rem">les 16 998 896 de l'airdrop</span></td><td><a href="https://robinhoodchain.blockscout.com/address/0xdEc68344a41Cc6104ed5ff2C88F2D16a794688C1" target="_blank" rel="noopener"><code>0xdEc68344a41Cc6104ed5ff2C88F2D16a794688C1</code></a></td><td>Verifie · <code>owner() = address(0)</code></td></tr>
+      <tr><td><strong>RMHTFounderCustodian</strong><br /><span style="color:var(--muted);font-size:.86rem">les 50 000 000 du fondateur</span></td><td><a href="https://robinhoodchain.blockscout.com/address/0x4C944c27160A1532b9De3a69d0Ec64164a6f03d8" target="_blank" rel="noopener"><code>0x4C944c27160A1532b9De3a69d0Ec64164a6f03d8</code></a></td><td>Verifie · <code>owner() = address(0)</code></td></tr>
+      <tr><td><strong>RMHTLiquidityCustodian</strong><br /><span style="color:var(--muted);font-size:.86rem">detenteur de la position LP</span></td><td><a href="https://robinhoodchain.blockscout.com/address/0x50336e2a1396364895702a5222faC47bD0d38407" target="_blank" rel="noopener"><code>0x50336e2a1396364895702a5222faC47bD0d38407</code></a></td><td>Verifie · <code>owner() = address(0)</code> · position <code>tokenId 1004464</code></td></tr>
+      <tr><td><strong>Uniswap v3 pool</strong><br /><span style="color:var(--muted);font-size:.86rem">RMHT / WETH</span></td><td><a href="https://robinhoodchain.blockscout.com/address/0xabe3B1fF5Fc6a9638D0c46f2379B20f7e6173bEe" target="_blank" rel="noopener"><code>0xabe3B1fF5Fc6a9638D0c46f2379B20f7e6173bEe</code></a></td><td>Deployee par la factory Uniswap, pas par nous</td></tr>
+    </tbody>
+  </table></div>
+  <p>Le seul role qui survit au renoncement est <code>feedGovernor</code>, detenu par <code>0xC90e404A9f2ea55cbD2C81cf0054FAe4A721889a</code> ; ce qu'il peut et ne peut pas faire est detaille en <a href="#gouvernance">section 07</a>. Les signalements des scanners, l'ecart de capitalisation avec les agregateurs et le cout du lancement sont traites point par point sur la <a href="transparency-fr.html">page de transparence</a>.</p>
 </section>
 
 <footer>

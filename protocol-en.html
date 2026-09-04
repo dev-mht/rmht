@@ -370,7 +370,7 @@ footer a{color:var(--muted)}
   <p>Because each milestone releases 1.5% of what <em>remains</em>, the series converges towards zero without reaching it. That is a property of the model, not a defect: it guarantees there is always something left to distribute, but it also means a residual fraction stays in the contract indefinitely.</p>
 
   <h3>The window between deployment and lock-down</h3>
-  <p>The TWAP needs 30 minutes of observations before it can be used. The final configuration lock therefore cannot run in the same breath as the deployment: there is a short period during which the token is tradable while the configuration is not yet frozen. That window is known, short, and will be documented publicly at launch.</p>
+  <p>The TWAP needs 30 minutes of observations before it can be used. The final configuration lock therefore cannot run in the same breath as the deployment: there is a short period during which the token is tradable while the configuration is not yet frozen. That window ran from the deployment to the configuration lock, both on 4 September 2026; what happened inside it, and what the launch cost down to the wei, is written up on the <a href="transparency-en.html#couts">transparency page</a>.</p>
 </section>
 
 <!-- 9 --------------------------------------------------------------- -->
@@ -401,7 +401,19 @@ footer a{color:var(--muted)}
     <p>A scan re-run by anyone will show those three. They are listed here so the numbers match what an independent check returns.</p>
   </div>
 
-  <p style="margin-top:24px">Deployed contract addresses, explorer links and full audit reports will be published here at launch.</p>
+  <h3>Deployed contract addresses</h3>
+  <p>Deployed on Robinhood Chain (chain 4663) on <strong>4 September 2026</strong>. The four contracts we wrote are verified on Blockscout — readable source, <em>exact match</em> against the deployed bytecode — and ownership has been renounced on all four.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Contract</th><th>Address</th><th>State</th></tr></thead>
+    <tbody>
+      <tr><td><strong>$RMHT</strong><br /><span style="color:var(--muted);font-size:.86rem">token and vault</span></td><td><a href="https://robinhoodchain.blockscout.com/address/0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4" target="_blank" rel="noopener"><code>0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4</code></a></td><td>Verified · <code>owner() = address(0)</code> · configuration locked</td></tr>
+      <tr><td><strong>RMHTAirdropCustodian</strong><br /><span style="color:var(--muted);font-size:.86rem">the airdrop's 16,998,896</span></td><td><a href="https://robinhoodchain.blockscout.com/address/0xdEc68344a41Cc6104ed5ff2C88F2D16a794688C1" target="_blank" rel="noopener"><code>0xdEc68344a41Cc6104ed5ff2C88F2D16a794688C1</code></a></td><td>Verified · <code>owner() = address(0)</code></td></tr>
+      <tr><td><strong>RMHTFounderCustodian</strong><br /><span style="color:var(--muted);font-size:.86rem">the founder's 50,000,000</span></td><td><a href="https://robinhoodchain.blockscout.com/address/0x4C944c27160A1532b9De3a69d0Ec64164a6f03d8" target="_blank" rel="noopener"><code>0x4C944c27160A1532b9De3a69d0Ec64164a6f03d8</code></a></td><td>Verified · <code>owner() = address(0)</code></td></tr>
+      <tr><td><strong>RMHTLiquidityCustodian</strong><br /><span style="color:var(--muted);font-size:.86rem">holder of the LP position</span></td><td><a href="https://robinhoodchain.blockscout.com/address/0x50336e2a1396364895702a5222faC47bD0d38407" target="_blank" rel="noopener"><code>0x50336e2a1396364895702a5222faC47bD0d38407</code></a></td><td>Verified · <code>owner() = address(0)</code> · position <code>tokenId 1004464</code></td></tr>
+      <tr><td><strong>Uniswap v3 pool</strong><br /><span style="color:var(--muted);font-size:.86rem">RMHT / WETH</span></td><td><a href="https://robinhoodchain.blockscout.com/address/0xabe3B1fF5Fc6a9638D0c46f2379B20f7e6173bEe" target="_blank" rel="noopener"><code>0xabe3B1fF5Fc6a9638D0c46f2379B20f7e6173bEe</code></a></td><td>Deployed by the Uniswap factory, not by us</td></tr>
+    </tbody>
+  </table></div>
+  <p>The only role that survives the renounce is <code>feedGovernor</code>, held by <code>0xC90e404A9f2ea55cbD2C81cf0054FAe4A721889a</code>; what it can and cannot do is set out in <a href="#governance">section 07</a>. The scanner findings, the market-cap gap against aggregators and what the launch cost are answered point by point on the <a href="transparency-en.html">transparency page</a>.</p>
 </section>
 
 <footer>
