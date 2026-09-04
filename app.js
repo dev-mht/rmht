@@ -24,8 +24,8 @@
 //  Le reste (chaîne, RPC, explorateur) est déjà réglé sur le MAINNET.
 // ═════════════════════════════════════════════════════════════════════════════
 const CONFIG = {
-    contractAddress   : "", // <<< adresse RMHT mainnet
-    custodianAddress  : "", // <<< adresse RMHTLiquidityCustodian mainnet
+    contractAddress   : "0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4", // RMHT mainnet
+    custodianAddress  : "0x50336e2a1396364895702a5222faC47bD0d38407", // RMHTLiquidityCustodian mainnet
     chainId           : 4663, // Robinhood Chain MAINNET
     chainIdHex        : "0x1237", // 4663 en hexadécimal
     chainName         : "Robinhood Chain",

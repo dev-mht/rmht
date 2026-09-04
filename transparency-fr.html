@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>$RMHT — Reponses aux signalements</title>
+<meta name="description" content="Reponse point par point aux alarmes des scanners automatiques sur $RMHT : pouvoirs residuels, LP verrouillee, market cap, manipulation de prix. Sans rien minimiser." />
+<link rel="alternate" hreflang="en" href="transparency-en.html" />
+<link rel="alternate" hreflang="fr" href="transparency-fr.html" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:rgba(10,18,7,.75); --bg2:rgba(14,26,10,.86); --bg3:rgba(21,38,14,.88);
+  --border:rgba(245,200,66,.12); --gold:#f5c842; --gold2:#ffde7a; --gold3:#c8971a;
+  --orange:#e8501a; --text:#e8ecf4; --muted:#9aa6ba; --success:#00e096;
+  --warn:#ffb020;
+  --mono:'Space Mono',monospace; --display:'Bebas Neue',sans-serif; --body:'Syne',sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; color:var(--text); font-family:var(--body); line-height:1.65;
+  background:linear-gradient(rgba(8,14,6,.55),rgba(8,14,6,.82)),url('fond-bg-1600.webp') center top/cover no-repeat fixed;
+  background-color:#0a1207;
+  overflow-x:hidden;
+}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(245,200,66,.3)}
+a:hover{color:var(--gold2)}
+header{padding:64px 0 28px;text-align:center}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold3)}
+h1{font-family:var(--display);font-size:clamp(2.6rem,7vw,4.4rem);line-height:.95;margin:.25em 0 .15em;letter-spacing:.02em}
+h1 .accent{color:var(--gold)}
+.lede{max-width:660px;margin:0 auto;color:var(--muted);font-size:1.02rem}
+.stamp{display:inline-block;margin-top:22px;padding:9px 16px;border-radius:999px;border:1px solid var(--border);background:var(--bg2);font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:var(--muted)}
+.stamp b{color:var(--success);font-weight:700}
+.lang{display:flex;gap:6px;justify-content:center;margin-top:18px}
+.lang a{border:1px solid var(--border);border-radius:999px;padding:5px 15px;background:var(--bg2);font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;color:var(--muted)}
+.lang a.on{background:rgba(245,200,66,.13);border-color:rgba(245,200,66,.45);color:var(--gold)}
+.lang a:hover{color:var(--gold2)}
+nav.toc{margin:40px 0 8px;padding:20px 22px;border:1px solid var(--border);border-radius:14px;background:var(--bg);backdrop-filter:blur(6px)}
+nav.toc p{margin:0 0 12px;font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold3)}
+nav.toc ol{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:6px 22px;counter-reset:t}
+nav.toc li{counter-increment:t;font-size:.93rem}
+nav.toc li a{border:0;display:block;padding:3px 0;color:var(--text)}
+nav.toc li a::before{content:counter(t,decimal-leading-zero);font-family:var(--mono);font-size:.72rem;color:var(--gold3);margin-right:10px}
+nav.toc li a:hover{color:var(--gold)}
+section{padding:46px 0;border-top:1px solid rgba(245,200,66,.08)}
+section:first-of-type{border-top:0}
+h2{font-family:var(--display);font-size:clamp(1.7rem,4vw,2.4rem);letter-spacing:.03em;margin:0 0 6px;color:var(--gold)}
+h2 .num{font-family:var(--mono);font-size:.62em;color:var(--gold3);margin-right:12px;letter-spacing:0}
+h3{font-family:var(--body);font-weight:800;font-size:1.06rem;margin:30px 0 8px;color:var(--gold2)}
+p{margin:0 0 14px}
+.sub{color:var(--muted);margin:-2px 0 22px;font-size:.95rem}
+ul{margin:0 0 14px;padding-left:20px}
+li{margin-bottom:7px}
+code{font-family:var(--mono);font-size:.87em;background:rgba(245,200,66,.09);border:1px solid var(--border);border-radius:5px;padding:1px 6px;color:var(--gold2);word-break:break-word}
+pre{font-family:var(--mono);font-size:.8rem;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;overflow-x:auto;color:var(--gold2);margin:16px 0}
+.box{border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;background:var(--bg2);padding:16px 20px;margin:20px 0}
+.box.warn{border-left-color:var(--warn)}
+.box.ok{border-left-color:var(--success)}
+.box .t{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold3);margin-bottom:7px}
+.box.warn .t{color:var(--warn)}
+.box.ok .t{color:var(--success)}
+.box p:last-child{margin-bottom:0}
+.flag{font-family:var(--mono);font-size:.82rem;color:var(--warn);background:rgba(255,176,32,.07);border:1px solid rgba(255,176,32,.22);border-radius:8px;padding:10px 14px;margin:0 0 18px;display:block}
+.tw{overflow-x:auto;margin:20px 0;border:1px solid var(--border);border-radius:12px;background:var(--bg2)}
+table{width:100%;border-collapse:collapse;min-width:560px;font-size:.92rem}
+th,td{padding:11px 15px;text-align:left;vertical-align:top;border-bottom:1px solid rgba(245,200,66,.08)}
+th{font-family:var(--mono);font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;color:var(--gold3);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td strong{color:var(--gold2)}
+ol.steps{list-style:none;padding:0;counter-reset:s;margin:18px 0}
+ol.steps li{counter-increment:s;position:relative;padding:0 0 14px 46px;border-left:1px solid rgba(245,200,66,.16);margin-left:13px}
+ol.steps li:last-child{border-left-color:transparent;padding-bottom:0}
+ol.steps li::before{content:counter(s);position:absolute;left:-13px;top:-2px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--bg3);border:1px solid var(--border);font-family:var(--mono);font-size:.72rem;color:var(--gold)}
+ol.steps b{color:var(--gold2)}
+.adr{font-family:var(--mono);font-size:.8rem;word-break:break-all}
+footer{padding:44px 0 60px;border-top:1px solid rgba(245,200,66,.08);color:var(--muted);font-size:.85rem}
+footer a{color:var(--muted)}
+@media(max-width:640px){ header{padding-top:44px} section{padding:34px 0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="lang"><a href="transparency-fr.html" class="on">FR</a><a href="transparency-en.html">EN</a></div>
+  <div class="eyebrow" style="margin-top:22px">Transparence</div>
+  <h1>Reponses aux <span class="accent">signalements</span></h1>
+  <p class="lede">Les scanners automatiques signalent plusieurs points sur $RMHT. Cette page repond a chacun, sans en minimiser aucun, avec les commandes pour tout verifier vous-meme.</p>
+  <div class="stamp">Contrats finalises le <b>04/09/2026</b> &nbsp;·&nbsp; ownership renoncee &nbsp;·&nbsp; Robinhood Chain (4663)</div>
+</header>
+
+<div class="box ok" style="margin-top:34px">
+  <div class="t">Le fondateur n'est pas anonyme</div>
+  <p>Mon identite a ete verifiee par <a href="https://app.solidproof.io/projects/milestone-hodl-token" target="_blank" rel="noopener"><strong>SolidProof</strong></a>, un prestataire tiers etabli en Allemagne, dans le cadre du projet $MHT sur BNB Chain. C'est la meme personne qui a deploye $RMHT, depuis l'adresse <code>0x99699278...011bFB</code>.</p>
+  <p>Ce que cela engage n'est pas une promesse de ma part : c'est ecrit dans <a href="https://solidproof.io/terms-of-service" target="_blank" rel="noopener">leurs conditions</a>.</p>
+  <p style="border-left:2px solid rgba(245,200,66,.3);padding-left:14px;color:var(--muted);font-style:italic">« You expressly agree that SolidProof.io is entitled to pass on your personal data to government agencies, law enforcement authorities, regulatory authorities and injured third parties if fraud is suspected or damage has been proven. »</p>
+  <p>Autrement dit : si je detournais les fonds de qui que ce soit, un tiers independant peut transmettre mon identite aux autorites et aux personnes lesees. <strong>Je ne peux pas redevenir anonyme.</strong></p>
+  <p>Deux precisions honnetes. D'abord, il s'agit d'un droit que SolidProof se reserve, pas d'une procedure automatique. Ensuite, ces memes conditions prevoient une conservation des donnees de <strong>deux ans</strong> apres verification : mon entretien de verification ayant eu lieu le <strong>29 avril 2026</strong>, cette conservation court jusqu'en avril 2028 — soit <strong>au-dela de la date de deblocage de mon allocation fondateur</strong>, fixee au 4 septembre 2027. Autrement dit, le jour ou je pourrai enfin toucher mes jetons, mon identite sera encore detenue par ce tiers.</p>
+  <p>Enfin, sur la portee de cette verification : <strong>$RMHT n'a pas fait l'objet d'un audit SolidProof.</strong> Le contrat a ete passe au crible d'outils automatiques et de 322 tests, et l'integralite du code est verifiee publiquement sur l'explorateur — c'est ce que documente cette page.</p>
+</div>
+
+<nav class="toc">
+  <p>Sommaire</p>
+  <ol>
+    <li><a href="#methode">Pourquoi cette page</a></li>
+    <li><a href="#owner">Les alarmes « Owner can... »</a></li>
+    <li><a href="#governor">Le role feedGovernor</a></li>
+    <li><a href="#mht">Le precedent $MHT V2</a></li>
+    <li><a href="#lp">« LP locked : 0% »</a></li>
+    <li><a href="#mcap">L'ecart de market cap</a></li>
+    <li><a href="#manip">Manipulation du prix</a></li>
+    <li><a href="#autres">Les autres signalements</a></li>
+    <li><a href="#couts">Ce que le lancement a coute</a></li>
+    <li><a href="#verifier">Verifier par vous-meme</a></li>
+    <li><a href="#lexique">Lire le contrat ligne par ligne</a></li>
+    <li><a href="#ecriture">Qui peut encore agir</a></li>
+  </ol>
+</nav>
+
+<!-- 1 -->
+<section id="methode">
+  <h2><span class="num">01</span>Pourquoi cette page</h2>
+  <p class="sub">Un signalement de scanner n'est ni une preuve de fraude, ni une formalite a balayer.</p>
+  <p>Les analyseurs automatiques lisent le code source et signalent tout ce qui <em>pourrait</em> etre dangereux. Ils ont raison de le faire, et leurs signalements sur $RMHT sont, pour l'essentiel, techniquement exacts.</p>
+  <p>Ce qu'ils ne savent pas faire, c'est croiser le code avec l'etat reel de la chaine, ni reconnaitre un mecanisme qui ne ressemble pas aux modeles qu'ils connaissent. Cette page comble cet ecart : chaque point signale, ce qu'il dit exactement, ce qui est vrai dedans, et ce que vous pouvez verifier vous-meme en une commande.</p>
+  <div class="box">
+    <div class="t">Regle que nous nous imposons</div>
+    <p>Aucun signalement n'est ecarte en le qualifiant de « faux positif » sans expliquer pourquoi. Quand un risque est reel, il est ecrit ici comme tel.</p>
+  </div>
+</section>
+
+<!-- 2 -->
+<section id="owner">
+  <h2><span class="num">02</span>Les alarmes « Owner can... » sont eteintes</h2>
+  <p class="sub">Elles decrivent un proprietaire qui n'existe plus.</p>
+  <span class="flag">Signale : « Owner can confiscate accrued vault rewards by excluding an account » &nbsp;·&nbsp; « Owner can... » (variantes)</span>
+  <p>C'est exact au niveau du code source. <code>excludeFromRewards()</code> (ligne 1382) et <code>rescueTokens()</code> (ligne 1426) portent bien le modificateur <code>onlyOwner</code>, et un proprietaire actif pourrait s'en servir.</p>
+  <p><strong>Mais il n'y a plus de proprietaire.</strong> Le 4 septembre 2026, dans le bloc 53917113, <code>renounceOwnership()</code> a ete appele sur les quatre contrats. <code>owner()</code> renvoie desormais <code>0x0000...0000</code> partout. Toute fonction <code>onlyOwner</code> est donc definitivement inatteignable : personne ne peut plus l'appeler, ni nous, ni qui que ce soit.</p>
+  <p>Les scanners analysent le code de facon statique, sans interroger la chaine. Ils continueront a lister ces points tant qu'ils liront le source. Verifiez-le vous-meme, sans rien installer :</p>
+  <div class="box ok">
+    <div class="t">Sans terminal, en 4 clics</div>
+    <ol class="steps">
+      <li>Ouvrez <a href="https://robinhoodchain.blockscout.com/address/0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4?tab=read_contract" target="_blank" rel="noopener"><b>l'onglet « Read contract » du contrat RMHT</b></a>.</li>
+      <li>Descendez jusqu'a la ligne <code>owner</code> (n&deg; 45 de la liste).</li>
+      <li>Cliquez dessus, puis sur le bouton jaune <b>Read</b>.</li>
+      <li>La reponse affichee est <code>0x0000000000000000000000000000000000000000</code> : il n'y a plus de proprietaire.</li>
+    </ol>
+    <p>Refaites la meme chose sur les trois autres contrats — le numero de la ligne <code>owner</code> change d'un contrat a l'autre :</p>
+    <ul>
+      <li><a href="https://robinhoodchain.blockscout.com/address/0xdEc68344a41Cc6104ed5ff2C88F2D16a794688C1?tab=read_contract" target="_blank" rel="noopener">AirdropCustodian</a> &rarr; ligne n&deg; <b>7</b></li>
+      <li><a href="https://robinhoodchain.blockscout.com/address/0x4C944c27160A1532b9De3a69d0Ec64164a6f03d8?tab=read_contract" target="_blank" rel="noopener">FounderCustodian</a> &rarr; ligne n&deg; <b>11</b></li>
+      <li><a href="https://robinhoodchain.blockscout.com/address/0x50336e2a1396364895702a5222faC47bD0d38407?tab=read_contract" target="_blank" rel="noopener">LiquidityCustodian</a> &rarr; ligne n&deg; <b>7</b></li>
+    </ul>
+  </div>
+  <p>En ligne de commande, pour ceux qui preferent :</p>
+  <pre>cast call 0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4 "owner()(address)" \
+  --rpc-url https://rpc.mainnet.chain.robinhood.com
+# -> 0x0000000000000000000000000000000000000000</pre>
+  <div class="box ok">
+    <div class="t">Statut</div>
+    <p>Sans objet depuis la finalisation. Verifiable on-chain sur les quatre contrats.</p>
+  </div>
+</section>
+
+<!-- 3 -->
+<section id="governor">
+  <h2><span class="num">03</span>Le role feedGovernor</h2>
+  <p class="sub">Le seul pouvoir qui survit a la renonciation. Il est reel, et nous l'assumons.</p>
+  <span class="flag">Signale : « Privileged feedGovernor can replace the price oracle with an arbitrary contract » — classe en risque critique</span>
+  <p>Ce signalement est <strong>fonde</strong>. Nous ne le contestons pas.</p>
+
+  <h3>Ce que le role peut faire — la liste est complete</h3>
+  <p>Trois fonctions du contrat portent <code>onlyFeedGovernor</code>, et seulement trois. Cherchez le mot dans le code verifie, comptez vous-meme :</p>
+  <div class="tw"><table>
+    <tr><th>Fonction</th><th>Effet</th></tr>
+    <tr><td><strong>updatePriceFeeds</strong>(address, address)</td><td>Remplace les deux adresses de feed Chainlink (ETH/USD et sequenceur)</td></tr>
+    <tr><td><strong>transferFeedGovernor</strong>(address)</td><td>Propose un successeur. Transfert en deux etapes : le destinataire doit appeler <code>acceptFeedGovernor()</code></td></tr>
+    <tr><td><strong>renounceFeedGovernor</strong>()</td><td>Eteint le role definitivement</td></tr>
+  </table></div>
+
+  <h3>Ce que le role ne peut pas faire</h3>
+  <ul>
+    <li>Transferer, emettre ou bruler le moindre RMHT</li>
+    <li>Toucher a la pool Uniswap, figee par <code>lockConfig()</code></li>
+    <li>Retirer la position de liquidite</li>
+    <li>Modifier les allocations d'airdrop, les dates de deblocage, ou la destination des frais de LP</li>
+    <li>Appeler <code>rescueTokens()</code> ou <code>excludeFromRewards()</code> — ces fonctions sont <code>onlyOwner</code>, donc mortes</li>
+  </ul>
+  <p><strong>Aucun chemin ne permet au feedGovernor de s'attribuer des jetons.</strong></p>
+
+  <h3>Le risque reel, enonce sans le reduire</h3>
+  <p><code>updatePriceFeeds()</code> verifie que l'adresse candidate est un contrat, qu'elle expose <code>decimals()</code> et qu'elle renvoie un prix ETH/USD strictement positif. Ces controles ecartent une adresse invalide, <strong>mais pas un contrat malveillant</strong> qui repondrait correctement a l'interface en renvoyant un prix faux.</p>
+  <p>Consequence concrete : un detenteur hostile de ce role pourrait fausser <code>getMarketCap()</code> et donc <strong>avancer ou retarder le declenchement des paliers</strong> du vault, qui porte 500 000 000 RMHT, soit 50 % de la supply. Il ne pourrait pas s'approprier ces jetons — ils partent aux detenteurs via le mecanisme de rewards — mais il pourrait en manipuler le calendrier. C'est un pouvoir reel.</p>
+
+  <h3>Pourquoi il n'y a pas de timelock</h3>
+  <p>Un delai obligatoire avant un changement de feed aurait reintroduit exactement le risque que le role existe pour couvrir : si un oracle casse aujourd'hui, le protocole doit pouvoir etre repare aujourd'hui, pas dans quarante-huit heures. Les garde-fous sont ailleurs : controles de sanite sur l'adresse candidate, evenement emis a chaque changement, transfert en deux etapes, extinction possible.</p>
+
+  <h3>Ou il est detenu, et comment il finira</h3>
+  <p>Le role est detenu par <code>0xC90e404A9f2ea55cbD2C81cf0054FAe4A721889a</code>, un portefeuille materiel. <code>renounceFeedGovernor()</code> le supprimera pour toujours, ramenant le contrat a un etat sans aucun pouvoir residuel. Cet appel sera fait le jour ou les feeds seront consideres comme durablement stables, et il sera annonce publiquement.</p>
+</section>
+
+<!-- 4 -->
+<section id="mht">
+  <h2><span class="num">04</span>Le precedent $MHT V2</h2>
+  <p class="sub">La raison d'etre du feedGovernor n'est pas theorique. C'est arrive, a ce projet.</p>
+  <p>Sur <strong>$MHT V2</strong>, notre jeton sur BNB Chain, le declencheur de paliers reposait sur Chainlink Automation. Deux problemes se sont additionnes : une erreur de configuration de notre part — l'adresse enregistree etait celle du <em>Registry</em> Chainlink et non celle du <em>Forwarder</em> de l'upkeep, alors que le vrai appelant de <code>performUpkeep()</code> est toujours le Forwarder — et, decouvert dans la foulee, l'arret par Chainlink de ce service d'Automation.</p>
+  <p>Le contrat avait deja renonce a son ownership, et la fonction de correction etait <code>onlyOwner</code>. Il ne restait <strong>aucun moyen de reparer</strong>. Resultat : <strong>environ 76 % de la supply de $MHT V2 est gelee definitivement.</strong> Pas volee — gelee, inatteignable, pour toujours.</p>
+  <div class="box warn">
+    <div class="t">Ce que nous en disons</div>
+    <p><strong>L'erreur de configuration initiale est la notre</strong>, et elle seule suffisait a casser le mecanisme : <code>performUpkeep()</code> n'aurait jamais pu aboutir, meme avec un service Chainlink en parfait etat de marche.</p>
+    <p>La migration de Chainlink vers CRE, et l'arret du service Automation qui l'a accompagnee, auraient de toute facon arrete le declenchement des paliers — c'est une seconde cause, independante de la premiere. Mais chronologiquement, c'est cette migration qui nous a pousses a rouvrir le dossier et <strong>qui nous a fait decouvrir notre propre erreur</strong>, restee invisible jusque-la.</p>
+    <p>Nous ne mettons donc pas la faute sur un tiers : Chainlink a fait evoluer son offre, ce qui est son droit, et notre contrat aurait ete casse meme sans cela.</p>
+  </div>
+  <p>Le risque que <code>feedGovernor</code> couvre n'est donc pas « un gouverneur malveillant ». C'est : <em>un oracle change, disparait ou est deprecie, et plus personne ne peut reagir.</em> Robinhood Chain est une chaine recente, et Chainlink a officiellement cesse d'etendre ses <em>Sequencer Uptime Feeds</em> aux nouveaux reseaux. La probabilite qu'une adresse de feed doive changer un jour n'est pas negligeable.</p>
+  <p>Sans ce role, le jour ou le feed ETH/USD casse, le calcul de prix reverte en <em>fail-closed</em>, plus aucun palier ne peut jamais se declencher, et les 500 000 000 RMHT du vault sont perdus pour tout le monde. <strong>Nous avons choisi le risque que l'on peut surveiller plutot que celui qui est irreversible.</strong></p>
+
+  <h3>Et $MHT aujourd'hui</h3>
+  <p>Une <strong>version 3 du contrat $MHT est deja en cours de developpement</strong>, ecrite selon le meme principe directeur que $RMHT : aucune dependance a Chainlink Automation ni a aucun tiers pour le declenchement, prix calcule par un TWAP interne lu directement dans la pool, et paliers auto-declenches par n'importe quel appelant. Le calendrier et les modalites de la transition $MHT V2 vers V3 feront l'objet d'une communication dediee.</p>
+</section>
+
+<!-- 5 -->
+<section id="lp">
+  <h2><span class="num">05</span>« LP locked : 0% »</h2>
+  <p class="sub">Le chiffre affiche est faux, et la realite est plus forte que ce qu'il mesure.</p>
+  <span class="flag">Signale : Percentage of LP locked : 0%</span>
+  <p>Les agregateurs cherchent un contrat de verrouillage connu (PinkLock, Unicrypt, Team Finance...) detenant les jetons LP. Ils n'en trouvent pas, et concluent que la liquidite n'est pas verrouillee. C'est le signal de fuite le plus lu de l'ecosysteme, alors autant etre precis.</p>
+  <p>La position de liquidite $RMHT est un NFT Uniswap v3, <code>tokenId 1004464</code>, detenu par le contrat <strong>RMHTLiquidityCustodian</strong> (<code>0x50336e2a1396364895702a5222faC47bD0d38407</code>).</p>
+  <p>Ce contrat <strong>ne contient aucune fonction permettant de faire ressortir ce NFT ni de reduire la liquidite</strong>. Ce n'est pas une promesse : <code>decreaseLiquidity()</code>, <code>burn()</code>, tout transfert sortant du NFT, tout <code>selfdestruct</code> et tout mecanisme de proxy sont volontairement absents du code, et le code est verifie publiquement. La seule fonction qui bouge quelque chose est <code>collect()</code>, qui recupere les frais de swap et les envoie a une adresse fixee dans l'etat du contrat — appelable par n'importe qui, mais dont la destination ne peut plus etre changee depuis que l'ownership est renoncee.</p>
+  <div class="box ok">
+    <div class="t">Difference avec un verrou classique</div>
+    <p>Un verrou temporel expire a une date, apres quoi la liquidite peut etre retiree. Ici il n'y a pas de date : il n'existe aucun chemin de code, a aucun moment, pour retirer cette liquidite. C'est definitif plutot que date.</p>
+  </div>
+  <div class="box ok">
+    <div class="t">Sans terminal</div>
+    <p>Ouvrez <a href="https://robinhoodchain.blockscout.com/address/0x50336e2a1396364895702a5222faC47bD0d38407?tab=read_contract" target="_blank" rel="noopener"><b>l'onglet « Read contract » du LiquidityCustodian</b></a> et lisez les lignes suivantes, en cliquant sur <b>Read</b> a chaque fois :</p>
+    <div class="tw"><table>
+      <tr><th>Ligne</th><th>Fonction</th><th>Reponse attendue</th><th>Ce que ca prouve</th></tr>
+      <tr><td>13</td><td><code>tokenId</code></td><td><code>1004464</code></td><td>Le numero du NFT de liquidite detenu</td></tr>
+      <tr><td>10</td><td><code>positionReceived</code></td><td><code>true</code></td><td>La position est bien deposee ici</td></tr>
+      <tr><td>3</td><td><code>currentLiquidity</code></td><td><code>206429215460407679890536</code></td><td>La liquidite reelle, inchangee depuis le depot</td></tr>
+      <tr><td>7</td><td><code>owner</code></td><td><code>0x0000...0000</code></td><td>Plus personne ne controle ce contrat</td></tr>
+      <tr><td>5</td><td><code>feeRecipient</code></td><td><code>0xC90e404A...721889a</code></td><td>La destination des frais, desormais figee</td></tr>
+      <tr><td>4</td><td><code>depositor</code></td><td><code>0x99699278...011bFB</code></td><td>La seule adresse ayant pu deposer la position</td></tr>
+    </table></div>
+    <p>Parcourez ensuite la liste complete des fonctions : elle est courte, et vous n'y trouverez <strong>aucune fonction de retrait</strong>. Ni <code>decreaseLiquidity</code>, ni <code>burn</code>, ni transfert du NFT.</p>
+  </div>
+  <p>En ligne de commande :</p>
+  <pre>cast call 0x50336e2a1396364895702a5222faC47bD0d38407 "tokenId()(uint256)" \
+  --rpc-url https://rpc.mainnet.chain.robinhood.com
+cast call 0x50336e2a1396364895702a5222faC47bD0d38407 "owner()(address)" \
+  --rpc-url https://rpc.mainnet.chain.robinhood.com
+# -> 1004464  puis  0x0000000000000000000000000000000000000000</pre>
+</section>
+
+<!-- 6 -->
+<section id="mcap">
+  <h2><span class="num">06</span>L'ecart de market cap</h2>
+  <p class="sub">Le chiffre des agregateurs et celui qui declenche les paliers ne mesurent pas la meme chose.</p>
+  <p>Les agregateurs affichent une capitalisation calculee sur la <strong>supply totale d'un milliard</strong> de RMHT. Le contrat, lui, calcule <code>getMarketCap()</code> sur la <strong>supply eligible</strong> : la supply totale moins les jetons brulés, moins ceux detenus par le contrat lui-meme (le vault), moins ceux qui sont dans la pool.</p>
+  <p>L'ecart est important, et il est structurel : au lancement, les agregateurs affichaient environ 513 000 $ la ou le contrat calculait environ 34 300 $.</p>
+  <div class="box warn">
+    <div class="t">A ne pas confondre</div>
+    <p>Les paliers se declenchent tous les <strong>500 000 $ de supply eligible</strong>, sur la valeur calculee par le contrat — jamais sur le chiffre affiche par un site tiers. Voir un agregateur afficher 513 000 $ ne signifie pas qu'un palier est atteint.</p>
+  </div>
+  <p>Le compteur affiche sur la page d'accueil de ce site lit <code>getMarketCap()</code> directement sur la chaine. C'est la seule valeur qui compte pour le protocole, et vous pouvez la lire vous-meme.</p>
+  <div class="box ok">
+    <div class="t">Sans terminal</div>
+    <p>Dans <a href="https://robinhoodchain.blockscout.com/address/0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4?tab=read_contract" target="_blank" rel="noopener">l'onglet « Read contract » du contrat RMHT</a>, cherchez <code>getMarketCap</code>, cliquez, puis <b>Read</b>. Le nombre renvoye est exprime en dollars entiers. Juste a cote, <code>nextMilestoneUSD</code> vous donne le prochain palier a atteindre.</p>
+  </div>
+  <p>En ligne de commande :</p>
+  <pre>cast call 0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4 "getMarketCap()(uint256)" \
+  --rpc-url https://rpc.mainnet.chain.robinhood.com</pre>
+</section>
+
+<!-- 7 -->
+<section id="manip">
+  <h2><span class="num">07</span>Manipulation du prix pour declencher un palier</h2>
+  <p class="sub">Un risque reel sur une pool jeune, et les trois obstacles qui lui sont opposes.</p>
+  <span class="flag">Signale : « Milestone market-cap price manipulation remains possible with low-liquidity pools »</span>
+  <p>Exact. Sur une pool peu profonde, acheter suffisamment pour faire monter le prix coute moins cher que sur une pool mature. Un acteur cherchant a declencher un palier artificiellement pourrait tenter de pousser le prix.</p>
+  <p>Quatre mecanismes rendent l'operation couteuse et peu rentable :</p>
+  <ul>
+    <li><strong>Le TWAP de 30 minutes.</strong> Le prix utilise n'est pas le prix instantane mais une moyenne ponderee par le temps sur 1 800 secondes. Un pic momentane ne deplace presque pas cette moyenne : il faut tenir le prix fausse pendant une demi-heure entiere.</li>
+    <li><strong>Trois confirmations espacees.</strong> Un palier exige <strong>3 confirmations, a 10 minutes d'intervalle minimum</strong>, dans une fenetre de 2 heures. La manipulation doit donc survivre a trois lectures separees dans le temps.</li>
+    <li><strong>Vingt-quatre heures entre deux paliers.</strong> <code>MILESTONE_COOLDOWN</code> impose un delai d'un jour entier avant qu'un palier suivant puisse etre arme. Il est donc impossible d'enchainer plusieurs paliers dans la foulee d'une manipulation : chacun demande de recommencer l'operation complete, un jour plus tard.</li>
+    <li><strong>Le cout est reel et la sortie est chere.</strong> Faire monter le prix demande d'acheter reellement ; revendre ensuite dans une pool peu profonde fait replonger le prix contre soi. Et ce que le palier libere ne va pas au manipulateur : les jetons vont aux detenteurs, au prorata, via le mecanisme de rewards.</li>
+  </ul>
+  <p>Nous ne pretendons pas que la manipulation est impossible. Elle est rendue lente, visible et economiquement perdante — et son benefice ne revient pas a celui qui la tenterait.</p>
+</section>
+
+<!-- 8 -->
+<section id="autres">
+  <h2><span class="num">08</span>Les autres signalements</h2>
+  <p class="sub">Points informatifs, repris ici pour qu'aucun ne reste sans reponse.</p>
+  <div class="tw"><table>
+    <tr><th>Signalement</th><th>Reponse</th></tr>
+    <tr>
+      <td><strong>External TWAP and oracle dependency can cause milestone denial of service</strong></td>
+      <td>Exact, et c'est un choix. Si l'oracle ne repond pas ou renvoie une donnee aberrante, le calcul reverte plutot que de retourner une valeur fausse (<em>fail-closed</em>) : aucun palier ne se declenche sur une donnee douteuse. C'est precisement ce comportement qui rend le role <a href="#governor">feedGovernor</a> necessaire.</td>
+    </tr>
+    <tr>
+      <td><strong>TWAP price calculation may overflow at extreme Uniswap ticks</strong></td>
+      <td>Le calcul est borne par la plage de ticks reellement atteignable par la position de liquidite, et la formule a ete verifiee numeriquement aux bornes. Les ticks « extremes » evoques sont hors de la plage que cette pool peut atteindre.</td>
+    </tr>
+    <tr>
+      <td><strong>Pool configuration is insufficiently validated</strong></td>
+      <td>La configuration a ete posee une seule fois, puis <strong>verrouillee definitivement</strong> par <code>lockConfig()</code>. Les adresses de pool et de feed ont ete recoupees les unes contre les autres au deploiement, et la pool exigeait deja une capacite d'observations suffisante pour le TWAP. Plus aucune modification n'est possible.</td>
+    </tr>
+    <tr>
+      <td><strong>Excluded balances remain in the reward denominator</strong></td>
+      <td>Point informatif sur la comptabilite des rewards. Il n'a d'effet que si des adresses sont exclues — or <code>excludeFromRewards()</code> est <code>onlyOwner</code> et l'ownership est renoncee : <strong>aucune exclusion ne pourra plus jamais etre creee.</strong></td>
+    </tr>
+  </table></div>
+</section>
+
+<!-- 9 -->
+<section id="couts">
+  <h2><span class="num">09</span>Ce que le lancement a coute</h2>
+  <p class="sub">Aucune prevente, aucune levee de fonds. Voici la facture complete, au wei pres.</p>
+  <p>Il n'y a eu ni prevente, ni levee, ni allocation vendue a quiconque. La totalite des frais a ete payee depuis l'adresse du deployeur, alimentee par un virement personnel. Tout est verifiable dans <a href="https://robinhoodchain.blockscout.com/address/0x9969927832109E604A33749cA78C605Dea011bFB" target="_blank" rel="noopener">l'historique de cette adresse</a>.</p>
+  <div class="tw"><table>
+    <tr><th>Etape</th><th>ETH</th><th>Environ</th></tr>
+      <tr><td>Deploiement des 4 contrats, creation de la pool, mint de la position</td><td><code>0,0037807</code></td><td>9,45 $</td></tr>
+      <tr><td>Transfert du NFT au custodian + 9 transactions de configuration</td><td><code>0,0135255</code></td><td>33,81 $</td></tr>
+      <tr><td>Deploiement du WarmUpBuyer</td><td><code>0,0001585</code></td><td>0,40 $</td></tr>
+      <tr><td>Warm-up (gaz + frais de swap) et changement du feeRecipient</td><td><code>0,0001593</code></td><td>0,40 $</td></tr>
+      <tr><td>Finalisation : <code>lockConfig()</code> + 4 <code>renounceOwnership()</code></td><td><code>0,0000510</code></td><td>0,13 $</td></tr>
+      <tr><td><strong>TOTAL</strong></td><td><strong><code>0,0176750</code></strong></td><td><strong>44,19 $</strong></td></tr>
+  </table></div>
+  <p>Le capital de liquidite, lui, n'est pas une depense : ce sont <strong>433 001 104 RMHT</strong> deposes en position single-sided, sans un seul ETH en face. Le warm-up a engage 0,002 ETH, revenus a 98,01 % sous forme de WETH.</p>
+
+  <h3>Pourquoi une ligne « transfert + 9 transactions » aussi chere ?</h3>
+  <p>L'essentiel de cette ligne n'est pas un incident : c'est le pre-dimensionnement de l'oracle TWAP, qui exige de reserver 1 801 emplacements de memoire dans la pool. Cette seule operation represente environ 36 millions d'unites de gaz, bien plus que les quatre deploiements reunis.</p>
+  <div class="box warn">
+    <div class="t">La transaction en echec que vous verrez dans l'historique</div>
+    <p>Une transaction de notre deploiement a echoue, et nous preferons l'expliquer que la laisser trouver. L'outil de deploiement fige les parametres de toutes ses transactions au moment de la simulation. Or le numero du NFT de liquidite est un <strong>compteur global d'Uniswap, partage avec toute la chaine</strong> : entre notre simulation et l'inscription du mint dans un bloc, 17 autres positions ont ete creees par des tiers. Le script a donc demande le transfert d'un NFT que nous ne possedions pas, et la transaction a ete rejetee.</p>
+    <p>Les etapes restantes ont ete rejouees une par une avec le bon numero. <strong>Cout de l'incident : 0,0000116 ETH de gaz brule, environ 3 centimes.</strong> Aucun fonds perdu, aucune adresse modifiee, aucun parametre du protocole affecte — les cinq adresses annoncees avant le lancement sont exactement celles qui ont ete deployees.</p>
+  </div>
+</section>
+
+<!-- 10 -->
+<section id="verifier">
+  <h2><span class="num">10</span>Verifier par vous-meme</h2>
+  <p class="sub">Ne nous croyez pas sur parole. Tout est lisible on-chain.</p>
+  <p>Les quatre contrats sont verifies sur <a href="https://robinhoodchain.blockscout.com" target="_blank" rel="noopener">robinhoodchain.blockscout.com</a> : le code source affiche est celui qui tourne. <strong>Aucun outil n'est necessaire, tout se lit dans le navigateur.</strong></p>
+  <div class="box ok">
+    <div class="t">La methode, en trois clics par contrat</div>
+    <ol class="steps">
+      <li>Cliquez sur l'adresse du contrat dans le tableau ci-dessous : l'onglet <b>Read contract</b> s'ouvre directement.</li>
+      <li>Chaque ligne numerotee est une valeur lisible par tous. Cliquez sur celle qui vous interesse, puis sur le bouton jaune <b>Read</b>.</li>
+      <li>La reponse s'affiche juste en dessous, lue en direct sur la blockchain. Personne ne peut la truquer.</li>
+    </ol>
+    <p style="margin-top:14px">Les lignes qui repondent aux questions les plus frequentes :</p>
+    <ul>
+      <li><code>owner</code> &rarr; <code>0x0000...0000</code> : plus aucun proprietaire</li>
+      <li><code>configLocked</code> &rarr; <code>true</code> : configuration figee pour toujours</li>
+      <li><code>feedGovernor</code> &rarr; le seul pouvoir residuel, decrit en <a href="#governor">section 03</a></li>
+      <li><code>getMarketCap</code> et <code>nextMilestoneUSD</code> &rarr; la capitalisation reelle du protocole et le prochain palier</li>
+      <li><code>tokenId</code> et <code>positionReceived</code> sur le LiquidityCustodian &rarr; la position de liquidite qu'il detient</li>
+    </ul>
+  </div>
+  <p>L'onglet <b>Contract</b> du meme ecran affiche le code source complet. Cherchez-y <code>onlyOwner</code> et <code>onlyFeedGovernor</code> et comptez les fonctions vous-meme.</p>
+  <div class="tw"><table>
+    <tr><th>Contrat</th><th>Adresse — cliquez pour lire ses valeurs</th></tr>
+    <tr><td><strong>RMHT</strong></td><td><a class="adr" href="https://robinhoodchain.blockscout.com/address/0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4?tab=read_contract" target="_blank" rel="noopener">0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4</a></td></tr>
+    <tr><td><strong>AirdropCustodian</strong></td><td><a class="adr" href="https://robinhoodchain.blockscout.com/address/0xdEc68344a41Cc6104ed5ff2C88F2D16a794688C1?tab=read_contract" target="_blank" rel="noopener">0xdEc68344a41Cc6104ed5ff2C88F2D16a794688C1</a></td></tr>
+    <tr><td><strong>FounderCustodian</strong></td><td><a class="adr" href="https://robinhoodchain.blockscout.com/address/0x4C944c27160A1532b9De3a69d0Ec64164a6f03d8?tab=read_contract" target="_blank" rel="noopener">0x4C944c27160A1532b9De3a69d0Ec64164a6f03d8</a></td></tr>
+    <tr><td><strong>LiquidityCustodian</strong></td><td><a class="adr" href="https://robinhoodchain.blockscout.com/address/0x50336e2a1396364895702a5222faC47bD0d38407?tab=read_contract" target="_blank" rel="noopener">0x50336e2a1396364895702a5222faC47bD0d38407</a></td></tr>
+    <tr><td><strong>Pool RMHT/WETH</strong></td><td><a class="adr" href="https://robinhoodchain.blockscout.com/address/0xabe3B1fF5Fc6a9638D0c46f2379B20f7e6173bEe" target="_blank" rel="noopener">0xabe3B1fF5Fc6a9638D0c46f2379B20f7e6173bEe</a></td></tr>
+  </table></div>
+  <h3>Pour les utilisateurs a l'aise en ligne de commande</h3>
+  <pre># Plus aucun proprietaire sur les quatre contrats
+for C in 0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4 \
+         0xdEc68344a41Cc6104ed5ff2C88F2D16a794688C1 \
+         0x4C944c27160A1532b9De3a69d0Ec64164a6f03d8 \
+         0x50336e2a1396364895702a5222faC47bD0d38407; do
+  cast call $C "owner()(address)" --rpc-url https://rpc.mainnet.chain.robinhood.com
+done
+
+# Configuration verrouillee pour toujours
+cast call 0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4 "configLocked()(bool)" \
+  --rpc-url https://rpc.mainnet.chain.robinhood.com
+
+# Le seul pouvoir residuel
+cast call 0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4 "feedGovernor()(address)" \
+  --rpc-url https://rpc.mainnet.chain.robinhood.com
+
+# La position de liquidite detenue par le custodian
+cast call 0x50336e2a1396364895702a5222faC47bD0d38407 "positionReceived()(bool)" \
+  --rpc-url https://rpc.mainnet.chain.robinhood.com</pre>
+  <p>Pour le detail complet du fonctionnement, voir <a href="protocol-fr.html">la page protocole</a>.</p>
+</section>
+
+<section id="lexique">
+  <h2><span class="num">11</span>Lire le contrat ligne par ligne</h2>
+  <p class="sub">Ce que renvoie chaque valeur lisible du contrat RMHT, en francais.</p>
+  <p>Toutes ces lignes se lisent dans <a href="https://robinhoodchain.blockscout.com/address/0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4?tab=read_contract" target="_blank" rel="noopener">l'onglet « Read contract » du contrat RMHT</a> : cliquez sur la ligne, puis sur <b>Read</b>. Les numeros sont ceux affiches par l'explorateur.</p>
+  <div class="box">
+    <div class="t">Une convention a connaitre</div>
+    <p>Les quantites de jetons s'affichent avec <strong>18 decimales</strong>, sans virgule. <code>500000000000000000000000000</code> se lit donc 500 000 000 RMHT. Les montants en dollars, eux, sont affiches en dollars entiers.</p>
+  </div>
+  <h3>Gouvernance</h3>
+  <div class="tw"><table>
+    <tr><th>N&deg;</th><th>Fonction</th><th>Ce que ca renvoie, et ce que ca veut dire</th></tr>
+    <tr><td>10</td><td><code>configLocked</code></td><td><strong>true</strong> — la pool et les feeds sont figes pour toujours</td></tr>
+    <tr><td>45</td><td><code>owner</code></td><td><strong>0x0000...0000</strong> — plus aucun proprietaire</td></tr>
+    <tr><td>47</td><td><code>pendingOwner</code></td><td><strong>0x0000...0000</strong> — aucune reprise de propriete en attente</td></tr>
+    <tr><td>16</td><td><code>feedGovernor</code></td><td>Le seul pouvoir residuel, limite aux adresses de feed (<a href="#governor">section 03</a>)</td></tr>
+    <tr><td>46</td><td><code>pendingFeedGovernor</code></td><td><strong>0x0000...0000</strong> — aucun transfert de ce role en cours</td></tr>
+  </table></div>
+
+  <h3>Repartition de la supply</h3>
+  <div class="tw"><table>
+    <tr><th>N&deg;</th><th>Fonction</th><th>Ce que ca renvoie, et ce que ca veut dire</th></tr>
+    <tr><td>62</td><td><code>TOTAL_SUPPLY</code></td><td>1 000 000 000 RMHT, fixe au deploiement, aucune emission possible</td></tr>
+    <tr><td>63</td><td><code>totalSupply</code></td><td>La supply actuelle : identique, sauf jetons brules</td></tr>
+    <tr><td>74</td><td><code>VAULT_SUPPLY</code></td><td>500 000 000 RMHT, soit 50 % — la dotation initiale du vault</td></tr>
+    <tr><td>75</td><td><code>vaultBalance</code></td><td>Ce qu'il reste dans le vault, diminue a chaque palier atteint</td></tr>
+    <tr><td>19</td><td><code>getEligibleSupply</code></td><td><strong>La base du market cap du protocole</strong> : total moins brule, moins vault, moins pool</td></tr>
+    <tr><td>18</td><td><code>getCirculatingSupply</code></td><td>Total moins brule, moins ce que detient le contrat</td></tr>
+    <tr><td>8</td><td><code>BURN_ADDRESS</code></td><td><code>0x...dEaD</code>, la destination des jetons brules</td></tr>
+    <tr><td>3</td><td><code>airdropWallet</code></td><td>Le custodian qui detient les 16 998 896 RMHT de l'airdrop</td></tr>
+    <tr><td>17</td><td><code>founderWallet</code></td><td>Le custodian fondateur, 50 000 000 RMHT bloques un an</td></tr>
+    <tr><td>28</td><td><code>marketWallet</code></td><td>L'adresse ayant recu la part destinee a la liquidite</td></tr>
+  </table></div>
+
+  <h3>Prix, oracle et paliers</h3>
+  <div class="tw"><table>
+    <tr><th>N&deg;</th><th>Fonction</th><th>Ce que ca renvoie, et ce que ca veut dire</th></tr>
+    <tr><td>21</td><td><code>getMarketCap</code></td><td><strong>La capitalisation qui declenche les paliers</strong>, en dollars entiers</td></tr>
+    <tr><td>44</td><td><code>nextMilestoneUSD</code></td><td>Le prochain palier a franchir, en dollars</td></tr>
+    <tr><td>33</td><td><code>MILESTONE_STEP_USD</code></td><td><strong>500 000</strong> — l'ecart entre deux paliers</td></tr>
+    <tr><td>53</td><td><code>RELEASE_BPS</code></td><td><strong>150</strong>, soit 1,5 % du vault restant libere par palier</td></tr>
+    <tr><td>40</td><td><code>milestonesReached</code></td><td>Le nombre de paliers deja atteints</td></tr>
+    <tr><td>41</td><td><code>milestoneStatus</code></td><td>L'etat complet de la machine a paliers, en une seule lecture</td></tr>
+    <tr><td>31</td><td><code>MILESTONE_CONFIRMATIONS_REQUIRED</code></td><td><strong>3</strong> confirmations exigees pour valider un palier</td></tr>
+    <tr><td>29</td><td><code>MILESTONE_CONFIRM_INTERVAL</code></td><td><strong>10 minutes</strong> minimum entre deux confirmations</td></tr>
+    <tr><td>30</td><td><code>MILESTONE_CONFIRM_WINDOW</code></td><td><strong>2 heures</strong> pour reunir les trois confirmations</td></tr>
+    <tr><td>32</td><td><code>MILESTONE_COOLDOWN</code></td><td><strong>24 heures</strong> entre deux paliers, anti-manipulation</td></tr>
+    <tr><td>25</td><td><code>isTwapReady</code></td><td><strong>true</strong> si l'oracle a assez d'historique pour etre lu</td></tr>
+    <tr><td>69</td><td><code>twapHistoryAvailable</code></td><td>L'historique d'oracle disponible, en secondes</td></tr>
+    <tr><td>68</td><td><code>TWAP_WINDOW</code></td><td><strong>1 800 secondes</strong> — la moyenne de prix est calculee sur 30 minutes</td></tr>
+    <tr><td>42</td><td><code>MIN_OBSERVATION_CARDINALITY</code></td><td><strong>1 801</strong> emplacements d'oracle exiges dans la pool</td></tr>
+    <tr><td>22</td><td><code>getRMHTPriceInETH</code></td><td>Le prix moyen d'un RMHT en ETH sur la fenetre TWAP</td></tr>
+    <tr><td>20</td><td><code>getETHPriceUSD</code></td><td>Le prix de l'ETH lu chez Chainlink</td></tr>
+    <tr><td>14</td><td><code>ethUsdFeed</code></td><td>L'adresse du feed Chainlink ETH/USD utilise</td></tr>
+    <tr><td>13</td><td><code>ETH_USD_HEARTBEAT</code></td><td><strong>26 heures</strong> — au-dela, la donnee est jugee perimee et refusee</td></tr>
+    <tr><td>59</td><td><code>sequencerUptimeFeed</code></td><td><code>0x0000...0000</code> : aucun feed sequenceur n'existe sur cette chaine</td></tr>
+    <tr><td>58</td><td><code>SEQUENCER_GRACE_PERIOD</code></td><td><strong>1 heure</strong> apres un redemarrage du sequenceur, si un tel feed existait</td></tr>
+    <tr><td>71</td><td><code>uniswapV3Pool</code></td><td>La pool de reference, figee par <code>configLocked</code></td></tr>
+    <tr><td>51</td><td><code>poolIsToken0</code></td><td><strong>false</strong> — RMHT est le token1 de la paire</td></tr>
+  </table></div>
+
+  <h3>Recompenses</h3>
+  <div class="tw"><table>
+    <tr><th>N&deg;</th><th>Fonction</th><th>Ce que ca renvoie, et ce que ca veut dire</th></tr>
+    <tr><td>48</td><td><code>pendingRewards</code></td><td>Les recompenses libérées mais pas encore reclamees, au total</td></tr>
+    <tr><td>49</td><td><code>pendingRewardsOf</code></td><td>Les recompenses en attente pour une adresse donnee — collez la votre</td></tr>
+    <tr><td>70</td><td><code>unclaimedReleased</code></td><td>Le total libere par les paliers et pas encore reclame</td></tr>
+    <tr><td>24</td><td><code>isExcludedFromRewards</code></td><td><strong>false</strong> partout : plus aucune exclusion ne peut etre creee</td></tr>
+    <tr><td>39</td><td><code>milestoneRewardPerToken</code></td><td>L'accumulateur de recompenses par jeton</td></tr>
+    <tr><td>7</td><td><code>BPS_DENOM</code></td><td><strong>10 000</strong> — le denominateur des pourcentages en points de base</td></tr>
+    <tr><td>57</td><td><code>REWARD_PRECISION</code></td><td><code>1e36</code>, la precision interne du calcul de recompenses</td></tr>
+  </table></div>
+
+  <h3>Le custodian de l'airdrop</h3>
+  <p>A lire dans <a href="https://robinhoodchain.blockscout.com/address/0xdEc68344a41Cc6104ed5ff2C88F2D16a794688C1?tab=read_contract" target="_blank" rel="noopener">son propre onglet « Read contract »</a>.</p>
+  <div class="tw"><table>
+    <tr><th>N&deg;</th><th>Fonction</th><th>Ce que ca renvoie</th></tr>
+    <tr><td>2</td><td><code>activeAllocated</code></td><td>Le total encore alloue et non reclame</td></tr>
+    <tr><td>20</td><td><code>totalAllocated</code></td><td><strong>16 998 896 RMHT</strong> — le total des 18 allocations</td></tr>
+    <tr><td>3</td><td><code>allocations</code></td><td>L'allocation d'une adresse : collez la votre pour voir votre montant et si elle a ete reclamee</td></tr>
+    <tr><td>10</td><td><code>pendingRewardOf</code></td><td>Vos recompenses de palier en attente — collez votre adresse</td></tr>
+    <tr><td>22</td><td><code>UNLOCK_MILESTONE</code></td><td><strong>5</strong> — le palier qui debloque l'airdrop par anticipation</td></tr>
+    <tr><td>23</td><td><code>unlockTime</code></td><td><strong>1820019189</strong>, soit le 4 septembre 2027 a 00h53 UTC</td></tr>
+    <tr><td>24</td><td><code>unlockTimeSet</code></td><td><strong>true</strong> — la date est reglee, et ne peut plus changer</td></tr>
+    <tr><td>7</td><td><code>owner</code></td><td><strong>0x0000...0000</strong></td></tr>
+  </table></div>
+  <h3>Le custodian fondateur</h3>
+  <p>A lire dans <a href="https://robinhoodchain.blockscout.com/address/0x4C944c27160A1532b9De3a69d0Ec64164a6f03d8?tab=read_contract" target="_blank" rel="noopener">son propre onglet « Read contract »</a>.</p>
+  <div class="tw"><table>
+    <tr><th>N&deg;</th><th>Fonction</th><th>Ce que ca renvoie</th></tr>
+    <tr><td>9</td><td><code>FOUNDER_ALLOCATION</code></td><td><strong>50 000 000 RMHT</strong>, le principal du fondateur</td></tr>
+    <tr><td>2</td><td><code>beneficiary</code></td><td><code>0xC90e404A...721889a</code>, immuable depuis le deploiement</td></tr>
+    <tr><td>21</td><td><code>unlockedAmount</code></td><td><strong>0</strong> avant la date de deblocage, 50 000 000 apres. Aucun palier n'accelere ce verrou</td></tr>
+    <tr><td>4</td><td><code>claimableNow</code></td><td>Ce que le beneficiaire peut retirer a cet instant</td></tr>
+    <tr><td>6</td><td><code>claimedAmount</code></td><td>Ce qui a deja ete retire du principal</td></tr>
+    <tr><td>5</td><td><code>claimableRewardsNow</code></td><td>Les recompenses de palier reclamables, independantes du verrou d'un an</td></tr>
+    <tr><td>22</td><td><code>unlockTime</code></td><td><strong>1820019189</strong> — identique a celui de l'airdrop</td></tr>
+    <tr><td>11</td><td><code>owner</code></td><td><strong>0x0000...0000</strong></td></tr>
+  </table></div>
+  <p>Le custodian de liquidite est detaille en <a href="#lp">section 05</a>.</p>
+  <p>Les fonctions ERC-20 habituelles — <code>name</code>, <code>symbol</code>, <code>decimals</code>, <code>balanceOf</code>, <code>allowance</code> — sont presentes et se comportent comme sur n'importe quel jeton.</p>
+</section>
+
+<section id="ecriture">
+  <h2><span class="num">12</span>Qui peut encore agir sur les contrats</h2>
+  <p class="sub">La liste est courte des deux cotes, et elle est comptable dans le code. Les numeros sont ceux de l'onglet « Write contract ».</p>
+  <h3>Ce que n'importe qui peut appeler</h3>
+  <p>Ces fonctions sont ouvertes a tous, pour toujours. Aucune ne demande d'autorisation, et le protocole ne depend d'aucun service tiers pour fonctionner.</p>
+  <div class="tw"><table>
+    <tr><th>N&deg;</th><th>Contrat</th><th>Fonction</th><th>Ce qu'elle fait</th></tr>
+    <tr><td>50</td><td>RMHT</td><td><code>pokeMilestone()</code></td><td>N'importe qui peut declencher la verification d'un palier. C'est ce qui remplace la dependance a un service tiers</td></tr>
+    <tr><td>9</td><td>RMHT</td><td><code>claimRewards()</code></td><td>Chaque detenteur reclame ses propres recompenses</td></tr>
+    <tr><td>4</td><td>AirdropCustodian</td><td><code>claim()</code></td><td>Chaque adresse allouee recupere son allocation, une fois debloquee</td></tr>
+    <tr><td>5</td><td>AirdropCustodian</td><td><code>claimReward()</code></td><td>Chaque adresse allouee recupere ses recompenses de palier</td></tr>
+    <tr><td>6 / 10</td><td>Airdrop &amp; Founder</td><td><code>harvestVaultRewards()</code></td><td>N'importe qui peut declencher la recolte des recompenses vers le custodian</td></tr>
+    <tr><td>3 / 8</td><td>FounderCustodian</td><td><code>claim() / claimReward()</code></td><td>Reserve au beneficiaire, dont l'adresse est immuable</td></tr>
+    <tr><td>2</td><td>LiquidityCustodian</td><td><code>collect()</code></td><td>N'importe qui peut declencher la collecte des frais de LP. La destination est figee et ne peut plus changer</td></tr>
+    <tr><td>64, 5, 66</td><td>RMHT</td><td><code>transfer() / approve() / transferFrom()</code></td><td>Les fonctions ERC-20 standard, sans aucune taxe ni liste noire</td></tr>
+  </table></div>
+  <h3>Ce que plus personne ne peut appeler</h3>
+  <p>Ces fonctions existent dans le code, mais elles portent toutes le verrou <code>onlyOwner</code> — et <code>owner()</code> vaut <code>0x0000...0000</code> sur les quatre contrats depuis la finalisation. <strong>Elles sont definitivement inatteignables, y compris par nous.</strong></p>
+  <div class="tw"><table>
+    <tr><th>Contrat</th><th>N&deg; et fonctions devenues inatteignables</th></tr>
+    <tr><td><strong>RMHT</strong></td><td>15 <code>excludeFromRewards</code> &middot; 27 <code>lockConfig</code> &middot; 55 <code>renounceOwnership</code> &middot; 56 <code>rescueTokens</code> &middot; 60 <code>setConfig</code> &middot; 67 <code>transferOwnership</code></td></tr>
+    <tr><td><strong>AirdropCustodian</strong></td><td>12 <code>renounceOwnership</code> &middot; 13 <code>rescueEth</code> &middot; 17 <code>setAllocations</code> &middot; 18 <code>setRmhtToken</code> &middot; 19 <code>setUnlockTime</code> &middot; 21 <code>transferOwnership</code></td></tr>
+    <tr><td><strong>FounderCustodian</strong></td><td>14 <code>renounceOwnership</code> &middot; 15 <code>rescueEth</code> &middot; 18 <code>setRmhtToken</code> &middot; 20 <code>transferOwnership</code></td></tr>
+    <tr><td><strong>LiquidityCustodian</strong></td><td>11 <code>renounceOwnership</code> &middot; 12 <code>setFeeRecipient</code> &middot; 14 <code>transferOwnership</code></td></tr>
+  </table></div>
+  <div class="box">
+    <div class="t">Les exceptions, deja documentees</div>
+    <p>Quatre fonctions ne dependent pas de <code>owner</code> mais du role <code>feedGovernor</code> : 72 <code>updatePriceFeeds</code>, 65 <code>transferFeedGovernor</code>, 54 <code>renounceFeedGovernor</code> et 1 <code>acceptFeedGovernor</code>. Ce sont les seules fonctions privilegiees encore vivantes sur l'ensemble du protocole, et elles sont detaillees en <a href="#governor">section 03</a>.</p>
+    <p>Vous verrez aussi 6 <code>onERC721Received</code> sur le LiquidityCustodian : c'est le point d'entree par lequel la position de liquidite a ete deposee. Seul le PositionManager d'Uniswap peut l'appeler, et il ne peut plus rien faire — <code>positionReceived</code> vaut deja <code>true</code>, et le contrat refuse une seconde position.</p>
+  </div>
+<div class="box ok">
+    <div class="t">Deblocage des allocations : deux regimes differents</div>
+    <p><strong>L'airdrop se debloque au premier des deux evenements</strong> : soit <code>milestonesReached()</code> atteint <strong>5 paliers</strong>, soit la date <code>unlockTime</code> arrive — le <strong>4 septembre 2027 a 00h53 UTC</strong>, un an jour pour jour apres le deploiement. Un projet qui performe libere donc l'airdrop plus tot ; un marche plat ne peut pas le bloquer indefiniment.</p>
+    <p><strong>L'allocation fondateur, elle, n'a pas de deblocage anticipe.</strong> <code>unlockedAmount()</code> renvoie 0 avant la date et 50 000 000 apres, sans exception. Aucun palier ne l'accelere. <strong>Les detenteurs peuvent donc etre servis avant le fondateur, jamais l'inverse.</strong></p>
+    <p>Dans les deux cas, les <strong>recompenses de palier</strong> sont independantes de ce verrou : elles s'accumulent et restent reclamables a tout moment, via <code>claimReward()</code>.</p>
+  </div>
+</section>
+
+<footer>
+  <p>$RMHT — Robinhood Milestone HODL Token · Robinhood Chain (4663) · <a href="index.html">Accueil</a> · <a href="protocol-fr.html">Protocole</a> · <a href="legal.html">Mentions legales</a></p>
+  <p>Cette page decrit le fonctionnement d'un contrat immuable. Elle n'est pas un conseil en investissement. $RMHT est un actif volatil : n'engagez que ce que vous pouvez perdre.</p>
+</footer>
+
+</div>
+</body>
+</html>

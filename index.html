@@ -22,6 +22,8 @@
   </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Syne:wght@400;600;700;800&amp;family=Space+Mono:wght@400;700&amp;display=swap">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
@@ -50,7 +52,7 @@
     body {
       background:
       linear-gradient(rgba(8,14,6,0.45), rgba(8,14,6,0.7)),
-      url('fond-bg.jpg') center top / cover no-repeat fixed;
+      url('fond-bg-1600.webp') center top / cover no-repeat fixed;
       color: var(--text);
       font-family: var(--body);
       overflow-x: hidden;
@@ -79,8 +81,18 @@
       font-family: var(--mono);
       font-size: 11px; letter-spacing: 0.06em;
       position: relative; z-index: 100;
+      min-height: 38px;          /* reserve la place avant le chargement des polices — corrige le CLS */
     }
     .trust-item { display: flex; align-items: center; gap: 6px; }
+    /* Les valeurs lues on-chain passent de "—" a un nombre : on reserve leur largeur
+       et on utilise des chiffres a chasse fixe pour qu'aucune ne deplace ses voisines. */
+    #mcapDisplay, #statMcap, #statHolders,
+    #buyMHT, #buyShare, #buyReward, #buyBagValue, #buyROI,
+    #calcCurrentValue, #calcShare, #calcMHTReward, #calcMHTCumul {
+      display: inline-block; min-width: 5ch; text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+    #mcapDisplay { min-width: 9ch; }
     .trust-item .badge {
       padding: 2px 8px; border-radius: 4px;
       font-weight: 700; font-size: 10px;
@@ -182,7 +194,8 @@
     /* ── HERO ── */
     .hero {
       position: relative;
-      min-height: 92vh;
+      min-height: 92vh;          /* repli navigateurs anciens */
+      min-height: 92svh;         /* stable quand la barre d'URL mobile se retracte — corrige le CLS */
       display: grid;
       grid-template-columns: 1fr 520px 1fr;
       grid-template-rows: auto 1fr;
@@ -992,16 +1005,17 @@
 
   <!-- ===== LAUNCH NOTICE — TO REMOVE ONCE THE MAINNET ADDRESS IS PUBLISHED ===== -->
   <div id="launch" style="background:linear-gradient(90deg,rgba(60,32,6,0.95),rgba(92,52,8,0.95),rgba(60,32,6,0.95));border-bottom:1px solid rgba(245,200,66,0.45);padding:12px 20px;text-align:center;font-family:'Space Mono',monospace;font-size:13px;color:#f6e7c4;line-height:1.7;">
-    ⏳ <strong style="color:#f5c842;">Mainnet launch today at 14:00 UTC.</strong>
-    The official contract address will be published on this page after 14:00 UTC.<br>
-    ⚠️ <strong>Any $RMHT address circulating before then is not ours — do not buy it.</strong>
+    🟢 <strong style="color:#f5c842;">$RMHT is live on Robinhood Chain.</strong><br>
+    Official contract: <a href="https://robinhoodchain.blockscout.com/token/0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4" target="_blank" rel="noopener" style="color:#f5c842;font-weight:700;word-break:break-all;">0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4</a><br>
+    <span style="font-size:11.5px;color:#d9c7a2;">Airdrop custodian <a href="https://robinhoodchain.blockscout.com/address/0xdEc68344a41Cc6104ed5ff2C88F2D16a794688C1" target="_blank" rel="noopener" style="color:#d9c7a2;">0xdEc6…88C1</a> &#183; Founder custodian <a href="https://robinhoodchain.blockscout.com/address/0x4C944c27160A1532b9De3a69d0Ec64164a6f03d8" target="_blank" rel="noopener" style="color:#d9c7a2;">0x4C94…03d8</a> &#183; LP custodian <a href="https://robinhoodchain.blockscout.com/address/0x50336e2a1396364895702a5222faC47bD0d38407" target="_blank" rel="noopener" style="color:#d9c7a2;">0x5033…8407</a> &#183; Pool <a href="https://robinhoodchain.blockscout.com/address/0xabe3B1fF5Fc6a9638D0c46f2379B20f7e6173bEe" target="_blank" rel="noopener" style="color:#d9c7a2;">0xabe3…3bEe</a></span><br>
+    ⚠️ <strong>Any other $RMHT address is not ours — do not buy it.</strong>
   </div>
 
   <!-- TRUST BAR -->
   <div class="trust-bar">
     <div class="trust-item">
       <span>AUDIT</span>
-      <a href="protocol-en.html#verify" class="badge badge-gold" style="text-decoration:none">8 tools · 0 critical ↗</a>
+      <a href="transparency-en.html" class="badge badge-gold" style="text-decoration:none">8 tools · 3 findings answered ↗</a>
     </div>
     <span class="trust-divider">|</span>
     <div class="trust-item">
@@ -1009,12 +1023,12 @@
     </div>
     <span class="trust-divider">|</span>
     <div class="trust-item">
-      <span class="badge badge-gold">renounceOwnership() at launch</span>
+      <a href="transparency-en.html#owner" class="badge badge-gold" style="text-decoration:none">renounceOwnership() &#10003; done &#8212; 4/4 contracts &#8599;</a>
     </div>
     <span class="trust-divider">|</span>
     <div class="trust-item">
       <span>CONTRACT:</span>
-      <a href="#launch">published after 14:00 UTC</a>
+      <a href="https://robinhoodchain.blockscout.com/token/0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4" target="_blank" rel="noopener">0xbD44…8bA4</a>
     </div>
   </div>
 
@@ -1028,7 +1042,7 @@
       🔥 <strong>TRUST THE PROCESS</strong> &nbsp;🤝&nbsp; EARN THE GROWTH 🔥
     </div>
     <div class="nav-right">
-      <a href="#launch" class="nav-btn nav-btn-ghost">🏹 Buy $RMHT</a>
+      <a href="https://app.uniswap.org/swap?outputCurrency=0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4&chain=robinhood" target="_blank" rel="noopener" class="nav-btn nav-btn-ghost">🏹 Buy $RMHT</a>
       <button class="nav-btn nav-btn-primary" id="connectWalletBtn">⚡ Connect Wallet</button>
     </div>
   </nav>
@@ -1044,13 +1058,14 @@
   <!-- QUICK LINKS — only the links that are live today are visible.
        The rest is kept in HTML comments; re-enable a block by removing the comment tags around it. -->
   <div class="quick-links">
-    <a href="#launch" class="ql ql-highlight">🦄 BUY ON UNISWAP — 14:00 UTC</a>
+    <a href="https://app.uniswap.org/swap?outputCurrency=0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4&chain=robinhood" target="_blank" rel="noopener" class="ql ql-highlight">🦄 BUY ON UNISWAP</a>
 
-    <!--
-    <a href="#" class="ql">📊 DEXSCREENER</a>
+    <a href="https://dexscreener.com/robinhood/0xabe3b1ff5fc6a9638d0c46f2379b20f7e6173bee" target="_blank" rel="noopener" class="ql">📊 DEXSCREENER</a>
+    <a href="transparency-en.html" class="ql">🛡️ SCANNER FINDINGS ANSWERED</a>
+
+    <!-- Coinbrain et Bubblemaps ne couvrent pas encore Robinhood Chain
     <a href="#" class="ql">🧠 COINBRAIN</a>
     <a href="#" class="ql">🫧 BUBBLEMAPS</a>
-    <a href="#" class="ql">🛡️ SECURITY SCAN</a>
     -->
 
     <!-- ⚠️ Pages pages/*.html : contenu $MHT pas encore adapté à $RMHT — à décommenter une par une au fur et à mesure de l'adaptation
@@ -1064,6 +1079,8 @@
 
     <a href="protocol-en.html" class="ql">⚙️ HOW IT WORKS (EN)</a>
                     <a href="protocol-fr.html" class="ql">⚙️ COMMENT ÇA MARCHE (FR)</a>
+    <a href="transparency-en.html" class="ql">🔎 SCANNER FINDINGS ANSWERED (EN)</a>
+    <a href="transparency-fr.html" class="ql">🔎 RÉPONSES AUX SIGNALEMENTS (FR)</a>
                     <a href="docs/RMHT_Whitepaper_EN.pdf" target="_blank" class="ql">📄 WHITEPAPER EN (31/07)</a>
     <a href="docs/RMHT_Whitepaper_FR.pdf" target="_blank" class="ql">📄 WHITEPAPER FR (31/07)</a>
 
@@ -1116,7 +1133,7 @@
       </div>
 
       <div class="hero-ctas">
-        <a href="#launch" class="cta-main">🏹 Buy $RMHT — opens 14:00 UTC</a>
+        <a href="https://app.uniswap.org/swap?outputCurrency=0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4&chain=robinhood" target="_blank" rel="noopener" class="cta-main">🏹 Buy $RMHT on Uniswap</a>
         <a href="#how" class="cta-secondary">How it works →</a>
       </div>
 
@@ -1173,7 +1190,7 @@
                 stroke-dasharray="103.38 238.8" stroke-dashoffset="-135.38" opacity="0.7"/>
             </svg>
             <div class="donut-center">
-              <img src="piece_rmht.png" alt="RMHT" style="width:168px;height:168px;object-fit:contain;border-radius:50%;border:2px solid rgba(245,200,66,0.35);box-shadow:0 0 28px rgba(245,200,66,0.25);background:rgba(14,26,10,0.9);">
+              <img loading="lazy" decoding="async" src="piece_rmht.png" alt="RMHT" style="width:168px;height:168px;object-fit:contain;border-radius:50%;border:2px solid rgba(245,200,66,0.35);box-shadow:0 0 28px rgba(245,200,66,0.25);background:rgba(14,26,10,0.9);">
             </div>
           </div>
           <div class="donut-legend">
@@ -1234,15 +1251,15 @@
           </div>
           <div class="tstat-card">
             <span class="tstat-label">Owner Holdings</span>
-            <span class="tstat-val">0.00% — renounce planned at launch</span>
+            <span class="tstat-val">0.00% — ownership renounced &#10003;</span>
           </div>
           <div class="tstat-card">
             <span class="tstat-label">Security Scan</span>
-            <span class="tstat-val">8 tools · 0 Critical / High</span>
+            <span class="tstat-val">8 tools · 3 findings, all answered</span>
           </div>
 
           <div style="margin-top:8px">
-            <div class="tranches-title">LP CUSTODIAN — FEES FOR HOLDERS</div>
+            <div class="tranches-title">LP CUSTODIAN — FEES FOR HOLDERS &#183; <a href="https://robinhoodchain.blockscout.com/address/0x50336e2a1396364895702a5222faC47bD0d38407" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;font-size:11px">verify on-chain ↗</a></div>
             <div class="tranche-row">
               <span class="tranche-lock">🔒</span>
               <div class="tranche-info">
@@ -1456,7 +1473,7 @@
           <ul class="phase-items">
             <li class="phase-item done"><span class="icon">✅</span> RMHTLiquidityCustodian + NonfungiblePositionManager deployed on Robinhood Chain Testnet</li>
             <li class="phase-item done"><span class="icon">✅</span> Foundry test suite — 322/322 passing (unit, fuzzing, invariants on 128k calls)</li>
-            <li class="phase-item done"><span class="icon">✅</span> Full audit suite — 8 independent tools, 0 Critical / High / Medium</li>
+            <li class="phase-item done"><span class="icon">✅</span> Full audit suite — 8 independent tools, 0 Critical / High / Medium left open on the SCSVS/SCSTG checklist</li>
             <li class="phase-item done"><span class="icon">✅</span> No owner freeze/blacklist function — removed by design</li>
           </ul>
         </div>
@@ -1555,7 +1572,7 @@
             </div>
             <div class="exec-item">
               <i class="bi bi-check-circle-fill"></i>
-              <span>Ownership renounced on all four contracts at launch — <code>feedGovernor</code> excepted, see the protocol page</span>
+              <span><strong>Ownership renounced on all four contracts</strong> — <code>owner()</code> now returns <code>0x0000…0000</code>, verifiable on the explorer. Only <code>feedGovernor</code> survives, see the protocol page</span>
             </div>
           </div>
           <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:20px;flex-wrap:wrap">
@@ -1585,7 +1602,7 @@
         </details>
         <details class="faq-item">
           <summary class="faq-q">Is the Milestone Vault secure? <span class="faq-arrow"><i class="bi bi-plus"></i></span></summary>
-          <div class="faq-a">Yes. The Vault is governed entirely by the Smart Contract, scanned by SolidityScan, Slither, Mythril, Wake, Aderyn, Solhint, Surya and 322 Foundry tests — no Critical, High or Medium item left open on the SCSVS/SCSTG checklist. The scanners still raise three findings (two Critical, one High); all three are analysed as false positives and the reasoning is written into the source code. <a href="protocol-en.html#verify" style="color:var(--gold)">Review status</a>. Releases can only happen through the milestone state machine — three confirmations, ten minutes apart, on a 30-minute time-weighted average price. Ownership will be renounced on all four contracts right after launch. One role is deliberately kept and survives that renouncement: <strong>feedGovernor</strong>, which can replace the address of a Chainlink oracle and nothing else — it cannot touch the pool, the allocations, the vault or any balance. It exists because on $MHT V2 an oracle failed after ownership had been renounced, with no way left to repair it. It is held by a hardware wallet and can be destroyed permanently once the feeds are settled. <a href="protocol-en.html#governance" style="color:var(--gold)">Full detail on the protocol page</a>.</div>
+          <div class="faq-a">Yes. The Vault is governed entirely by the Smart Contract, scanned by SolidityScan, Slither, Mythril, Wake, Aderyn, Solhint, Surya and 322 Foundry tests — no Critical, High or Medium item left open on the SCSVS/SCSTG checklist. The scanners still raise three findings (two Critical, one High); all three are analysed as false positives and the reasoning is written into the source code. <a href="protocol-en.html#verify" style="color:var(--gold)">Review status</a>. Releases can only happen through the milestone state machine — three confirmations, ten minutes apart, on a 30-minute time-weighted average price. Ownership has been renounced on all four contracts: <code>owner()</code> returns the zero address, verifiable on the explorer. One role is deliberately kept and survives that renouncement: <strong>feedGovernor</strong>, which can replace the address of a Chainlink oracle and nothing else — it cannot touch the pool, the allocations, the vault or any balance. It exists because on $MHT V2 an oracle failed after ownership had been renounced, with no way left to repair it. It is held by a hardware wallet and can be destroyed permanently once the feeds are settled. <a href="protocol-en.html#governance" style="color:var(--gold)">Full detail on the protocol page</a>, and every scanner finding answered one by one on the <a href="transparency-en.html" style="color:var(--gold)">transparency page</a>.</div>
         </details>
         <details class="faq-item">
           <summary class="faq-q">How do I receive my rewards? <span class="faq-arrow"><i class="bi bi-plus"></i></span></summary>
@@ -1619,7 +1636,7 @@
       <div class="footer-bottom">
         <span>© 2026 R Milestone HODL Token ($RMHT). All rights reserved.</span>
         <span class="footer-contract">
-          <a href="#launch">Contract address published after 14:00 UTC</a>
+          Contract: <a href="https://robinhoodchain.blockscout.com/token/0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4" target="_blank" rel="noopener">0xbD44…8bA4</a>
         </span>
         <a href="legal.html" style="color:var(--muted);text-decoration:none;font-size:12px">Legal</a>
         <a href="https://milestonehodl.apexpad.io" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:none;font-size:12px">Official $MHT site ↗</a>
@@ -1636,8 +1653,8 @@
     //  Tant que LAUNCHED vaut false, la page n'interroge AUCUN contrat et
     //  tous les compteurs restent sur "—". Aucune donnée testnet affichée.
     // ═══════════════════════════════════════════════════════════════════════
-    const LAUNCHED  = false;                                        // <<< true après le déploiement mainnet
-    const CONTRACT  = "";                                           // <<< adresse RMHT mainnet
+    const LAUNCHED  = true;                                        // <<< true après le déploiement mainnet
+    const CONTRACT  = "0xbD4487dad62d23e0677E6a94c99cB0AE45328bA4";                                           // <<< adresse RMHT mainnet
     const EXPLORER  = "https://robinhoodchain.blockscout.com";       // explorateur mainnet
     const RPC       = "https://rpc.mainnet.chain.robinhood.com";     // RPC mainnet (chainId 4663)
 
@@ -2021,7 +2038,7 @@
         const btn = makeWalletButton(
           info.name,
           'Browser extension wallet',
-          `<img src="${info.icon}" alt="${info.name}" style="width:32px;height:32px;border-radius:6px">`,
+          `<img loading="lazy" decoding="async" src="${info.icon}" alt="${info.name}" style="width:32px;height:32px;border-radius:6px">`,
           '<span class="wallet-option-badge badge-detected">Detected</span>',
           async () => {
             showLoading('Opening ' + info.name + '…');
@@ -2072,7 +2089,7 @@
       qrContainer.innerHTML = '<p style="color:#334155;font-size:0.7rem">Generating QR…</p>';
       try {
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent('https://rmht.apexpad.io/')}&bgcolor=ffffff&color=0f172a`;
-        qrContainer.innerHTML = `<img src="${qrUrl}" style="width:180px;height:180px;border-radius:8px" alt="QR"><p style="color:#64748b;font-size:0.65rem;margin-top:8px"><em style="color:#f5c842">WalletConnect v2 — Coming soon</em></p>`;
+        qrContainer.innerHTML = `<img loading="lazy" decoding="async" src="${qrUrl}" style="width:180px;height:180px;border-radius:8px" alt="QR"><p style="color:#64748b;font-size:0.65rem;margin-top:8px"><em style="color:#f5c842">WalletConnect v2 — Coming soon</em></p>`;
       } catch(e) { qrContainer.innerHTML = '<p style="color:#ef4444;font-size:0.75rem">QR error</p>'; }
     });
 
