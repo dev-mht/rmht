@@ -86,7 +86,7 @@
     .trust-item { display: flex; align-items: center; gap: 6px; }
     /* Les valeurs lues on-chain passent de "—" a un nombre : on reserve leur largeur
        et on utilise des chiffres a chasse fixe pour qu'aucune ne deplace ses voisines. */
-    #mcapDisplay, #statMcap, #statHolders,
+    #mcapDisplay, #statMcap,
     #buyMHT, #buyShare, #buyReward, #buyBagValue, #buyROI,
     #calcCurrentValue, #calcShare, #calcMHTReward, #calcMHTCumul {
       display: inline-block; min-width: 5ch; text-align: center;
@@ -1144,11 +1144,6 @@
         </div>
         <div class="stat-div"></div>
         <div class="stat">
-          <div class="stat-val" id="statHolders">—</div>
-          <div class="stat-label">Holders</div>
-        </div>
-        <div class="stat-div"></div>
-        <div class="stat">
           <div class="stat-val">322</div>
           <div class="stat-label">Tests Passing</div>
         </div>
@@ -1724,16 +1719,6 @@
       if (simPriceEl && price > 0) {
         simPriceEl.value = price.toFixed(8);
         if (typeof calcBuy === "function") calcBuy();
-      }
-
-      try {
-        const res = await fetch(EXPLORER + "/api/v2/tokens/" + CONTRACT);
-        const data = await res.json();
-        const holders = data?.holders_count ?? data?.result?.[0]?.holdersCount;
-        const statHoldersEl = document.getElementById("statHolders");
-        if (statHoldersEl && holders) statHoldersEl.textContent = parseInt(holders).toLocaleString("en-US");
-      } catch(e) {
-        // holders unavailable without API key — leave as —
       }
 
     } catch(e) {
