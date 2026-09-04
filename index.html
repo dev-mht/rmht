@@ -97,9 +97,11 @@
       padding: 2px 8px; border-radius: 4px;
       font-weight: 700; font-size: 10px;
     }
-    .badge-gold { background: var(--gold); color: #07090e; }
-    .badge-green { background: #00e096; color: #07090e; }
-    .badge-orange { background: var(--orange); color: #fff; }
+    /* Fonds pales + texte noir. Les selecteurs incluent .trust-item a pour passer
+       devant la regle generique de couleur des liens de la barre (sinon or sur or). */
+    .badge-gold, .trust-item a.badge-gold { background: #efdca4; color: #07090e; }
+    .badge-green, .trust-item a.badge-green { background: #9fe8c9; color: #07090e; }
+    .badge-orange, .trust-item a.badge-orange { background: #f3c08a; color: #07090e; }
     .trust-item a { color: var(--gold); text-decoration: none; }
     .trust-divider { color: var(--muted); }
 
@@ -1100,7 +1102,7 @@
     <div class="hero-line"></div>
 
     <div class="hero-head">
-      <h1 class="hero-title-top">🔥<span class="rh">ROBINHOOD</span> MILESTONE <span class="gold">HODL</span> TOKEN🔥</h1>
+      <h1 class="hero-title-top">🔥R MILESTONE <span class="gold">HODL</span> TOKEN🔥</h1>
       <div class="mht-ticker">$RMHT</div>
       <p class="hero-sub">
         The first token where <strong>Market Cap growth = automatic rewards</strong>.<br>
