@@ -257,6 +257,7 @@ cast call 0x50336e2a1396364895702a5222faC47bD0d38407 "owner()(address)" \
   <p class="sub">The aggregators' number and the one that triggers milestones do not measure the same thing.</p>
   <p>Aggregators display a market cap computed on the <strong>full one-billion supply</strong> of RMHT. The contract computes <code>getMarketCap()</code> on the <strong>eligible supply</strong>: total supply minus burned tokens, minus tokens held by the contract itself (the vault), minus those sitting in the pool.</p>
   <p>The gap is large and structural: at launch, aggregators showed roughly $513,000 where the contract computed roughly $34,300.</p>
+  <p>You can check the aggregators' figure yourself on <a href="https://www.geckoterminal.com/robinhood/pools/0xabe3b1ff5fc6a9638d0c46f2379b20f7e6173bee" target="_blank" rel="noopener">GeckoTerminal</a>, which reads the pool live: the market cap and FDV shown there are computed on the full one-billion supply, not on the eligible supply the contract uses.</p>
   <div class="box warn">
     <div class="t">Do not confuse the two</div>
     <p>Milestones trigger every <strong>$500,000 of eligible supply</strong>, on the value computed by the contract — never on a figure displayed by a third-party site. Seeing an aggregator show $513,000 does not mean a milestone has been reached.</p>

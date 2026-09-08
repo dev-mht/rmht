@@ -263,6 +263,7 @@ cast call 0x50336e2a1396364895702a5222faC47bD0d38407 "owner()(address)" \
   <p class="sub">Le chiffre des agregateurs et celui qui declenche les paliers ne mesurent pas la meme chose.</p>
   <p>Les agregateurs affichent une capitalisation calculee sur la <strong>supply totale d'un milliard</strong> de RMHT. Le contrat, lui, calcule <code>getMarketCap()</code> sur la <strong>supply eligible</strong> : la supply totale moins les jetons brulés, moins ceux detenus par le contrat lui-meme (le vault), moins ceux qui sont dans la pool.</p>
   <p>L'ecart est important, et il est structurel : au lancement, les agregateurs affichaient environ 513 000 $ la ou le contrat calculait environ 34 300 $.</p>
+  <p>Vous pouvez constater le chiffre des agregateurs vous-meme sur <a href="https://www.geckoterminal.com/robinhood/pools/0xabe3b1ff5fc6a9638d0c46f2379b20f7e6173bee" target="_blank" rel="noopener">GeckoTerminal</a>, qui lit la pool en direct : la capitalisation et la FDV qui y sont affichees sont calculees sur la supply totale d'un milliard, pas sur la supply eligible qu'utilise le contrat.</p>
   <div class="box warn">
     <div class="t">A ne pas confondre</div>
     <p>Les paliers se declenchent tous les <strong>500 000 $ de supply eligible</strong>, sur la valeur calculee par le contrat — jamais sur le chiffre affiche par un site tiers. Voir un agregateur afficher 513 000 $ ne signifie pas qu'un palier est atteint.</p>
